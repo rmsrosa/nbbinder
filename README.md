@@ -37,18 +37,18 @@ For more information about the structure of a book, see [Parts of a Book Explain
 ## Usage
 
 The two main functions in this module are
-- `bind_notes()`: adds the Table of Contents, header, and navigators from the data provided in the arguments.
-- `bind_notes_from_configfile()`: adds the Table of Contents, header, and navigators from the data stored in a YAML configuration file given as argument.
-The latter function simply reads the parameters from the configuration file and passes them to the `bind_notes()` function.
+- `bind()`: adds the Table of Contents, header, and navigators from the data provided in the arguments.
+- `bind_from_configfile()`: adds the Table of Contents, header, and navigators from the data stored in a YAML configuration file given as argument.
+The latter function simply reads the parameters from the configuration file and passes them to the `bind()` function.
 
-The `bind_notes()` function calls the following functions in this module, which take care of each of the three main features of the notebook binder:
+The `bind()` function calls the following functions in this module, which take care of each of the three main features of the notebook binder:
 - `add_contents()`: adds the Table of Contents to a selected "Contents" file.
 - `add_headers()`: adds a header to each notebook with a given book info.
 - `add_navigators()`: adds navigation bars to the top and bottom of each notebook.
 
 Each of these later three functions can be called separately, if only one of the features is desired.
 
-When running `nbbinder.py` as a script, it expects the filename of the configuration file and calls the function `bind_notes_from_configfile(config_file)`, where config_file is the name of the configuration file.
+When running `nbbinder.py` as a script, it expects the filename of the configuration file and calls the function `bind_from_configfile(config_file)`, where config_file is the name of the configuration file.
 
 Look at the documentation for more information on each of these functions and for the other functions available on this package.
 
@@ -72,11 +72,11 @@ book:
   show_full_entry_in_nav: False
 ```
 
-Then, we import the module (in the same folder) and use the `make_book()` method with this configuration file as argument:
+Then, we import the module (in the same folder) and use the `bind()` method with this configuration file as argument:
 
 ```python
 import nbbinder as nbb
-nbb.bind_notes('config.yml')
+nbb.bind('config.yml')
 ```
 
 Or we execute it as a script in the command line:
@@ -85,7 +85,7 @@ Or we execute it as a script in the command line:
 ./nbbinder.py config.yml
 ```
 
-If we call the `nbb.bind_notes('config.yml')` from a different directory, we should add the parameter `directory` to the configuration file, with the path to the collection of notebooks.
+If we call the `nbb.bind('config.yml')` from a different directory, we should add the parameter `directory` to the configuration file, with the path to the collection of notebooks.
 
 ## Colab and Binder links
 
