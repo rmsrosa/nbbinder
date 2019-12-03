@@ -1,12 +1,12 @@
-# Jupyter Notebook Binder - nbbinder
-
-Generates a navigable book-like structure to a collection of Jupyter notebooks.
+# Documentation
 
 ## Description
 
+Generates a navigable book-like structure to a collection of Jupyter notebooks.
+
 It enumerates a collection of notebooks, adds a Table of Contents to a given "Table of Contents" notebook file, and adds a header and top and bottom navigator cells to each notebook.
 
-## The collection of notebooks
+## Indexed notebooks
 
 The code works on a collection of indexed notebooks in a directory and builds a Table of Contents out of the them, which is added to a specified file. It also adds a header and top and bottom navigator cells to each notebook.
 
@@ -87,7 +87,7 @@ Or we execute it as a script in the command line:
 
 If we call the `nbb.bind('config.yml')` from a different directory, we should add the parameter `directory` to the configuration file, with the path to the collection of notebooks.
 
-## Colab and Binder links
+## Google Colab and Binder links
 
 Notice, in the example configuration file above, the parameters `show_colab: True` and `show_binder: True`, and other parameters with the information about the github repository and directory where the notebooks in this package reside. This allows the module to add direct links for the corresponding notebooks to be opened in one of this cloud computing python environments.
 
@@ -125,7 +125,7 @@ It uses the standard libraries
 Besides the libraries in the standard implementation, it requires the `nbformat` module, to interact with the jupyter notebooks, and the `yaml` package, to read `*.yml` configuration files:
 
 - [nbformat](https://pypi.org/project/nbformat/),
-- [yaml](https:/docs.python.org/3/library/yaml.html).
+- [pyyaml](https://pypi.org/project/PyYAML/).
 
 ## Credits
 
