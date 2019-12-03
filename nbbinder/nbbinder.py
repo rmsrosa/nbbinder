@@ -25,7 +25,8 @@ from nbformat.v4.nbbase import new_markdown_cell
 
 # Regular expression for indexing the notebooks
 # Tested in https://regexr.com/
-REG = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|)-(.*)\.ipynb') 
+REG = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|)-(.*)\.ipynb')
+REG_STAR = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])([a-z]+|)\.(\d{2}|)([a-z]+|)-(.*)\.ipynb')
 
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"    
 HEADER_MARKER = "<!--HEADER-->"   
@@ -57,6 +58,89 @@ def indexed_notebooks(app_to_notes_path='.'):
     
     '''
     return sorted(nb for nb in os.listdir(app_to_notes_path) if REG.match(nb))
+
+def increase_group(g:str):
+    if g.isdecimal():
+        n = int(g) + 1
+        if n>=10:
+            g = str(n)
+        else:
+            g = '0'+str(n)
+    elif g[1].isalnum():
+        g = g[0] + chr(ord(g[1])+1)
+    return g
+
+def restructure(app_to_notes_path='.'):
+    '''
+    Check whether there is any notebook with one or more star characters ('*')
+    in the third regular expression group, indicating it is to be included in
+    the collection, and, if so, rename the affected notebooks in the
+    appropriate order.
+
+    Argument:
+    ---------
+        app_to_notes_path: string
+            The path to the directory that contains the notebooks, 
+            either the absolute path or the path relative from 
+            where the code is being ran.
+
+    '''
+
+    nbfiles = sorted(nb for nb in os.listdir(app_to_notes_path) if REG_STAR.match(nb))
+    nbfiles_new = nbfiles.copy()
+    additions = [1 if REG_STAR.match(nb).group(2) or REG_STAR.match(nb).group(4) else 0 for nb in nbfiles]
+#    print('additions:', sum(additions))
+
+    if sum(additions):
+#        print('len:', len(nbfiles))
+        for j in range(len(nbfiles)):
+            nbj_reg = REG_STAR.match(nbfiles_new[j])
+            if nbj_reg.group(4):
+#                print('j in group 4:', j)
+                for k in range(j,len(nbfiles)):
+                    nbk_reg = REG_STAR.match(nbfiles_new[k])
+                    if nbk_reg.group(1,2) == nbj_reg.group(1,2):
+#                        print('k:', k)
+                        gk3 = nbk_reg.group(3)
+                        if nbk_reg.group(1,2,3,4) == nbj_reg.group(1,2,3,4):
+                            gk3_new = increase_group(gk3)
+                            gk4_new = ''
+                        else:
+                            gk3_new = increase_group(gk3)
+                            gk4_new = nbk_reg.group(4)
+                        nbfiles_new[k] = nbk_reg.group(1) + nbk_reg.group(2) + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) + '.ipynb'
+#                    print('nbfiles_new[k]:', nbfiles_new[k])
+            if nbj_reg.group(2):
+#                print('j in group 2:', j)
+                nbfiles_new[j] = nbfiles_new[j][:nbj_reg.start(2)] + nbfiles_new[j][nbj_reg.end(2):]
+                for k in range(j,len(nbfiles)):
+#                    print('k:', k)
+                    nbk_reg = REG_STAR.match(nbfiles_new[k])
+                    if nbk_reg.group(1)[0] == nbj_reg.group(1)[0]: 
+                        gk1_new = increase_group(nbk_reg.group(1))
+                        if nbk_reg.group(1,2) == nbj_reg.group(1,2):
+                            gk2_new = ''
+                        else:
+                            gk2_new = nbk_reg.group(2)
+                        nbfiles_new[k] = gk1_new + gk2_new + '.' + nbk_reg.group(3) + nbk_reg.group(4) + '-' + nbk_reg.group(5) + '.ipynb'
+#                    print('nbfiles_new[k]:', nbfiles_new[k])
+
+    if nbfiles == nbfiles_new:
+        print('- no files need renaming, no reestructuring needed')
+    else:
+        count = 0
+        for f, f_new in zip(nbfiles, nbfiles_new):
+            count +=1
+            if f != f_new:
+                print(f'- replacing {f} with {f_new}')
+            os.rename(os.path.join(app_to_notes_path, f), os.path.join(app_to_notes_path, str(count) + '-' + f_new))
+        count = 0
+        for f_new in nbfiles_new:
+            count +=1
+            os.rename(os.path.join(app_to_notes_path, str(count) + '-' + f_new), os.path.join(app_to_notes_path, f_new))
+
+    return
+
 
 def is_marker_cell(MARKER, cell):
     return  cell.source.startswith(MARKER)
@@ -130,7 +214,7 @@ def get_notebook_full_entry(nb_name, app_to_notes_path='.'):
             or letters.
 
     '''
-    chapter, section, title = REG.match(nb_name).groups()
+    chapter, section, basename = REG.match(nb_name).groups()
 
     if chapter.isdecimal():
         chapter_clean = int(chapter)
@@ -384,6 +468,10 @@ def bind_from_configfile(config_file):
         app_to_notes_path = config['directory']['app_to_notes_path']
     else:
         app_to_notes_path = '.'
+
+    if 'restructure' in config:
+        if config['restructure']:
+            restructure(app_to_notes_path)
 
     if 'book' in config:
         bind(**config['book'], 
