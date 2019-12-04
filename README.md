@@ -72,7 +72,7 @@ Suppose we run the `nbb.bind('config.yml')`, with the above configuration file, 
 
 We may have a glimpse of the result looking at a printscreen of the updated `00.00-Alice's_Adventures_in_Wonderland.ipynb`, with the table of contents, the header, and the footline:
 
-[00.00-Alice's_Adventures_in_Wonderland.ipynb print screen](tests/nb_alice_toc.jpg)
+![00.00-Alice's_Adventures_in_Wonderland.ipynb print screen](tests/nb_alice_toc.jpg)
 
 More information on the [Documentation of the Project on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
 
