@@ -65,8 +65,8 @@ if __name__ == '__main__':
     print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_alice')}")
     nbb.restructure('nb_alice')
 
-    print("\n# Binding notebooks with config file 'nb_alice_config.yml'")
-    nbb.bind_from_configfile('nb_alice_config.yml')
+    print("\n# Binding notebooks with config file 'config_nb_alice.yml'")
+    nbb.bind_from_configfile('config_nb_alice.yml')
 
 #    quit()
 
