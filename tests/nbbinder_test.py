@@ -68,8 +68,6 @@ if __name__ == '__main__':
     print("\n# Binding notebooks with config file 'config_nb_alice.yml'")
     nbb.bind_from_configfile('config_nb_alice.yml')
 
-#    quit()
-
     nb_filenames_2 = ['00.00-Front_Page.ipynb',
                       '00.00i-Foreword.ipynb', 
                       '00.00ii-Dedicatory.ipynb',

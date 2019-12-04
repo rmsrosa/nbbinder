@@ -11,13 +11,14 @@ Original work Copyright (c) 2016 Jacob VanderPlas
 Modified work Copyright (c) 2019 Ricardo M S Rosa
 '''
 __license__ = "MIT"
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 __status__ = "beta"
 
 import os
 import re
 import itertools
 import sys
+
 import yaml
 
 import nbformat
@@ -295,6 +296,13 @@ def add_contents(toc_nb_name, app_to_notes_path='.',
         print(f'- Table of contents updated in {toc_nb_name}')
     else:
         print(f'* No markdown cell starting with {TOC_MARKER} found in {toc_nb_name}')
+        print("- inserting table of contents in {0}".format(toc_nb_name))
+        if toc_nb.cells and is_marker_cell(NAVIGATOR_MARKER, toc_nb.cells[-1]):
+            toc_nb.cells.insert(-1, new_markdown_cell(source=contents))
+        else:
+            toc_nb.cells.append(new_markdown_cell(source=contents))
+
+    nbformat.write(toc_nb, toc_nb_file)
 
 def add_headers(header, app_to_notes_path='.'):
     for nb_name in indexed_notebooks(app_to_notes_path):
@@ -427,7 +435,7 @@ def add_navigators(core_navigators=[], app_to_notes_path='.',
             print("- inserting navbar for {0}".format(nb_name))
             nb.cells.insert(1, new_markdown_cell(source=navbar_top))
 
-        if nb.cells and is_marker_cell(NAVIGATOR_MARKER, nb.cells[-1]):
+        if len(nb.cells)>2 and is_marker_cell(NAVIGATOR_MARKER, nb.cells[-1]):
             nb.cells[-1].source = navbar_bottom
         else:
             nb.cells.append(new_markdown_cell(source=navbar_bottom))
