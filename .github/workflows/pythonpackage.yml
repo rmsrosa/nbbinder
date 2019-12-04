@@ -1,4 +1,4 @@
-name: Python package
+name: NBBinder_Test
 
 on: [push]
 
