@@ -12,4 +12,4 @@ and the following nonstandard libraries:
 - [nbformat](https://pypi.org/project/nbformat/),
 - [pyyaml](https://pypi.org/project/PyYAML/).
 
-The `nbformat` library is used to interact with the jupyter notebooks, and the `yaml` package is used to read the `*.yml` configuration files.
+The `nbformat` library is used to interact with the jupyter notebooks, and the `yaml` package is used, of course, to read the `*.yml` configuration files.
