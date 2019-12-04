@@ -10,9 +10,9 @@ This package comprises methods that read a collection of Jupyter notebooks from 
 
 - add a **Table of Contents** to a selected notebook file, with links to the other notebooks;
 - add a **Header** to each notebook, with custom informations;
-- include, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms;
 - add, in the **header** and in the **footline** of each notebook, **navigator links**, to traverse  to the previous or the next notebook, and to other selected notebooks, such as the Table of Contents and the Bibliography;
-- **restructure** the notebooks, by automatically renaming the files, in case a new notebook is to be included in between already numbered notebooks.
+- include, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com);
+- **restructure** the notebooks, by automatically renaming the files, in case a new notebook is to be inserted in between other notebooks.
 
 ## Example
 

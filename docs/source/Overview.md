@@ -8,9 +8,9 @@ It comprises methods that read a collection of Jupyter notebooks from a given di
 
 - add a **Table of Contents** to a selected notebook file, with links to the other notebooks;
 - add a **Header** to each notebook, with custom informations;
-- include, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms;
 - add, in the **header** and in the **footline** of each notebook, **navigator links**, to traverse  to the previous or the next notebook, and to other selected notebooks, such as the Table of Contents and the Bibliography;
-- **restructure** the notebooks, by automatically renaming the files, in case a new notebook is to be included in between already numbered notebooks.
+- include, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com);
+- **restructure** the notebooks, by automatically renaming the files, in case a new notebook is to be inserted in between other notebooks.
 
 ## Indexed notebooks
 
@@ -30,7 +30,7 @@ The types of indices are the following:
 The filenames go through a regular expressions matching operator and three groups are extracted from them, as separated by the first two dots.
 
 - When the first group is `'00'`, the notebook appears in the beginning and is not numbered. It is for the **Front Matter**, e.g *Cover page*, *Copyright page*, *Dedication page*, *Epigraph*, *Table of Contents*, *Foreword*, *Preface*, *Acknowlegdments*, and so on.
-- When the first group is from `'10'` to `'99'`, it is for the **Body** of the book, with the first group representing the chapter number and the second group, the section number. Except when the second group is either the empty string '' or '00', in which cases there is no section number. These are useful for defining a *Part* of the book and an introduction to the chapter, respectively. Notice that the empty string '' comes before '00'.
+- When the first group is from `'10'` to `'99'`, it is for the **Body** of the book, with the first group representing the chapter number and the second group, the section number. Except when the second group is either the empty string '' or `'00'`, in which cases there is no section number. These are useful for defining a *Part* of the book and an introduction to the chapter, respectively. Notice that the empty string '' comes before `'00'`.
 - When the first group starts with `'A'`, it is assumed to be for an **Appendix**, in which the second letter `'X'` is the letter of the Appendix. The second group functions as the section of the Appendix, with the same exceptions as above in the cases in which the second group is either `''` or `'00'`.
 - When the first group starts with `'B'`, the notebook appears at the end and is not numbered. It is for the non-numbered part of the **Back Matter**, such as  *Endnotes*, *Copyright permissions*, *Glossary*, *Bibliography*, *Index*, and so on.
 
@@ -48,8 +48,9 @@ The latter function simply reads the parameters from the configuration file and 
 
 The `bind()` function calls the following functions in this module, which take care of each of the three main features of the notebook binder:
 
-- `add_contents()`: adds the Table of Contents to a selected "Contents" file.
-- `add_headers()`: adds a header to each notebook with a given book info.
+- `restructure()`: reorder the notebooks when a new notebook is to be inserted between others;
+- `add_contents()`: adds the Table of Contents to a selected "Contents" file;
+- `add_headers()`: adds a header to each notebook with a given book info;
 - `add_navigators()`: adds navigation bars to the top and bottom of each notebook.
 
 Each of these later methods can be called separately, if only some of these features are desired.
@@ -93,31 +94,6 @@ Or we execute it as a script in the command line:
 
 If we call the `nbb.bind('config.yml')` from a different directory, we should add the parameter `directory` to the configuration file, with the path to the collection of notebooks.
 
-## Google Colab and Binder links
-
 Notice, in the example configuration file above, the parameters `show_colab: True` and `show_binder: True`, and other parameters with the information about the github repository and directory where the notebooks in this package reside. This allows the module to add direct links for the corresponding notebooks to be opened in one of this cloud computing python environments.
 
-When opening the direct links from within the notebook-rendering of the github, it is necessary to click with the right button, otherwise nothing will be opened.
-
-## Further examples
-
-See more examples in the `tests` directory:
-
-- There are five examples of configuration files in the `tests` subdirectory `config1.yml`, `config2.yml`, `config3.yml`, `config4.yml`, `config5.yml`. Have a look a them for examples of different configuration parameters.
-- To run one of the examples, go to `bash` terminal at the `tests` subdirectory and run
-
-```bash
-../nbbinder/nbbinder.py config1.yml
-```
-
-or any of the other config files. This runs the `nbbinder.py` as a script.
-
-- An example of using `nbbinder` as a module is in `/tests/notebinder_test.py`
-- One can also use the module from inside a jupyter notebook. This is show in both collections of notebooks in the `notebooks` and `lectures` folders. This is, in fact, the most convenient way.
-
-In the first examples, the script is ran from the directory `tests`, while the notebooks are the subdirectory `notebooks`. In this case, the following lines should be added to the configuration file, so the script knowns where to find the notebooks:
-
-```yaml
-directory:
-  app_to_notes_path: notebooks
-```
+**When opening the direct links from within the notebook-rendering of the github, it is necessary to click with the right button, otherwise nothing will be opened.**
