@@ -52,8 +52,6 @@ Or we execute it as a script in the command line:
 
 If we call the `nbb.bind('config.yml')` from a different directory, we should add the parameter `directory` to the configuration file, with the path to the collection of notebooks.
 
-### A collection of notebooks
-
 Suppose we run the `nbb.bind('config.yml')`, with the above configuration file, in a directory with the following indexed notebooks:
 
 ```bash
@@ -72,21 +70,11 @@ Suppose we run the `nbb.bind('config.yml')`, with the above configuration file, 
 12.00-Alice's_Evidence.ipynb
 ```
 
-This inserts the following Table of Contents in the `00.00-Alice’s_Adventures_in_Wonderland.ipynb` notebook, which is the file indicated in the key `toc_nb_name`, in the `config.yml` file:
+We may have a glimpse of the result looking at a printscreen of the updated `00.00-Alice's_Adventures_in_Wonderland.ipynb`, with the table of contents, the header, and the footline:
 
-```markdown
+[00.00-Alice's_Adventures_in_Wonderland.ipynb print screen](tests/nb_alice_toc.jpg)
 
-```
-
-### Table of Contents
-
-The result
-
-## Colab and Binder links
-
-Notice, in the example configuration file above, the parameters `show_colab: True` and `show_binder: True`, and other parameters with the information about the github repository and directory where the notebooks in this package reside. This allows the module to add direct links for the corresponding notebooks to be opened in one of this cloud computing python environments.
-
-When opening the direct links from within the notebook-rendering of the github, it is necessary to click with the right button, otherwise nothing will be opened.
+More information on the [Documentation of the Project on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
 
 ## License
 
