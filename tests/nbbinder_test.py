@@ -44,20 +44,31 @@ if __name__ == '__main__':
     print(f'# Changing to directory {os.path.dirname(__file__)}')
     os.chdir(os.path.dirname(__file__))
 
-    nb_filenames_1 = ['00.00-Front_Page.ipynb', 
-                      '00.01-Introduction.ipynb', 
-                      '01.00-The_Beginnings.ipynb',
-                      '01.01-Joyful_Years.ipynb',
-                      '01.02-First_Steps.ipynb',
-                      '01.03-Speaking_Out.ipynb',
-                      '02.00-Growing_Old.ipynb', 
-                      'BA.00-Bibliography.ipynb']
+    nb_alice = ["00.00-Alice's_Adventures_in_Wonderland.ipynb",
+                "01.00-Down_the_Rabbit-Hole.ipynb",
+    	        "02.00-The_Pool_of_Tears.ipynb",
+                "03.00-A_Caucus-Race_and_a_Long_Tale.ipynb",
+                "04.00-The_Rabbit_Sends_in_a_Little_Bill.ipynb",
+                "05.00-Advice_from_a_Caterpillar.ipynb",
+                "06.00-Pig_and_Pepper.ipynb",
+                "07.00-A_Mad_Tea-Party.ipynb",
+                "08.00-The_Queen's_Croquet-Ground.ipynb",
+                "09.00-The_Mock_Turtle's_Story.ipynb",
+                "10.00-The_Lobster_Quadrille.ipynb",
+                "11.00-Who_Stole_the_Tarts?.ipynb",
+                "12.00-Alice's_Evidence.ipynb"
+    ]
 
-    print(f"# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'test_dir_1')}...")
-    create_notebooks('test_dir_1', nb_filenames_1)
+    print(f"# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_alice')}...")
+    create_notebooks('nb_alice', nb_alice)
     print('... notebooks created')
-    print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'test_dir_2')}")
-    nbb.restructure('test_dir_1')
+    print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_alice')}")
+    nbb.restructure('nb_alice')
+
+    print("\n# Binding notebooks with config file 'nb_alice_config.yml'")
+    nbb.bind_from_configfile('nb_alice_config.yml')
+
+#    quit()
 
     nb_filenames_2 = ['00.00-Front_Page.ipynb',
                       '00.00i-Foreword.ipynb', 

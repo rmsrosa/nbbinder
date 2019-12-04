@@ -1,16 +1,20 @@
-# Documentation
+# Overview
 
 ## Description
 
-Generates a navigable book-like structure to a collection of Jupyter notebooks.
+NBBinder generates a navigable book-like structure to a collection of Jupyter notebooks.
 
-It enumerates a collection of notebooks, adds a Table of Contents to a given "Table of Contents" notebook file, and adds a header and top and bottom navigator cells to each notebook.
+It comprises methods that read a collection of Jupyter notebooks from a given directory and
+
+- add a **Table of Contents** to a selected notebook file, with links to the other notebooks;
+- add a **Header** to each notebook, with custom informations;
+- include, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms;
+- add, in the **header** and in the **footline** of each notebook, **navigator links**, to traverse  to the previous or the next notebook, and to other selected notebooks, such as the Table of Contents and the Bibliography;
+- **restructure** the notebooks, by automatically renaming the files, in case a new notebook is to be included in between already numbered notebooks.
 
 ## Indexed notebooks
 
-The code works on a collection of indexed notebooks in a directory and builds a Table of Contents out of the them, which is added to a specified file. It also adds a header and top and bottom navigator cells to each notebook.
-
-In order to be processed, the notebooks should start with an *index* which should be identified by a regular expression ending with a dash:
+In order to be processed, each notebook in the collection should start with an *index*, which is to be identified by a certain regular expression ending with a dash:
 
 > `index-notebookname.ipynb`.
 
@@ -18,8 +22,8 @@ The types of indices are the following:
 
 - `'dd-notebookname.ipynb'`, where `'d'` is any decimal from 0 to 9;
 - `'dd.dd-notebookname.ipynb'`, where `'d'` is as above;
-- `'AX.-notebookname.ipynb'`, where `'A'` is the uppercase letter `'A'` and `'X'` is any uppercase letter;
-- `'AX.dd-notebookname.ipynb'`, where the symbols are as above;
+- `'AX.-notebookname.ipynb'`, where `'A'` is the uppercase letter `'A'` and `'X'` is any uppercase letter, from `A` to `Z`;
+- `'AX.dd-notebookname.ipynb'`, where the keys are as above;
 - `'BX.-notebookname.ipynb'`, where `'B'` is the upper case letter `'B'` and `'X'` is as above; or
 - `'BX.dd-notebookname.ipynb'`, where the symbols are as above.
 
@@ -34,23 +38,25 @@ The Table of Contents and the navigators follow the lexicographical order, so `'
 
 For more information about the structure of a book, see [Parts of a Book Explained: Front Matter, Body, and Back Matter](https://blog.reedsy.com/front-matter-back-matter-book/).
 
-## Usage
+## Methods
 
-The two main functions in this module are
+The two main methods in this module are
+
 - `bind()`: adds the Table of Contents, header, and navigators from the data provided in the arguments.
 - `bind_from_configfile()`: adds the Table of Contents, header, and navigators from the data stored in a YAML configuration file given as argument.
 The latter function simply reads the parameters from the configuration file and passes them to the `bind()` function.
 
 The `bind()` function calls the following functions in this module, which take care of each of the three main features of the notebook binder:
+
 - `add_contents()`: adds the Table of Contents to a selected "Contents" file.
 - `add_headers()`: adds a header to each notebook with a given book info.
 - `add_navigators()`: adds navigation bars to the top and bottom of each notebook.
 
-Each of these later three functions can be called separately, if only one of the features is desired.
+Each of these later methods can be called separately, if only some of these features are desired.
 
 When running `nbbinder.py` as a script, it expects the filename of the configuration file and calls the function `bind_from_configfile(config_file)`, where config_file is the name of the configuration file.
 
-Look at the documentation for more information on each of these functions and for the other functions available on this package.
+Look at the documentation for more information on each of these methods and for the other methods available on this package.
 
 ## Example
 
@@ -97,7 +103,7 @@ When opening the direct links from within the notebook-rendering of the github, 
 
 See more examples in the `tests` directory:
 
-- There are five examples of configuration files in the `tests` subdirectory [config1.yml](tests/config1.yml), [config2.yml](tests/config2.yml), [config3.yml](tests/config3.yml), [config4.yml](tests/config4.yml), [config5.yml](tests/config5.yml). Have a look a them for examples of different configuration parameters.
+- There are five examples of configuration files in the `tests` subdirectory `config1.yml`, `config2.yml`, `config3.yml`, `config4.yml`, `config5.yml`. Have a look a them for examples of different configuration parameters.
 - To run one of the examples, go to `bash` terminal at the `tests` subdirectory and run
 ```bash
 ../nbbinder/nbbinder.py config1.yml
@@ -112,27 +118,3 @@ In the first examples, the script is ran from the directory `tests`, while the n
 directory:
   app_to_notes_path: notebooks
 ```
-
-## Requirements
-
-It uses the standard libraries
-
-- [re](https:/docs.python.org/3/library/re.html)
-- [os](https:/docs.python.org/3/library/os.html)
-- [itertools](https:/docs.python.org/3/library/itertools.html)
-- [sys](https:/docs.python.org/3/library/sys.html)
-
-Besides the libraries in the standard implementation, it requires the `nbformat` module, to interact with the jupyter notebooks, and the `yaml` package, to read `*.yml` configuration files:
-
-- [nbformat](https://pypi.org/project/nbformat/),
-- [pyyaml](https://pypi.org/project/PyYAML/).
-
-## Credits
-
-This package is based on the three modules present, in early 2018, in the subdirectory [`tools`](https://github.com/jakevdp/PythonDataScienceHandbook/tree/master/tools) of the [Python Data Science Handbook](https://github.com/jakevdp/PythonDataScienceHandbook), by [Jake VanderPlas](http://vanderplas.com/).
-
-## License
-
-The original work in [Python Data Science Handbook/tools](https://github.com/jakevdp/PythonDataScienceHandbook/tree/master/tools) is licensed by [Jake VanderPlas](http://vanderplas.com/) under the [MIT license](https://opensource.org/licenses/MIT).
-
-The current modifications in this package is now being license as well under the [MIT license](https://opensource.org/licenses/MIT). See the file [LICENSE](LICENSE).

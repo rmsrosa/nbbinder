@@ -1,0 +1,16 @@
+directory:
+  app_to_notes_path: nb_alice
+
+book:
+  toc_nb_name: 00.00-Alice's_Adventures_in_Wonderland.ipynb
+  show_full_entry_in_toc: True
+  header: "*[NBBinder test based on 'Alice's Adventures in Wonderland' chapter names](https://github.com/rmsrosa/nbbinder)*"
+  core_navigators: 
+    - 00.00-Alice's_Adventures_in_Wonderland.ipynb
+  user: rmsrosa
+  repository: nbbinder
+  branch: master
+  github_nb_dir: tests/nb_alice
+  show_colab: True
+  show_binder: True
+  show_full_entry_in_nav: False
