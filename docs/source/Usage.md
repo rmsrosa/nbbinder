@@ -20,7 +20,7 @@ and their names speak for themselves.
 
 The cell has to start with one of theses markers to be understood as the appropriate cell.
 
-The **header** cell is always the first one in the notebook, when present. 
+The **header** cell is always the first one in the notebook, when present.
 
 The **navigator** cells appear in two places in each notebook: as the last cell, for the bottom navigators, and as either the first or the second cell, depending on whether there is a **header** cell or not.
 
@@ -31,14 +31,16 @@ If the `nbbinder` script is ran again, it will look for the marker cells and rew
 ## Creating the Table of Contents
 
 The method to create, or update, the table of contents is called `add_contents()` and its definition starts with
+
 ```python
 def add_contents(toc_nb_name, app_to_notes_path='.',
                  show_full_entry_in_toc=True):
     ...
 ```
-The argument `toc_nb_name` is required and is the name of the jupyter notebook file in which the table of contents will be written. 
 
-The `app_to_notes_path` is a non-required argument with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative to where the code is being ran. If `app_to_notes_path` is not given, it is assumed to be the current directory. 
+The argument `toc_nb_name` is required and is the name of the jupyter notebook file in which the table of contents will be written.
+
+The `app_to_notes_path` is a non-required argument with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative to where the code is being ran. If `app_to_notes_path` is not given, it is assumed to be the current directory.
 
 The last variable, `show_full_entry_in_toc`, determines whether the entries in the *Table of Contents* should start with the chapter and section numbers or not. The default is `True`, but in some cases, such as when one wants to have **Lecture 1** displayed instead of **1. Lecture**, it is useful to have this option and set it to `False`.
 
@@ -60,10 +62,10 @@ The `app_to_notes_path` is a non-required argument with the name of the folder i
 The method to create, or update, the navigator cells is called `add_navigators()` and its definition starts with
 
 ```python
-def add_navigators(core_navigators=[], app_to_notes_path='.', 
-                   repository = '', branch = '', 
+def add_navigators(core_navigators=[], app_to_notes_path='.',
+                   repository = '', branch = '',
                    github_nb_dir = '',
-                   show_colab=False, show_binder=False, 
+                   show_colab=False, show_binder=False,
                    show_full_entry_in_nav=True):
     ...
 ```
@@ -74,7 +76,7 @@ Here is an explanation of the non-required arguments:
 
 - `core_navigators` is a list of strings, where each element is the filename of a Jupyter notebook that you want to appear in the navigator bar, in between the links to the *previous* and the *next* notebooks. This is useful for direct links to the **Table of Contents** and the **Bibliography**, for instance. If it is not provided, it is assumed to be an empty list, and nothing is showed in between the links for the *previous* and *next* notebooks.
 
-- `app_to_notes_path` is a non-required argument, with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative from where the code is being ran. If `app_to_notes_path` is not given, it is assumed to be the current directory. 
+- `app_to_notes_path` is a non-required argument, with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative from where the code is being ran. If `app_to_notes_path` is not given, it is assumed to be the current directory.
 
 - `repository` is the name of the github repository which the notebooks belong to, if they do belong to one. It defaults to a blank string.
 

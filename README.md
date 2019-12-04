@@ -26,7 +26,7 @@ book:
   toc_nb_name: 00.00-Alice's_Adventures_in_Wonderland.ipynb
   show_full_entry_in_toc: True
   header: "*[NBBinder test based on 'Alice's Adventures in Wonderland' chapter names](https://github.com/rmsrosa/nbbinder)*"
-  core_navigators: 
+  core_navigators:
     - 00.00-Alice's_Adventures_in_Wonderland.ipynb
   user: rmsrosa
   repository: nbbinder

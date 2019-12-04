@@ -105,10 +105,13 @@ See more examples in the `tests` directory:
 
 - There are five examples of configuration files in the `tests` subdirectory `config1.yml`, `config2.yml`, `config3.yml`, `config4.yml`, `config5.yml`. Have a look a them for examples of different configuration parameters.
 - To run one of the examples, go to `bash` terminal at the `tests` subdirectory and run
+
 ```bash
 ../nbbinder/nbbinder.py config1.yml
 ```
+
 or any of the other config files. This runs the `nbbinder.py` as a script.
+
 - An example of using `nbbinder` as a module is in `/tests/notebinder_test.py`
 - One can also use the module from inside a jupyter notebook. This is show in both collections of notebooks in the `notebooks` and `lectures` folders. This is, in fact, the most convenient way.
 
