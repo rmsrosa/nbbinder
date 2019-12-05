@@ -14,15 +14,13 @@ from context import nbbinder as nbb
 
 #REG = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|)(\*|)-(.*)\.ipynb') 
 
-TEST_DIR = 'nbbinder_test_dir'
+def create_notebooks(nb_dir, nb_filenames):
 
-def create_notebooks(test_dir, nb_filenames):
-
-    if os.path.isdir(test_dir):
-        for f in os.listdir(test_dir):
-            os.remove(os.path.join(test_dir,f))
+    if os.path.isdir(nb_dir):
+        for f in os.listdir(nb_dir):
+            os.remove(os.path.join(nb_dir,f))
     else:
-        os.mkdir(test_dir)
+        os.mkdir(nb_dir)
 
     for nb_filename in nb_filenames:
         nb = nbformat.v4.new_notebook()
@@ -37,26 +35,27 @@ def create_notebooks(test_dir, nb_filenames):
         else:
             text = "That's all for this Section"
         nb.cells.insert(1, new_markdown_cell(text))
-        nbformat.write(nb, os.path.join(test_dir, nb_filename))
+        nbformat.write(nb, os.path.join(nb_dir, nb_filename))
 
 if __name__ == '__main__':
 
     print(f'# Changing to directory {os.path.dirname(__file__)}')
     os.chdir(os.path.dirname(__file__))
 
-    nb_alice = ["00.00-Alice's_Adventures_in_Wonderland.ipynb",
-                "01.00-Down_the_Rabbit-Hole.ipynb",
-    	        "02.00-The_Pool_of_Tears.ipynb",
-                "03.00-A_Caucus-Race_and_a_Long_Tale.ipynb",
-                "04.00-The_Rabbit_Sends_in_a_Little_Bill.ipynb",
-                "05.00-Advice_from_a_Caterpillar.ipynb",
-                "06.00-Pig_and_Pepper.ipynb",
-                "07.00-A_Mad_Tea-Party.ipynb",
-                "08.00-The_Queen's_Croquet-Ground.ipynb",
-                "09.00-The_Mock_Turtle's_Story.ipynb",
-                "10.00-The_Lobster_Quadrille.ipynb",
-                "11.00-Who_Stole_the_Tarts?.ipynb",
-                "12.00-Alice's_Evidence.ipynb"
+    nb_alice = [
+        "00.00-Alice's_Adventures_in_Wonderland.ipynb",
+        "01.00-Down_the_Rabbit-Hole.ipynb",
+        "02.00-The_Pool_of_Tears.ipynb",
+        "03.00-A_Caucus-Race_and_a_Long_Tale.ipynb",
+        "04.00-The_Rabbit_Sends_in_a_Little_Bill.ipynb",
+        "05.00-Advice_from_a_Caterpillar.ipynb",
+        "06.00-Pig_and_Pepper.ipynb",
+        "07.00-A_Mad_Tea-Party.ipynb",
+        "08.00-The_Queen's_Croquet-Ground.ipynb",
+        "09.00-The_Mock_Turtle's_Story.ipynb",
+        "10.00-The_Lobster_Quadrille.ipynb",
+        "11.00-Who_Stole_the_Tarts?.ipynb",
+        "12.00-Alice's_Evidence.ipynb"
     ]
 
     print(f"# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_alice')}...")
@@ -68,67 +67,70 @@ if __name__ == '__main__':
     print("\n# Binding notebooks with config file 'config_nb_alice.yml'")
     nbb.bind_from_configfile('config_nb_alice.yml')
 
-    nb_filenames_2 = ['00.00-Front_Page.ipynb',
-                      '00.00i-Foreword.ipynb', 
-                      '00.00ii-Dedicatory.ipynb',
-                      '00.01-Introduction.ipynb', 
-                      '01.00-The_Beginnings.ipynb',
-                      '01.01-Joyful_Years.ipynb',
-                      '01.02-First_Steps.ipynb',
-                      '01.02i-A_Scary_Moment.ipynb',
-                      '01.02j-Back_to_Normal.ipynb',
-                      '01.03-Speaking_Out.ipynb',
-                      '01i.00-Growing_Up.ipynb',
-                      '01i.01-Out_in_the_Wild.ipynb',
-                      '01i.02-Calming_Down.ipynb',
-                      '01ii.00-Maturing.ipynb',
-                      '01ii.01-Building_a_Nest.ipynb',
-                      '01ii.02-History_Repeats_Itself.ipynb',
-                      '02.00-Growing_Old.ipynb',
-                      '02a.00-Melancholia.ipynb',
-                      '02b.00-Revival.ipynb',
-                      '02c.00-The_End.ipynb',
-                      'AA.00-Appendix_A.ipynb',
-                      'AAi.00-Appendix_B.ipynb',
-                      'AB.00-Appendix_C.ipynb',
-                      'BA.00-Bibliography.ipynb',
-                      'BAi.00-Index.ipynb']
+    nb_grammar = [
+        '00.00-Front_Page.ipynb',
+        '01.00-Introduction.ipynb',
+        '02.00-Project_Requirements.ipynb',
+        '03.00-The_History_of_Grammar.ipynb',
+        '04.00-Parts_of_Speech.ipynb',
+        '04.01-Nouns.ipynb',
+        '04.02-Verbs.ipynb',
+        '04.03-Adjectives.ipynb',
+        '04.04-Adverbs.ipynb',
+        '05.00-Sentences.ipynb',
+        '05.01-Complex_Sentences.ipynb',
+        '05.02-Compound_Sentences.ipynb',
+        '06.00-Paragraphs.ipynb',
+        '06.01-Descriptive.ipynb',
+        '06.02-Expository.ipynb',
+        '06.03-Narrative.ipynb',
+        '06.04-Persuasive.ipynb',
+        '07.00-Conclusion.ipynb',
+        'AA.00-Appendix.ipynb',
+        'BA.00-Glossary.ipynb',
+        'BB.00-Bibliography.ipynb',
+        'BA.00-Index.ipynb'
+    ]
 
-    print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'test_dir_2')}")
-    create_notebooks('test_dir_2', nb_filenames_2)
-    print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'test_dir_2')}")
-    nbb.restructure('test_dir_2')
+    print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar')}")
+    create_notebooks('nb_grammar', nb_grammar)
+    print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar')}")
+    nbb.restructure('nb_grammar')
 
-    nb_filenames_3 = ['00.00-Front_Page.ipynb',
-                      '00.01-Introduction.ipynb', 
-                      '01.00-The_Beginnings.ipynb',
-                      '01.01-Joyful_Years.ipynb',
-                      '01.02-First_Steps.ipynb',
-                      '01.02i-A_Scary_Moment.ipynb',
-                      '01.02i-A_Scary_Moment_Alternative.ipynb',
-                      '01.02j-Back_to_Normal.ipynb',
-                      '01.03-Speaking_Out.ipynb',
-                      '01i.00-Growing_Up.ipynb',
-                      '01i.01-Out_in_the_Wild.ipynb',
-                      '01i.01-Out_in_the_Wild_Alternative.ipynb',
-                      '01i.02-Calming_Down.ipynb',
-                      '02.00-Growing_Old.ipynb',
-                      '02a.00-The_End.ipynb',
-                      'AA.00-Appendix.ipynb',
-                      'AAi.00-Appendix.ipynb',
-                      'AB.00-Appendix.ipynb',
-                      'BA.00-Bibliography.ipynb',
-                      'BAi.00-Index.ipynb']
+    print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')}")
+    create_notebooks('nb_grammar_bound', nb_grammar)
+    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')}")
+    nbb.bind_from_configfile('config_nb_grammar.yml')
 
-    print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'test_dir_3')}")
-    create_notebooks('test_dir_3', nb_filenames_3)
-    print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'test_dir_3')}")    
-    nbb.restructure('test_dir_3')
+    nb_grammar_missing = [
+        '00.00-Front_Page.ipynb',
+        '01.00-Introduction.ipynb',
+        '01a.00-Project_Requirements.ipynb',
+        '01b.00-The_History_of_Grammar.ipynb',
+        '02.00-Parts_of_Speech.ipynb',
+        '04.01-Nouns.ipynb',
+        '04.01i-Verbs.ipynb',
+        '04.02j-Adjectives.ipynb',
+        '04.03-Adverbs.ipynb',
+        '05.00-Sentences.ipynb',
+        '05.00i-Complex_Sentences.ipynb',
+        '05.01-Compound_Sentences.ipynb',
+        '06.00-Paragraphs.ipynb',
+        '06.01-Descriptive.ipynb',
+        '06.01i-Expository.ipynb',
+        '06.02ii-Narrative.ipynb',
+        '06.04-Persuasive.ipynb',
+        '07.00-Conclusion.ipynb',
+        'AA.00-Appendix.ipynb',
+        'BA.00-Glossary.ipynb',
+        'BBi.00-Bibliography.ipynb',
+        'BB.00-Index.ipynb'
+    ]
 
-    print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'test_dir_2_bound')}")
-    create_notebooks('test_dir_2_bound', nb_filenames_2)
-    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'test_dir_2_bound')}")
-    nbb.bind_from_configfile('config_test_dir_2_bound.yml')
+    print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_missing')}")
+    create_notebooks('nb_grammar_missing', nb_grammar_missing)
+    print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_missing')}")    
+    nbb.restructure('nb_grammar_missing')
 
     print("\n# Binding notebooks with config file 'config1.yml'")
     nbb.bind_from_configfile('config1.yml')
