@@ -117,12 +117,12 @@ The method to create, or update, all the three elements (**Table of Contents**, 
 
 ```python
 def bind(toc_nb_name, header, core_navigators,
-         app_to_notes_path='.', 
+         app_to_notes_path='.',
          restructure_notebooks=False,
-         user='', repository='', branch='', 
+         user='', repository='', branch='',
          github_nb_dir='',
          github_io_slides_dir='',
-         show_colab=False, show_binder=False, 
+         show_colab=False, show_binder=False,
          show_slides=False,
          show_full_entry_in_toc=True,
          show_full_entry_in_nav=True):
@@ -160,13 +160,11 @@ The order of the main keys is not important. The module takes care of them regar
 - If `directory` is present, its value is send to the variable `app_to_notes_path`.
 - If `restructure_notebooks` is present, the method `restructure()` is executed.
 - If `book` is present, the method `bind()` is executed, with the parameters given in this key.
-- If `book` is not present, the other methods are executed, depending on whether the corresponding key is present, and in the following order: 
-    - `restructure()`;
-    - `add_contents()`; 
-    - `add_headers()`; and 
-    - `add_navigators()`.
-- If neither `book`, nor `header` is present, a method is called to remove any header that was possibly added in a previous execution of the module.
-- If neither `book`, nor `navigator` is present, a method is called to remove any navigator cell that was possibly added in a previous execution of the module.
+- If `book` is not present, the other methods are executed, depending on whether the corresponding key is present, and in the following order:
+  - `add_contents()`;
+  - `add_headers()`; and
+  - `add_navigators()`.
+- Before either the `bind()` method or the separate `add_contents()`, `add_headers()`, and `add_navigators()` are executed, two methods are called to remove any header and navigator that might have been included in previous execution of the module.
 
 The key `directory` is not directly related to the configuration of the book-structure itself. It simply expects the configuration of the `app_to_notes_path`, so the script, module, or some specific functions within the module know where to find the notebooks.
 
