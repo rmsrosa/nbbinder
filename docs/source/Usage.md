@@ -28,6 +28,19 @@ The **Table of Contents** cell can vary in position. It can be given a priori at
 
 If the `nbbinder` script is ran again, it will look for the marker cells and rewrite them with the updated information, removing any previous data.
 
+## Restructuring the collection of notebooks
+
+The method to insert a notebook in between other index notebooks is called `restructure()` and its definitiion starts with
+
+```python
+def restructure(app_to_notes_path='.'):
+    ...
+```
+
+The `app_to_notes_path` is a non-required argument with the name of the folder in which the collection of notebooks is expected to be. It should be either an absolute path or a path relative to the current path in the script calling the method. If `app_to_notes_path` is not given, it is assumed to be the current directory.
+
+This method reads all the Jupyter notebooks in the directory `app_to_notes_path` and look for those matching a regular expression indicating that the notebook is to be inserted in the collection.
+
 ## Creating the Table of Contents
 
 The method to create, or update, the table of contents is called `add_contents()` and its definition starts with
@@ -63,9 +76,11 @@ The method to create, or update, the navigator cells is called `add_navigators()
 
 ```python
 def add_navigators(core_navigators=[], app_to_notes_path='.',
-                   repository = '', branch = '',
+                   user = '', repository = '', branch = '',
                    github_nb_dir = '',
+                   github_io_slides_dir = '',
                    show_colab=False, show_binder=False,
+                   show_slides=False,
                    show_full_entry_in_nav=True):
     ...
 ```
@@ -78,11 +93,15 @@ Here is an explanation of the non-required arguments:
 
 - `app_to_notes_path` is a non-required argument, with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative from where the code is being ran. If `app_to_notes_path` is not given, it is assumed to be the current directory.
 
+- `user` is the username of the owner of the github repository which the notebooks belong to, if they do belong to one. It defaults to a blank string.
+
 - `repository` is the name of the github repository which the notebooks belong to, if they do belong to one. It defaults to a blank string.
 
 - `branch` is the name of the associated branch in the github repository. It defaults to a blank string.
 
 - `github_nb_dir` is the path to the notebooks from the root directory of the github repository.
+
+- `github_io_slides_dir` is the directory in the `user.github.io` where the slides associated to the notebooks reside, if they exist. It defaults to a blank string.
 
 - `show_colab` is a `boolean` argument informing the method whether to display the badge with the link to open up the notebook in [Google Colab](https://colab.research.google.com/notebooks/welcome.ipynb) environment in the "cloud". This works if the notebooks are in a github repository. It defaults to `False`.
 
@@ -98,16 +117,20 @@ The method to create, or update, all the three elements (**Table of Contents**, 
 
 ```python
 def bind(toc_nb_name, header, core_navigators,
-         app_to_notes_path='.', repository='', branch='',
-         github_nb_dir ='',
-         show_colab=False, show_binder=False,
+         app_to_notes_path='.', restructure_flag=False,
+         user='', repository='', branch='', 
+         github_nb_dir='',
+         github_io_slides_dir='',
+         show_colab=False, show_binder=False, 
+         show_slides=False,
          show_full_entry_in_toc=True,
          show_full_entry_in_nav=True):
     ...
 ```
 
-This method simply calls the previous three methods, in the following order:
+This method simply calls the previous four methods, in the following order:
 
+- `restructure(...)`
 - `add_contents(...)`
 - `add_headers(...)`
 - `add_navigators(...)`
@@ -123,6 +146,7 @@ The configuration file is expected to be in the [YAML](https://en.wikipedia.org/
 The method `bind_from_configfile(config_file)` expects the `config_file` to be parsed to a python dictionary with one or more of the following keys:
 
 - `directory`
+- `restructure`
 - `book`
 - `contents`
 - `header`
@@ -132,10 +156,12 @@ The value of each key is another dictionary, containing the parameters for the a
 
 The order of the main keys is not important. The module takes care of them regardless. There are some rules to follow:
 
-- If `book` is present, only the method `bind()` is executed, with the parameters given in this key.
+- If `directory` is present, its value is send to the variable `app_to_notes_path`.
+- If `restructure` is present, the method `restructure()` is executed.
+- If `book` is present, the method `bind()` is executed, with the parameters given in this key.
 - If `book` is not present, the other methods are executed, depending on whether the corresponding key is present, and in the following order: `add_contents()`, `add_headers()`, and `add_navigators()`.
-- If neither `makebook`, nor `header` is present, a method is called to remove any header that was possibly added in a previous execution of the module.
-- If neither `makebook`, nor `navigator` is present, a method is called to remove any navigator cell that was possibly added in a previous execution of the module.
+- If neither `book`, nor `header` is present, a method is called to remove any header that was possibly added in a previous execution of the module.
+- If neither `book`, nor `navigator` is present, a method is called to remove any navigator cell that was possibly added in a previous execution of the module.
 
 The key `directory` is not directly related to the configuration of the book-structure itself. It simply expects the configuration of the `app_to_notes_path`, so the script, module, or some specific functions within the module know where to find the notebooks.
 

@@ -127,7 +127,7 @@ def restructure(app_to_notes_path='.'):
 #                    print('nbfiles_new[k]:', nbfiles_new[k])
 
     if nbfiles == nbfiles_new:
-        print('- no files need renaming, no reestructuring needed')
+        print('- no files need renaming, no restructuring needed')
     else:
         count = 0
         for f, f_new in zip(nbfiles, nbfiles_new):
@@ -442,14 +442,17 @@ def add_navigators(core_navigators=[], app_to_notes_path='.',
         nbformat.write(nb, nb_file)
 
 def bind(toc_nb_name, header, core_navigators,
-         app_to_notes_path='.', user='',
-         repository='', branch='', 
+         app_to_notes_path='.', restructure_flag=False,
+         user='', repository='', branch='', 
          github_nb_dir='',
          github_io_slides_dir='',
          show_colab=False, show_binder=False, 
          show_slides=False,
          show_full_entry_in_toc=True,
          show_full_entry_in_nav=True):
+
+    if restructure_flag:
+        restructure(app_to_notes_path)
 
     add_contents(toc_nb_name=toc_nb_name, 
                  app_to_notes_path=app_to_notes_path,
@@ -477,14 +480,14 @@ def bind_from_configfile(config_file):
     else:
         app_to_notes_path = '.'
 
-    if 'restructure' in config:
-        if config['restructure']:
-            restructure(app_to_notes_path)
-
     if 'book' in config:
         bind(**config['book'], 
              app_to_notes_path=app_to_notes_path)
     else:
+        if 'restructure' in config:
+            if config['restructure']['restructure_flag']:
+                restructure(app_to_notes_path)
+
         if 'contents' in config:
             add_contents(**config['contents'], 
                 app_to_notes_path=app_to_notes_path)

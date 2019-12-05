@@ -25,7 +25,7 @@ directory:
 book:
   toc_nb_name: 00.00-Alice's_Adventures_in_Wonderland.ipynb
   show_full_entry_in_toc: True
-  header: "*[NBBinder test based on 'Alice's Adventures in Wonderland' chapter names](https://github.com/rmsrosa/nbbinder)*"
+  header: "[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)*"
   core_navigators:
     - 00.00-Alice's_Adventures_in_Wonderland.ipynb
   user: rmsrosa
@@ -72,7 +72,7 @@ Suppose we run the `nbb.bind('config.yml')`, with the above configuration file, 
 
 We may have a glimpse of the result looking at a printscreen of the updated `00.00-Alice's_Adventures_in_Wonderland.ipynb`, with the table of contents, the header, and the footline:
 
-![00.00-Alice's_Adventures_in_Wonderland.ipynb print screen](tests/nb_alice_toc.jpg)
+![00.00-Alice's_Adventures_in_Wonderland.ipynb print screen](tests/nb_alice_toc.png)
 
 More information on the [Documentation of the Project on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
 

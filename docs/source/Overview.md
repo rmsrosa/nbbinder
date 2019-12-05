@@ -12,13 +12,13 @@ It comprises methods that read a collection of Jupyter notebooks from a given di
 - include, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com);
 - **restructure** the notebooks, by automatically renaming the files, in case a new notebook is to be inserted in between other notebooks.
 
-## Indexed notebooks
+## Notebooks
 
 In order to be processed, each notebook in the collection should start with an *index*, which is to be identified by a certain regular expression ending with a dash:
 
 > `index-notebookname.ipynb`.
 
-The types of indices are the following:
+The main types of indices are the following:
 
 - `'dd-notebookname.ipynb'`, where `'d'` is any decimal from 0 to 9;
 - `'dd.dd-notebookname.ipynb'`, where `'d'` is as above;
@@ -27,7 +27,7 @@ The types of indices are the following:
 - `'BX.-notebookname.ipynb'`, where `'B'` is the upper case letter `'B'` and `'X'` is as above; or
 - `'BX.dd-notebookname.ipynb'`, where the symbols are as above.
 
-The filenames go through a regular expressions matching operator and three groups are extracted from them, as separated by the first two dots.
+The filenames go through a regular expressions matching operator and specific groups are extracted from them, as separated by the first two dots.
 
 - When the first group is `'00'`, the notebook appears in the beginning and is not numbered. It is for the **Front Matter**, e.g *Cover page*, *Copyright page*, *Dedication page*, *Epigraph*, *Table of Contents*, *Foreword*, *Preface*, *Acknowlegdments*, and so on.
 - When the first group is from `'10'` to `'99'`, it is for the **Body** of the book, with the first group representing the chapter number and the second group, the section number. Except when the second group is either the empty string '' or `'00'`, in which cases there is no section number. These are useful for defining a *Part* of the book and an introduction to the chapter, respectively. Notice that the empty string '' comes before `'00'`.
@@ -35,6 +35,12 @@ The filenames go through a regular expressions matching operator and three group
 - When the first group starts with `'B'`, the notebook appears at the end and is not numbered. It is for the non-numbered part of the **Back Matter**, such as  *Endnotes*, *Copyright permissions*, *Glossary*, *Bibliography*, *Index*, and so on.
 
 The Table of Contents and the navigators follow the lexicographical order, so `''` < `'dd'` < `'AX'` < `'BX'`, for instance.
+
+Two further types of indices are used when it is desired to insert a notebook in between other notebooks. In this case, there are two more groups read by the regular expression, one before the first dot and the second before the dash. For instance,
+
+- `'dd.dda-notebookname.ipynb'`, where `'a'` is one or more lower case characters. They indicate that this notebook should be renamed as `'dd.dd-notebookname.ipynb'`, and, if there is already a notebook with this index, then its section number, along with the section number of subsequent notebooks, should be increased by one.
+- `'dda.dd-notebookname.ipynb'`, where `'a'` is as above, and has a similar effect, but this time for the chapter number.
+- Similarly for `'AXa...'` and `'BXa...'`.
 
 For more information about the structure of a book, see [Parts of a Book Explained: Front Matter, Body, and Back Matter](https://blog.reedsy.com/front-matter-back-matter-book/).
 
@@ -46,7 +52,7 @@ The two main methods in this module are
 - `bind_from_configfile()`: adds the Table of Contents, header, and navigators from the data stored in a YAML configuration file given as argument.
 The latter function simply reads the parameters from the configuration file and passes them to the `bind()` function.
 
-The `bind()` function calls the following functions in this module, which take care of each of the three main features of the notebook binder:
+The `bind()` function calls the following functions in this module, which take care of each of the main features of the notebook binder:
 
 - `restructure()`: reorder the notebooks when a new notebook is to be inserted between others;
 - `add_contents()`: adds the Table of Contents to a selected "Contents" file;
@@ -66,7 +72,7 @@ The most convenient way to use the module, or script, is via a configuration fil
 ```yaml
 book:
   toc_nb_name: 00.00-Front_Page.ipynb
-  header: "*[Header for the notebooks in the nbbinder module](https://github.com/rmsrosa/nbbinder)*"
+  header: "[*Header for the notebooks in the nbbinder module*](https://github.com/rmsrosa/nbbinder)"
   core_navigators:
     - 00.00-Front_Page.ipynb
     - BA.00-References.ipynb
