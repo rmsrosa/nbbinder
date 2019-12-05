@@ -1,8 +1,7 @@
 directory:
   app_to_notes_path: test_dir_2_bound
 
-restructure: 
-  restructure_flag: True
+restructure_notebooks: True
 
 contents:
   toc_nb_name: 00.00-Front_Page.ipynb

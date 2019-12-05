@@ -1,6 +1,6 @@
 # NBBinder - Jupyter Notebook Binder
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rmsrosa/nbbinder/NBBinder_Test) ![readthedocs badge](https://readthedocs.org/projects/nbbinder/badge/) ![GitHub repo size](https://img.shields.io/github/repo-size/rmsrosa/nbbinder)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rmsrosa/nbbinder/NBBinder_Test) ![readthedocs badge](https://readthedocs.org/projects/nbbinder/badge/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub repo size](https://img.shields.io/github/repo-size/rmsrosa/nbbinder)
 
 NBBinder generates a navigable book-like structure to a collection of Jupyter notebooks.
 
@@ -9,7 +9,7 @@ NBBinder generates a navigable book-like structure to a collection of Jupyter no
 This package comprises methods that read a collection of Jupyter notebooks from a given directory and
 
 - add a **Table of Contents** to a selected notebook file, with links to the other notebooks;
-- add a **Header** to each notebook, with custom informations;
+- add a **header** to each notebook, with custom informations;
 - add, in the **header** and in the **footline** of each notebook, **navigator links**, to traverse  to the previous or the next notebook, and to other selected notebooks, such as the Table of Contents and the Bibliography;
 - include, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com);
 - **restructure** the notebooks, by automatically renaming the files, in case a new notebook is to be inserted in between other notebooks.

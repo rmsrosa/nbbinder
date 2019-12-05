@@ -442,7 +442,8 @@ def add_navigators(core_navigators=[], app_to_notes_path='.',
         nbformat.write(nb, nb_file)
 
 def bind(toc_nb_name, header, core_navigators,
-         app_to_notes_path='.', restructure_flag=False,
+         app_to_notes_path='.', 
+         restructure_notebooks=False,
          user='', repository='', branch='', 
          github_nb_dir='',
          github_io_slides_dir='',
@@ -451,7 +452,7 @@ def bind(toc_nb_name, header, core_navigators,
          show_full_entry_in_toc=True,
          show_full_entry_in_nav=True):
 
-    if restructure_flag:
+    if restructure_notebooks:
         restructure(app_to_notes_path)
 
     add_contents(toc_nb_name=toc_nb_name, 
@@ -484,8 +485,8 @@ def bind_from_configfile(config_file):
         bind(**config['book'], 
              app_to_notes_path=app_to_notes_path)
     else:
-        if 'restructure' in config:
-            if config['restructure']['restructure_flag']:
+        if 'restructure_notebooks' in config:
+            if config['restructure_notebooks']:
                 restructure(app_to_notes_path)
 
         if 'contents' in config:
