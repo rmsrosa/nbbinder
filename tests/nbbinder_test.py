@@ -103,10 +103,10 @@ if __name__ == '__main__':
     nbb.bind_from_configfile('config_nb_grammar.yml')
 
     print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar_no_header.yml'")
-    nbb.bind_from_configfile('config_nb_grammar_no_header.yml')
+    nbb.bind_from_configfile('config_nb_grammar_book.yml')
 
     print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar_book.yml'")
-    nbb.bind_from_configfile('config_nb_grammar_book.yml')
+    nbb.bind_from_configfile('config_nb_grammar_no_header.yml')
 
     print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'nbb.bind()'")
     nbb.bind(toc_nb_name='00.00-Front_Page.ipynb',

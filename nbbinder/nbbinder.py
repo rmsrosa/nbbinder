@@ -455,6 +455,9 @@ def bind(toc_nb_name, header, core_navigators,
     if restructure_notebooks:
         restructure(app_to_notes_path)
 
+    remove_marker_cell(HEADER_MARKER, app_to_notes_path)
+    remove_marker_cell(NAVIGATOR_MARKER, app_to_notes_path)
+
     add_contents(toc_nb_name=toc_nb_name, 
                  app_to_notes_path=app_to_notes_path,
                  show_full_entry_in_toc=show_full_entry_in_toc)
@@ -481,14 +484,17 @@ def bind_from_configfile(config_file):
     else:
         app_to_notes_path = '.'
 
+    if 'restructure_notebooks' in config:
+        if config['restructure_notebooks']:
+            restructure(app_to_notes_path)
+
+    remove_marker_cell(HEADER_MARKER, app_to_notes_path)
+    remove_marker_cell(NAVIGATOR_MARKER, app_to_notes_path)
+
     if 'book' in config:
         bind(**config['book'], 
              app_to_notes_path=app_to_notes_path)
     else:
-        if 'restructure_notebooks' in config:
-            if config['restructure_notebooks']:
-                restructure(app_to_notes_path)
-
         if 'contents' in config:
             add_contents(**config['contents'], 
                 app_to_notes_path=app_to_notes_path)
@@ -496,14 +502,10 @@ def bind_from_configfile(config_file):
         if 'header' in config:
             add_headers(**config['header'], 
                 app_to_notes_path=app_to_notes_path)
-        else:
-            remove_marker_cell(HEADER_MARKER, app_to_notes_path)
 
         if 'navigator' in config:
             add_navigators(**config['navigator'], 
                 app_to_notes_path=app_to_notes_path)
-        else:
-            remove_marker_cell(NAVIGATOR_MARKER, app_to_notes_path)
 
 if __name__ == '__main__':
     if len(sys.argv) == 1 or sys.argv[1] == '--help' or sys.argv[1] == '-h':
