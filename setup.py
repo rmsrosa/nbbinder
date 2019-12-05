@@ -24,10 +24,14 @@ setuptools.setup(
     version=get_version(),
     author='Ricardo M. S. Rosa',
     author_email='rmsrosa@gmail.com',
-    description='Adds navigable book-like structure to a collection of jupyter notebooks',
+    description='Generates a navigable book-like structure to a collection of jupyter notebooks',
     long_description=open('README.md', 'r').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/rmsrosa/nbbinder',
+    project_urls={
+        "Documentation": "https://nbbinder.readthedocs.io/",
+        "Source Code": "https://github.com/rmsrosa/nbbinder/nbbinder",
+    },
     packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
