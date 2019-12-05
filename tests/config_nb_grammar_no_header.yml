@@ -1,12 +1,11 @@
 directory:
-  app_to_notes_path: notebooks
+  app_to_notes_path: nb_grammar_bound
 
 contents:
   toc_nb_name: 00.00-Front_Page.ipynb
-
-header:
-  header: "*Test 2 for the nbbinder module*"
+  show_full_entry_in_toc: True
 
 navigator:
   core_navigators: 
     - 00.00-Front_Page.ipynb
+  show_full_entry_in_nav: False

@@ -99,8 +99,23 @@ if __name__ == '__main__':
 
     print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')}")
     create_notebooks('nb_grammar_bound', nb_grammar)
-    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')}")
+    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar.yml'")
     nbb.bind_from_configfile('config_nb_grammar.yml')
+
+    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar_no_header.yml'")
+    nbb.bind_from_configfile('config_nb_grammar_no_header.yml')
+
+    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar_book.yml'")
+    nbb.bind_from_configfile('config_nb_grammar_book.yml')
+
+    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'nbb.bind()'")
+    nbb.bind(toc_nb_name='00.00-Front_Page.ipynb',
+            show_full_entry_in_toc=True,
+            header="[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)",
+            core_navigators=['00.00-Front_Page.ipynb', 
+            'BB.00-Bibliography.ipynb'],                  
+            app_to_notes_path='nb_grammar_bound',
+            show_full_entry_in_nav=False)
 
     nb_grammar_missing = [
         '00.00-Front_Page.ipynb',
@@ -131,26 +146,3 @@ if __name__ == '__main__':
     create_notebooks('nb_grammar_missing', nb_grammar_missing)
     print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_missing')}")    
     nbb.restructure('nb_grammar_missing')
-
-    print("\n# Binding notebooks with config file 'config1.yml'")
-    nbb.bind_from_configfile('config1.yml')
-
-    print("\n# Binding notebooks with config file 'config2.yml'")
-    nbb.bind_from_configfile('config2.yml')
-
-    print("\n# Binding notebooks with config file 'config3.yml'")
-    nbb.bind_from_configfile('config3.yml')
-
-    print("\n# Binding notebooks with config file 'config4.yml'")
-    nbb.bind_from_configfile('config4.yml')
-
-    print("\n# Binding notebooks with config file 'config5.yml'")
-    nbb.bind_from_configfile('config5.yml')
-
-    print("\n# Binding notebooks with 'nbb.bind()'")
-    nbb.bind(toc_nb_name = '00.00-Front_Page.ipynb',
-            header = 'Test 3 for the nbbinder module',
-            core_navigators=['00.00-Front_Page.ipynb', 
-            'BA.00-References.ipynb'],                  
-            app_to_notes_path='notebooks',
-            show_full_entry_in_nav=True)

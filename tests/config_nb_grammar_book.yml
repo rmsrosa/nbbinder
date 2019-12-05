@@ -1,22 +1,11 @@
 directory:
   app_to_notes_path: nb_grammar_bound
 
-restructure_notebooks: True
-
-contents:
+book:
   toc_nb_name: 00.00-Front_Page.ipynb
   show_full_entry_in_toc: True
-
-header:
   header: "[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)"
-
-navigator:
   core_navigators: 
     - 00.00-Front_Page.ipynb
-  user: rmsrosa
-  repository: nbbinder
-  branch: master
-  github_nb_dir: tests/nb_grammar_bound
-  show_colab: True
-  show_binder: True
-  show_full_entry_in_nav: False
+    - BB.00-Bibliography.ipynb
+  show_full_entry_in_nav: False    
