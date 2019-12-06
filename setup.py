@@ -10,7 +10,7 @@ import setuptools
 def get_version():
     # Regular expression to capture version number
     # Tested in https://regexr.com/
-    REG_VERSION = re.compile(r'\b(__version__\s*=\s*[\'"])([.0-9]*)(["\'])')
+    REG_VERSION = re.compile(r'\b(__version__\s*=\s*[\'"])([0-9]+[.][0-9]+(a|b|)[0-9]*)(["\'])')
 
     basedir = os.path.dirname(__file__)
     with open(os.path.join(basedir, 'nbbinder/nbbinder.py')) as f:
@@ -32,7 +32,7 @@ setuptools.setup(
         "Documentation": "https://nbbinder.readthedocs.io/",
         "Source Code": "https://github.com/rmsrosa/nbbinder/nbbinder",
     },
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(), # just nbbinder
     classifiers=[
         'Programming Language :: Python :: 3',
         'Development Status :: 4 - Beta',

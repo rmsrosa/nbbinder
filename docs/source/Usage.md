@@ -172,119 +172,71 @@ See the next section for examples of configuration files.
 
 ## Example of a configuration file
 
-Here is the configuration file used for this specific set of lecture notes.
+Here is the configuration file `config_nb_alice.yml` used for testing the package and available in the subdirectory `tests` of the root directory..
 
 ```yaml
+directory:
+  app_to_notes_path: nb_alice
+
 book:
-  toc_nb_name: 00.00-Front_Page.ipynb
-  header: "*Header for the set of lecture notes in the nbbinder module*"
+  toc_nb_name: 00.00-Alice's_Adventures_in_Wonderland.ipynb
+  show_full_entry_in_toc: True
+  header: "[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)*"
   core_navigators:
-    - 00.00-Front_Page.ipynb
-  repository: rmsrosa/nbbinder
+    - 00.00-Alice's_Adventures_in_Wonderland.ipynb
+  user: rmsrosa
+  repository: nbbinder
   branch: master
-  github_nb_dir: tests/lectures
+  github_nb_dir: tests/nb_alice
+  show_colab: True
   show_binder: True
-  show_full_entry_in_toc: False
   show_full_entry_in_nav: False
 ```
 
 ## Running via a configuration file
 
-Here we illustrate how we can build the book structure directly from a jupyter notebook.
+The most convenient way to use the module, or script, is via a configuration file. For instance, consider the configuration file `config_nb_alice.yml` given above.
 
-This notebook is an indexed notebook, made to appear in the Table of Contents included in the [Front Page](00.00-Front_Page.ipynb). But it also alters the notebook itself, when adding or updating the header and the navigatores. This creates a conflict with the jupyter editor.
-
-Hence, the best way is to have a non-indexed jupyter notebook which passes a configuration file to the `nbbinder` package. Being non-indexed, the notebook is not altered and there is no conflict with the jupyter editor. The notebook [Bind Notes](Bind_Notes.ipynb) accomplishes this goal.
-
-Anyway, let us also execute the binder from here and see the conflict.
-
-```python
-import nbbinder as nbb
-```
-
-If it is not, and assuming this set of notebooks is two subdirectories down in the `nbbinder` package, with the structure
-
-jupyternotebook/
-    |
-    |- jupyternotebook/
-    |
-    |- tests/
-        |
-        |- notebooks/
-        |
-        |- config1.yml
-        |- :
-        |- config5.yml
-
-then we may import it with
-
-```python
-import os
-import sys
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), '..','..')))
-
-import nbbinder as nbb
-```
-
-Then, considering that the configuration files are one folder up, we change the current directory there with
-
-```python
-os.chdir('..')
-os.getcwd()
-```
+Suppose the notebooks are in a subsubdirectory named `nb_alice`, as indicated by the key `app_to_notes_path`, in the configuration file. The indexed notebooks are the following:
 
 ```bash
-    /Users/rrosa/Documents/github_repositories
+00.00-Alice's_Adventures_in_Wonderland.ipynb
+01.00-Down_the_Rabbit-Hole.ipynb
+02.00-The_Pool_of_Tears.ipynb
+03.00-A_Caucus-Race_and_a_Long_Tale.ipynb
+04.00-The_Rabbit_Sends_in_a_Little_Bill.ipynb
+05.00-Advice_from_a_Caterpillar.ipynb
+06.00-Pig_and_Pepper.ipynb
+07.00-A_Mad_Tea-Party.ipynb
+08.00-The_Queen's_Croquet-Ground.ipynb
+09.00-The_Mock_Turtle's_Story.ipynb
+10.00-The_Lobster_Quadrille.ipynb
+11.00-Who_Stole_the_Tarts?.ipynb
+12.00-Alice's_Evidence.ipynb
 ```
 
-Then we create the book-like structure using one of the configuration files, say `config3.yml`.
+Then, we import the module (in the folder `tests` and use the `bind()` method with this configuration file as argument:
 
 ```python
-nbb.bind_from_configfile('config3.yml')
+import nbbinder as nbb
+nbb.bind('config_nb_alice.yml')
 ```
 
-```txt
-    - Table of contents updated in 00.00-Front_Page.ipynb
-    - updating header for 00.00-Front_Page.ipynb
-    - updating header for 00.01-Preface.ipynb
-    - updating header for 00.90-Introduction.ipynb
-    - updating header for 01.00-Methods_and_parameters.ipynb
-    - updating header for 01.01-Cell_markers.ipynb
-    - updating header for 01.02-Toc_creation.ipynb
-    - updating header for 01.03-Header_creation.ipynb
-    - updating header for 01.04-Navigator_creation.ipynb
-    - updating header for 01.05-Book_creation.ipynb
-    - updating header for 01.06-Configs_for_creation.ipynb
-    - updating header for 01.07-Example_configs.ipynb
-    - updating header for 02.00-Run_as_Module.ipynb
-    - updating header for 02.01-Run_with_config.ipynb
-    - updating header for 02.02-Run_with_arguments.ipynb
-    - updating header for 03.00-Run_as_Script.ipynb
-    - updating header for BA.00-References.ipynb
-    - updating navbar for 00.00-Front_Page.ipynb
-    - updating navbar for 00.01-Preface.ipynb
-    - updating navbar for 00.90-Introduction.ipynb
-    - updating navbar for 01.00-Methods_and_parameters.ipynb
-    - updating navbar for 01.01-Cell_markers.ipynb
-    - updating navbar for 01.02-Toc_creation.ipynb
-    - updating navbar for 01.03-Header_creation.ipynb
-    - updating navbar for 01.04-Navigator_creation.ipynb
-    - updating navbar for 01.05-Book_creation.ipynb
-    - updating navbar for 01.06-Configs_for_creation.ipynb
-    - updating navbar for 01.07-Example_configs.ipynb
-    - updating navbar for 02.00-Run_as_Module.ipynb
-    - updating navbar for 02.01-Run_with_config.ipynb
-    - updating navbar for 02.02-Run_with_arguments.ipynb
-    - updating navbar for 03.00-Run_as_Script.ipynb
-    - updating navbar for BA.00-References.ipynb
+Or we execute it as a script in the command line:
+
+```bash
+./nbbinder.py config_nb_alice.yml
 ```
 
-Once you do that, you need to either close the tab and reopen the notebook or click on `File > Reload Notebook from Disk`, in the top menu bar, in order to see the changes.
+We may have a glimpse of the result looking at a printscreen of the updated `00.00-Alice's_Adventures_in_Wonderland.ipynb`, with the table of contents, the header, and the footline:
 
-## Bind the Lecture Notes from a Non-Indexed notebook
+![00.00-Alice's_Adventures_in_Wonderland.ipynb print screen](nb_alice_toc.png)
 
-If the `nbbinder` package is installed in the environment, just import it with as usual, otherwise, it is assumed this set of notebooks is two subdirectories down in the `nbbinder` package, so it can be imported with a relative path:
+## Bind notebooks from a non-indexed notebook
+
+We may also run `nbbinder` directly from a Jupyter notebook. It is preferred to run it from a non-indexed notebook, to avoid having it be altered by both the package and the jupyter kernel at the same time.
+
+If the `nbbinder` package is installed in the environment, just import it as usual, otherwise, it can be imported with a relative path. This is achived by a code cell with the following code
 
 ```python
 try:
@@ -294,45 +246,46 @@ except:
     import os
     import sys
 
-    sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), '..', '..')))
+    sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), 'path', 'to', 'module')))
 
     import nbbinder as nbb
 ```
 
-Then we create the book-like structure from the configuration file `config.yml` contained in the same folder where these notebooks are:
+Then, in the same or in a different cell, we create the book-like structure with the following code:
 
 ```python
-import os
-os.chdir(os.path.join('tests', 'lectures'))
-os.getcwd()
+nbb.bind_from_configfile('config_nb_alice.yml')
 ```
 
-```bash
-    /Users/rrosa/Documents/github_repositories/nbbinder/tests/lectures
-```
-
-```python
-nbb.bind_from_configfile('config.yml')
-```
+This generates the following output cell:
 
 ```txt
-    - Table of contents updated in 00.00-Front_Page.ipynb
-    - updating header for 00.00-Front_Page.ipynb
-    - updating header for 01.00-Cell_markers.ipynb
-    - updating header for 02.00-Toc_creation.ipynb
-    - updating header for 03.00-Header_creation.ipynb
-    - updating header for 04.00-Navigator_creation.ipynb
-    - updating header for 05.00-Book_creation.ipynb
-    - updating header for 06.00-Configs_for_creation.ipynb
-    - updating header for 07.00-Example_configs.ipynb
-    - updating header for 08.00-Run_Config.ipynb
-    - updating navbar for 00.00-Front_Page.ipynb
-    - updating navbar for 01.00-Cell_markers.ipynb
-    - updating navbar for 02.00-Toc_creation.ipynb
-    - updating navbar for 03.00-Header_creation.ipynb
-    - updating navbar for 04.00-Navigator_creation.ipynb
-    - updating navbar for 05.00-Book_creation.ipynb
-    - updating navbar for 06.00-Configs_for_creation.ipynb
-    - updating navbar for 07.00-Example_configs.ipynb
-    - updating navbar for 08.00-Run_Config.ipynb
+    * No markdown cell starting with <!--TABLE_OF_CONTENTS--> found in 00.00-Alice's_Adventures_in_Wonderland.ipynb
+    - inserting table of contents in 00.00-Alice's_Adventures_in_Wonderland.ipynb
+    - inserting header for 00.00-Alice's_Adventures_in_Wonderland.ipynb
+    - inserting header for 01.00-Down_the_Rabbit-Hole.ipynb
+    - inserting header for 02.00-The_Pool_of_Tears.ipynb
+    - inserting header for 03.00-A_Caucus-Race_and_a_Long_Tale.ipynb
+    - inserting header for 04.00-The_Rabbit_Sends_in_a_Little_Bill.ipynb
+    - inserting header for 05.00-Advice_from_a_Caterpillar.ipynb
+    - inserting header for 06.00-Pig_and_Pepper.ipynb
+    - inserting header for 07.00-A_Mad_Tea-Party.ipynb
+    - inserting header for 08.00-The_Queen's_Croquet-Ground.ipynb
+    - inserting header for 09.00-The_Mock_Turtle's_Story.ipynb
+    - inserting header for 10.00-The_Lobster_Quadrille.ipynb
+    - inserting header for 11.00-Who_Stole_the_Tarts?.ipynb
+    - inserting header for 12.00-Alice's_Evidence.ipynb
+    - inserting navbar for 00.00-Alice's_Adventures_in_Wonderland.ipynb
+    - inserting navbar for 01.00-Down_the_Rabbit-Hole.ipynb
+    - inserting navbar for 02.00-The_Pool_of_Tears.ipynb
+    - inserting navbar for 03.00-A_Caucus-Race_and_a_Long_Tale.ipynb
+    - inserting navbar for 04.00-The_Rabbit_Sends_in_a_Little_Bill.ipynb
+    - inserting navbar for 05.00-Advice_from_a_Caterpillar.ipynb
+    - inserting navbar for 06.00-Pig_and_Pepper.ipynb
+    - inserting navbar for 07.00-A_Mad_Tea-Party.ipynb
+    - inserting navbar for 08.00-The_Queen's_Croquet-Ground.ipynb
+    - inserting navbar for 09.00-The_Mock_Turtle's_Story.ipynb
+    - inserting navbar for 10.00-The_Lobster_Quadrille.ipynb
+    - inserting navbar for 11.00-Who_Stole_the_Tarts?.ipynb
+    - inserting navbar for 12.00-Alice's_Evidence.ipynb
 ```

@@ -1,8 +1,8 @@
 # NBBinder - Jupyter Notebook Binder
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rmsrosa/nbbinder/NBBinder_Test) ![readthedocs badge](https://readthedocs.org/projects/nbbinder/badge/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub repo size](https://img.shields.io/github/repo-size/rmsrosa/nbbinder)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rmsrosa/nbbinder/NBBinder_Test) ![readthedocs badge](https://readthedocs.org/projects/nbbinder/badge/) ![PyPI - Wheel](https://img.shields.io/pypi/wheel/nbbinder) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/nbbinder) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub repo size](https://img.shields.io/github/repo-size/rmsrosa/nbbinder)
 
-NBBinder generates a navigable book-like structure to a collection of Jupyter notebooks.
+**NBBinder** generates a navigable book-like structure to a collection of Jupyter notebooks.
 
 ## Description
 
@@ -16,7 +16,7 @@ This package comprises methods that read a collection of Jupyter notebooks from 
 
 ## Example
 
-The most convenient way to use the module, or script, is via a configuration file. For instance, consider the following `config.yml`, in the same directory as the notebooks, and with the following content:
+The most convenient way to use the module, or script, is via a configuration file. For instance, consider the following `config_nb_alice.yml`:
 
 ```yaml
 directory:
@@ -41,18 +41,16 @@ Then, we import the module (in the same folder) and use the `bind()` method with
 
 ```python
 import nbbinder as nbb
-nbb.bind('config.yml')
+nbb.bind('config_nb_alice.yml')
 ```
 
 Or we execute it as a script in the command line:
 
 ```bash
-./nbbinder.py config.yml
+./nbbinder.py config_nb_alice.yml
 ```
 
-If we call the `nbb.bind('config.yml')` from a different directory, we should add the parameter `directory` to the configuration file, with the path to the collection of notebooks.
-
-Suppose we run the `nbb.bind('config.yml')`, with the above configuration file, in a directory with the following indexed notebooks:
+Suppose we run the `nbb.bind('config_nb_alice.yml')`, with the above configuration file and with the following indexed notebooks in the subsubdirectory `nb_alice`:
 
 ```bash
 00.00-Alice's_Adventures_in_Wonderland.ipynb
@@ -70,11 +68,45 @@ Suppose we run the `nbb.bind('config.yml')`, with the above configuration file, 
 12.00-Alice's_Evidence.ipynb
 ```
 
-We may have a glimpse of the result looking at a printscreen of the updated `00.00-Alice's_Adventures_in_Wonderland.ipynb`, with the table of contents, the header, and the footline:
+Then, the following table of contents is inserted in the first notebook:
 
-![00.00-Alice's_Adventures_in_Wonderland.ipynb print screen](tests/nb_alice_toc.png)
+### [Alice's Adventures in Wonderland](#/)
+
+### [1. Down the Rabbit-Hole](#/)
+
+### [2. The Pool of Tears](#/)
+
+### [3. A Caucus-Race and a Long Tale](#/)
+
+### [4. The Rabbit Sends in a Little Bill](#/)
+
+### [5. Advice from a Caterpillar](#/)
+
+### [6. Pig and Pepper](#/)
+
+### [7. A Mad Tea-Party](#/)
+
+### [8. The Queen's Croquet-Ground](#/)
+
+### [9. The Mock Turtle's Story](#/)
+
+### [10. The Lobster Quadrille](#/)
+
+### [11. Who Stole the Tarts?](#/)
+
+### [12. Alice's Evidence](#/)
 
 More information on the [Documentation of the Project on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
+
+## Installation
+
+The package can be installed from [PyPi](https://pypi.org/project/nbbinder/) with
+
+```bash
+pip install nbbinder
+```
+
+It can also be downloaded directly from github.com/rmsrosa/nbbinder.
 
 ## License
 
