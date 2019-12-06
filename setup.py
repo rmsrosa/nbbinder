@@ -37,7 +37,6 @@ setuptools.setup(
         'Programming Language :: Python :: 3',
         'Development Status :: 4 - Beta',
         'Framework :: Jupyter',
-        'Programming Language :: Python :: 3',
         'Operating System :: OS Independent',
         'License :: OSI Approved :: MIT License'
     ],
