@@ -259,7 +259,7 @@ nbb.bind_from_configfile('config_nb_alice.yml')
 
 This generates the following output cell:
 
-```txt
+```text
     * No markdown cell starting with <!--TABLE_OF_CONTENTS--> found in 00.00-Alice's_Adventures_in_Wonderland.ipynb
     - inserting table of contents in 00.00-Alice's_Adventures_in_Wonderland.ipynb
     - inserting header for 00.00-Alice's_Adventures_in_Wonderland.ipynb
