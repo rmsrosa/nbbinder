@@ -65,7 +65,7 @@ if __name__ == '__main__':
     nbb.restructure('nb_alice')
 
     print("\n# Binding notebooks with config file 'config_nb_alice.yml'")
-    nbb.bind_from_configfile('config_nb_alice.yml')
+    nbb.bind('config_nb_alice.yml')
 
     nb_grammar = [
         '00.00-Front_Page.ipynb',
@@ -100,21 +100,21 @@ if __name__ == '__main__':
     print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')}")
     create_notebooks('nb_grammar_bound', nb_grammar)
     print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar.yml'")
-    nbb.bind_from_configfile('config_nb_grammar.yml')
+    nbb.bind('config_nb_grammar.yml')
 
     print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar_no_header.yml'")
-    nbb.bind_from_configfile('config_nb_grammar_book.yml')
+    nbb.bind('config_nb_grammar_book.yml')
 
     print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar_book.yml'")
-    nbb.bind_from_configfile('config_nb_grammar_no_header.yml')
+    nbb.bind('config_nb_grammar_no_header.yml')
 
     print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'nbb.bind()'")
-    nbb.bind(toc_nb_name='00.00-Front_Page.ipynb',
+    nbb.bind(path_to_notes='nb_grammar_bound',
+            toc_nb_name='00.00-Front_Page.ipynb',
             show_full_entry_in_toc=True,
             header="[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)",
             core_navigators=['00.00-Front_Page.ipynb', 
-            'BB.00-Bibliography.ipynb'],                  
-            app_to_notes_path='nb_grammar_bound',
+            'BB.00-Bibliography.ipynb'],
             show_full_entry_in_nav=False)
 
     nb_grammar_missing = [

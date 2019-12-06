@@ -1,5 +1,5 @@
 directory:
-  app_to_notes_path: nb_grammar_bound
+  path_to_notes: nb_grammar_bound
 
 book:
   toc_nb_name: 00.00-Front_Page.ipynb
