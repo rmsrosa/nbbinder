@@ -230,7 +230,7 @@ Or we execute it as a script in the command line:
 
 We may visualize the result looking at a printscreen of the updated `00.00-Alice's_Adventures_in_Wonderland.ipynb`, with the **table of contents**, the **header**, and the **navigators**:
 
-![00.00-Alice's_Adventures_in_Wonderland.ipynb print screen](nb_alice_toc.png)
+![Screenshot of Alice's Adventures in Wonderland Jupyter notebook](nb_alice_toc.png)
 
 ## Bind notebooks from a non-indexed notebook
 

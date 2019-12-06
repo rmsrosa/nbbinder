@@ -11,7 +11,7 @@ Original work Copyright (c) 2016 Jacob VanderPlas
 Modified work Copyright (c) 2019 Ricardo M S Rosa
 '''
 __license__ = "MIT"
-__version__ = "0.6a4"
+__version__ = "0.6a5"
 __status__ = "beta"
 
 import os
