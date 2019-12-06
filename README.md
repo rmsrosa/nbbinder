@@ -96,10 +96,6 @@ Then, the following table of contents is inserted in the first notebook:
 
 ### [12. Alice's Evidence](#/)
 
-The following screenshot shows how this notebook with the **table of contents** is rendered in [Jupyter lab](https://jupyterlab.readthedocs.io/en/stable/), along with the **header** and the **navigators**.
-
-![Screenshot of Alice's Adventures in Wonderland Jupyter notebook](tests/nb_alice_toc.png)
-
 More information on the [Documentation of NBBinder on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
 
 ## Installation
