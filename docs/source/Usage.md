@@ -228,7 +228,7 @@ Or we execute it as a script in the command line:
 ./nbbinder.py config_nb_alice.yml
 ```
 
-We may have a glimpse of the result looking at a printscreen of the updated `00.00-Alice's_Adventures_in_Wonderland.ipynb`, with the table of contents, the header, and the footline:
+We may visualize the result looking at a printscreen of the updated `00.00-Alice's_Adventures_in_Wonderland.ipynb`, with the **table of contents**, the **header**, and the **navigators**:
 
 ![00.00-Alice's_Adventures_in_Wonderland.ipynb print screen](nb_alice_toc.png)
 

@@ -52,7 +52,7 @@ Or we execute it as a script in the command line:
 
 Suppose we run the `nbb.bind('config_nb_alice.yml')`, with the above configuration file and with the following indexed notebooks in the subsubdirectory `nb_alice`:
 
-```bash
+```text
 00.00-Alice's_Adventures_in_Wonderland.ipynb
 01.00-Down_the_Rabbit-Hole.ipynb
 02.00-The_Pool_of_Tears.ipynb
@@ -96,7 +96,11 @@ Then, the following table of contents is inserted in the first notebook:
 
 ### [12. Alice's Evidence](#/)
 
-More information on the [Documentation of the Project on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
+The following screenshot shows how this notebook with the **table of contents** is rendered in [Jupyter lab](https://jupyterlab.readthedocs.io/en/stable/), along with the **header** and the **navigators**.
+
+[Alice's Adventures in Wonderland](docs/source/nb_alice_toc.png)
+
+More information on the [Documentation of NBBinder on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
 
 ## Installation
 
@@ -106,7 +110,9 @@ The package can be installed from [PyPi](https://pypi.org/project/nbbinder/) wit
 pip install nbbinder
 ```
 
-It can also be downloaded directly from github.com/rmsrosa/nbbinder.
+It can also be downloaded directly from github.com/rmsrosa/nbbinder. 
+
+More information on the [Documentation of NBBinder on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
 
 ## License
 

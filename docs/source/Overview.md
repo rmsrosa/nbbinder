@@ -79,7 +79,7 @@ book:
   user: rmsrosa
   repository: nbbinder
   branch: master
-  github_nb_dir: tests/notebooks
+  github_nb_dir: github/path/to/notebooks
   show_colab: True
   show_binder: True
   show_full_entry_in_nav: False

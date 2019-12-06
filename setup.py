@@ -32,7 +32,7 @@ setuptools.setup(
         "Documentation": "https://nbbinder.readthedocs.io/",
         "Source Code": "https://github.com/rmsrosa/nbbinder/nbbinder",
     },
-    packages=setuptools.find_packages(), # just nbbinder
+    packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
         'Development Status :: 4 - Beta',
@@ -40,5 +40,4 @@ setuptools.setup(
         'Operating System :: OS Independent',
         'License :: OSI Approved :: MIT License'
     ],
-    license=open('LICENSE', 'r').read()
 )
