@@ -67,6 +67,22 @@ if __name__ == '__main__':
     print("\n# Binding notebooks with config file 'config_nb_alice.yml'")
     nbb.bind('config_nb_alice.yml')
 
+    print("\n# Binding notebooks with config file 'config_nb_alice.yml'")
+    nbb.bind(path_to_notes="nb_alice",
+        toc_nb_name="00.00-Alice's_Adventures_in_Wonderland.ipynb",
+        show_full_entry_in_toc=True,
+        header="[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)",
+        core_navigators=[
+            "00.00-Alice's_Adventures_in_Wonderland.ipynb"
+            ],
+        user='rmsrosa',
+        repository='nbbinder',
+        branch='master',
+        github_nb_dir='tests/nb_alice',
+        show_colab=True,
+        show_binder=True,
+        show_full_entry_in_nav=False)
+
     nb_grammar = [
         '00.00-Front_Page.ipynb',
         '01.00-Introduction.ipynb',
