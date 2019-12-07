@@ -6,7 +6,7 @@
 
 ## Description
 
-This package comprises methods that read a collection of Jupyter notebooks from a given directory and
+The main method in this package is called `bind()`. It reads a collection of Jupyter notebooks from a given directory and
 
 - add a **Table of Contents** to a selected notebook file, with links to the other notebooks;
 - add a **header** to each notebook, with custom informations;
@@ -20,7 +20,7 @@ The most convenient way to use the module, or script, is via a configuration fil
 
 ```yaml
 directory:
-  app_to_notes_path: nb_alice
+  path_to_notes: nb_alice
 
 book:
   toc_nb_name: 00.00-Alice's_Adventures_in_Wonderland.ipynb

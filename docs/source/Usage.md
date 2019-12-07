@@ -1,5 +1,37 @@
 # Usage
 
+## Indexing the collection of notebooks
+
+In order to be processed, each notebook in the collection should start with an *index*, which is to be identified by a certain regular expression ending with a dash:
+
+> `index-notebookname.ipynb`.
+
+The main types of indices are the following:
+
+- `'dd-notebookname.ipynb'`, where `'d'` is any decimal from 0 to 9;
+- `'dd.dd-notebookname.ipynb'`, where `'d'` is as above;
+- `'AX.-notebookname.ipynb'`, where `'A'` is the uppercase letter `'A'` and `'X'` is any uppercase letter, from `A` to `Z`;
+- `'AX.dd-notebookname.ipynb'`, where the keys are as above;
+- `'BX.-notebookname.ipynb'`, where `'B'` is the upper case letter `'B'` and `'X'` is as above; or
+- `'BX.dd-notebookname.ipynb'`, where the symbols are as above.
+
+The filenames go through a regular expressions matching operator and specific groups are extracted from them, as separated by the first dot.
+
+- When the first group is `'00'`, the notebook appears in the beginning and is not numbered. It is for the **Front Matter**, e.g *Cover page*, *Copyright page*, *Dedication page*, *Epigraph*, *Table of Contents*, *Foreword*, *Preface*, *Acknowlegdments*, and so on.
+- When the first group is from `'10'` to `'99'`, it is for the **Body** of the book, with the first group representing the chapter number and the second group, the section number. Except when the second group is either the empty string '' or `'00'`, in which cases there is no section number. These are useful for defining a *Part* of the book and an *Introduction to the Chapter*, respectively. Notice that the empty string '' comes before `'00'`.
+- When the first group starts with `'A'`, it is assumed to be for an **Appendix**, in which the second letter `'X'` is the letter of the Appendix. The second group functions as the section of the Appendix, with the same exceptions as above in the cases in which the second group is either `''` or `'00'`.
+- When the first group starts with `'B'`, the notebook appears at the end and is not numbered. It is for the non-numbered part of the **Back Matter**, such as  *Endnotes*, *Copyright permissions*, *Glossary*, *Bibliography*, *Index*, and so on.
+
+The Table of Contents and the navigators follow the lexicographical order, so `''` < `'dd'` < `'AX'` < `'BX'`, for instance.
+
+Two further types of indices are used when it is desired to insert a notebook in between other notebooks. In this case, there are two more groups read by the regular expression, one before the first dot and the second before the dash. For instance,
+
+- `'dd.dda-notebookname.ipynb'`, where `'a'` is one or more lower case characters. They indicate that this notebook should be renamed as `'dd.dd-notebookname.ipynb'`, and, if there is already a notebook with this index, its section number, along with the section number of subsequent notebooks, should be increased by one.
+- `'dda.dd-notebookname.ipynb'`, where `'a'` is as above, and has a similar effect, but this time for the chapter number.
+- Similarly for `'AXa...'` and `'BXa...'`.
+
+For more information about the structure of a book, see [Parts of a Book Explained: Front Matter, Body, and Back Matter](https://blog.reedsy.com/front-matter-back-matter-book/).
+
 ## Cell markers
 
 The **Table of Contents**, the **headers**, and the **navigators** appear in selected cells in the jupyter notebooks. These cells have **markers**, according to their types.
@@ -8,7 +40,7 @@ The markers are **html** comments, so they do not show up in the notebook, excep
 
 The markers are
 
-```html
+```text
 <!--TABLE_OF_CONTENTS--\>
 
 <!--HEADER-->
@@ -28,32 +60,36 @@ The **Table of Contents** cell can vary in position. It can be given a priori at
 
 If the `nbbinder` script is ran again, it will look for the marker cells and rewrite them with the updated information, removing any previous data.
 
+**One *should not* add nor edit the markers for the *header* and the *navigators*, the code does that automatically.**
+
+**One *can* add or edit the marker for the *table of contents* to place it in a specific positions, but this is *not necessary* since the code will include it if it doesn't find it.**
+
 ## Restructuring the collection of notebooks
 
 The method to insert a notebook in between other index notebooks is called `restructure()` and its definition starts with
 
 ```python
-def restructure(app_to_notes_path='.'):
+def restructure(path_to_notes='.'):
     ...
 ```
 
-The `app_to_notes_path` is a non-required argument with the name of the folder in which the collection of notebooks is expected to be. It should be either an absolute path or a path relative to the current path in the script calling the method. If `app_to_notes_path` is not given, it is assumed to be the current directory.
+The `path_to_notes` is a non-required argument with the name of the folder in which the collection of notebooks is expected to be. It should be either an absolute path or a path relative to the current path in the script calling the method. If `path_to_notes` is not given, it is assumed to be the current directory.
 
-This method reads all the Jupyter notebooks in the directory `app_to_notes_path` and look for those matching a regular expression indicating that the notebook is to be inserted in the collection.
+This method reads all the Jupyter notebooks in the directory `path_to_notes` and look for those matching a regular expression indicating that the notebook is to be inserted in the collection.
 
 ## Creating the Table of Contents
 
 The method to create, or update, the table of contents is called `add_contents()` and its definition starts with
 
 ```python
-def add_contents(toc_nb_name, app_to_notes_path='.',
+def add_contents(toc_nb_name, path_to_notes='.',
                  show_full_entry_in_toc=True):
     ...
 ```
 
 The argument `toc_nb_name` is required and is the name of the jupyter notebook file in which the table of contents will be written.
 
-The `app_to_notes_path` is a non-required argument with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative to where the code is being ran. If `app_to_notes_path` is not given, it is assumed to be the current directory.
+The `path_to_notes` is a non-required argument with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative to where the code is being ran. If `path_to_notes` is not given, it is assumed to be the current directory.
 
 The last variable, `show_full_entry_in_toc`, determines whether the entries in the *Table of Contents* should start with the chapter and section numbers or not. The default is `True`, but in some cases, such as when one wants to have **Lecture 1** displayed instead of **1. Lecture**, it is useful to have this option and set it to `False`.
 
@@ -62,20 +98,20 @@ The last variable, `show_full_entry_in_toc`, determines whether the entries in t
 The method to create, or update, the headers is called `add_headers()` and its definition starts with
 
 ```python
-def add_headers(header, app_to_notes_path='.'):
+def add_headers(header, path_to_notes='.'):
     ...
 ```
 
 The argument `add_headers` is required and is a string with the header you want to be displayed on top of each notebook.
 
-The `app_to_notes_path` is a non-required argument with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative from where the code is being ran. If `app_to_notes_path` is not given, it is assumed to be the current directory.
+The `path_to_notes` is a non-required argument with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative from where the code is being ran. If `path_to_notes` is not given, it is assumed to be the current directory.
 
 ## Creating the navigators
 
 The method to create, or update, the navigator cells is called `add_navigators()` and its definition starts with
 
 ```python
-def add_navigators(core_navigators=[], app_to_notes_path='.',
+def add_navigators(core_navigators=[], path_to_notes='.',
                    user = '', repository = '', branch = '',
                    github_nb_dir = '',
                    github_io_slides_dir = '',
@@ -91,7 +127,7 @@ Here is an explanation of the non-required arguments:
 
 - `core_navigators` is a list of strings, where each element is the filename of a Jupyter notebook that you want to appear in the navigator bar, in between the links to the *previous* and the *next* notebooks. This is useful for direct links to the **Table of Contents** and the **Bibliography**, for instance. If it is not provided, it is assumed to be an empty list, and nothing is showed in between the links for the *previous* and *next* notebooks.
 
-- `app_to_notes_path` is a non-required argument, with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative from where the code is being ran. If `app_to_notes_path` is not given, it is assumed to be the current directory.
+- `path_to_notes` is a non-required argument, with the name of the folder in which both the `toc_nb_name` file and the collection of all notebooks to be listed in the table of contents are expected to be. It should be either an absolute path or a path relative from where the code is being ran. If `path_to_notes` is not given, it is assumed to be the current directory.
 
 - `user` is the username of the owner of the github repository which the notebooks belong to, if they do belong to one. It defaults to a blank string.
 
@@ -113,38 +149,22 @@ The colab and binder links, when displayed, appear *above* the navigation bar in
 
 ## Creating the book-like structure with all three elements
 
-The method to create, or update, all the three elements (**Table of Contents**, **headers**, and **navigators**) is called `bind()` and its definition starts with
-
-```python
-def bind(toc_nb_name, header, core_navigators,
-         app_to_notes_path='.',
-         restructure_notebooks=False,
-         user='', repository='', branch='',
-         github_nb_dir='',
-         github_io_slides_dir='',
-         show_colab=False, show_binder=False,
-         show_slides=False,
-         show_full_entry_in_toc=True,
-         show_full_entry_in_nav=True):
-    ...
-```
-
-This method simply calls the previous four methods, in the following order:
+The method to restructure the notebooks and to create, or update, all the three elements (**Table of Contents**, **headers**, and **navigators**) at the same time is called `bind()`. This method simply calls the previous four methods, in the following order:
 
 - `restructure(...)`
 - `add_contents(...)`
 - `add_headers(...)`
 - `add_navigators(...)`
 
-Refer to the previous sections for each method and the nature of the required and non-required arguments.
+The method `bind()` can be called directly with the arguments for the other methods or with a single argument pointing to a configuration file.
 
 ## Creating the book-like structure from a configuration file
 
-The easiest way to create/update the book-like structure of a collection of notebooks is by using a configuration file containing all the desired arguments (and elements).
+The easiest way to create/update the book-like structure of a collection of notebooks is by using a configuration file containing all the desired arguments.
 
 The configuration file is expected to be in the [YAML](https://en.wikipedia.org/wiki/YAML) format, which is a human-readable, text file, which easily stores strings, integers, floating point numbers, booleans, lists, and dictionaries (and more). It is parsed to python via the [PyYAML](https://pyyaml.org/) module.
 
-The method `bind_from_configfile(config_file)` expects the `config_file` to be parsed to a python dictionary with one or more of the following keys:
+The method parses the configuration file to a python dictionary with one or more of the following keys:
 
 - `directory`
 - `restructure`
@@ -155,9 +175,9 @@ The method `bind_from_configfile(config_file)` expects the `config_file` to be p
 
 The value of each key is another dictionary, containing the parameters for the associated method.
 
-The order of the main keys is not important. The module takes care of them regardless. There are some rules to follow:
+The order of the main keys is not important; the module takes care of them regardless. There are some rules used in the process:
 
-- If `directory` is present, its value is send to the variable `app_to_notes_path`.
+- If `directory` is present, its value is send to the variable `path_to_notes`.
 - If `restructure_notebooks` is present, the method `restructure()` is executed.
 - If `book` is present, the method `bind()` is executed, with the parameters given in this key.
 - If `book` is not present, the other methods are executed, depending on whether the corresponding key is present, and in the following order:
@@ -166,17 +186,17 @@ The order of the main keys is not important. The module takes care of them regar
   - `add_navigators()`.
 - Before either the `bind()` method or the separate `add_contents()`, `add_headers()`, and `add_navigators()` are executed, two methods are called to remove any header and navigator that might have been included in previous execution of the module.
 
-The key `directory` is not directly related to the configuration of the book-structure itself. It simply expects the configuration of the `app_to_notes_path`, so the script, module, or some specific functions within the module know where to find the notebooks.
+The key `directory` is not directly related to the configuration of the book-structure itself. It simply expects the configuration of the `path_to_notes`, so the script, module, or some specific functions within the module knows where to find the notebooks.
 
 See the next section for examples of configuration files.
 
 ## Example of a configuration file
 
-Here is the configuration file `config_nb_alice.yml` used for testing the package and available in the subdirectory `tests` of the root directory..
+Here is the configuration file `config_nb_alice.yml` used for testing the package and available in the subdirectory `tests` of the root directory:
 
 ```yaml
 directory:
-  app_to_notes_path: nb_alice
+  path_to_notes: nb_alice
 
 book:
   toc_nb_name: 00.00-Alice's_Adventures_in_Wonderland.ipynb
@@ -193,13 +213,11 @@ book:
   show_full_entry_in_nav: False
 ```
 
-## Running via a configuration file
+## Binding the notebooks via a configuration file
 
-The most convenient way to use the module, or script, is via a configuration file. For instance, consider the configuration file `config_nb_alice.yml` given above.
+Suppose the notebooks are in a subsubdirectory named `nb_alice`, as indicated by the key `path_to_notes`, in the configuration file. The indexed notebooks are the following:
 
-Suppose the notebooks are in a subsubdirectory named `nb_alice`, as indicated by the key `app_to_notes_path`, in the configuration file. The indexed notebooks are the following:
-
-```bash
+```text
 00.00-Alice's_Adventures_in_Wonderland.ipynb
 01.00-Down_the_Rabbit-Hole.ipynb
 02.00-The_Pool_of_Tears.ipynb
@@ -215,7 +233,7 @@ Suppose the notebooks are in a subsubdirectory named `nb_alice`, as indicated by
 12.00-Alice's_Evidence.ipynb
 ```
 
-Then, we import the module (in the folder `tests` and use the `bind()` method with this configuration file as argument:
+Then, we import the module in a script in the folder `tests` and use the `bind()` method with the configuration file `config_nb_alice.yml` as argument:
 
 ```python
 import nbbinder as nbb
@@ -232,7 +250,29 @@ We may visualize the result looking at a printscreen of the updated `00.00-Alice
 
 ![Screenshot of Alice's Adventures in Wonderland Jupyter notebook](nb_alice_toc.png)
 
-## Bind notebooks from a non-indexed notebook
+## Binding the notebooks with arguments
+
+Instead of using a configuration file, we may call `bind()` directly with the desired arguments:
+
+```python
+import nbbinder as nbb
+nbb.bind(path_to_notes="nb_alice",
+    toc_nb_name="00.00-Alice's_Adventures_in_Wonderland.ipynb",
+    show_full_entry_in_toc=True,
+    header="[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)",
+    core_navigators=[
+        "00.00-Alice's_Adventures_in_Wonderland.ipynb"
+        ],
+    user='rmsrosa',
+    repository='nbbinder',
+    branch='master',
+    github_nb_dir='tests/nb_alice',
+    show_colab=True,
+    show_binder=True,
+    show_full_entry_in_nav=False)
+```
+
+## Binding the notebooks from a non-indexed notebook
 
 We may also run `nbbinder` directly from a Jupyter notebook. It is preferred to run it from a non-indexed notebook, to avoid having it be altered by both the package and the jupyter kernel at the same time.
 
@@ -254,7 +294,7 @@ except:
 Then, in the same or in a different cell, we create the book-like structure with the following code:
 
 ```python
-nbb.bind_from_configfile('config_nb_alice.yml')
+nbb.bind('config_nb_alice.yml')
 ```
 
 This generates the following output cell:
