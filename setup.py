@@ -34,10 +34,13 @@ setuptools.setup(
     },
     packages=setuptools.find_packages(),
     classifiers=[
-        'Programming Language :: Python :: 3',
-        'Development Status :: 4 - Beta',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Development Status :: 3 - Alpha',
         'Framework :: Jupyter',
-        'Operating System :: OS Independent',
+        'Operating System :: MacOS',
+        'Operating System :: POSIX :: Linux',
         'License :: OSI Approved :: MIT License'
     ],
 )
