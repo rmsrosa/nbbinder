@@ -6,17 +6,17 @@
 
 ## Description
 
-The main method in this package is called `bind()`. It reads a collection of Jupyter notebooks from a given directory and
+The main function in this package is called `bind()`. It reads a collection of Jupyter notebooks from a given directory and, upon configuration,
 
-- add a **Table of Contents** to a selected notebook file, with links to the other notebooks;
-- add a **header** to each notebook, with custom informations;
-- add, in the **header** and in the **footline** of each notebook, **navigator links**, to traverse  to the previous or the next notebook, and to other selected notebooks, such as the Table of Contents and the Bibliography;
-- include, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com);
-- **restructure** the notebooks, by automatically renaming the files, in case a new notebook is to be inserted in between other notebooks.
+- adds a **Table of Contents** to a selected notebook file, with links to the other notebooks;
+- adds a **header** to each notebook, with custom informations;
+- adds, in the **header** and in the **footline** of each notebook, **navigator links**, to traverse  to the previous or the next notebook, or to other selected notebooks, such as the Table of Contents and the Bibliography;
+- includes, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com);
+- **restructures** the notebooks, by automatically renaming the files, in case a new notebook is to be inserted in between other notebooks.
 
 ## Example
 
-The most convenient way to use the module, or script, is via a configuration file. For instance, consider the following `config_nb_alice.yml`:
+The most convenient way to use the module, or script, is via a configuration file. The configuration files are written in [YAML](https://en.wikipedia.org/wiki/YAML). For instance, consider the following `config_nb_alice.yml`:
 
 ```yaml
 directory:
@@ -37,7 +37,7 @@ book:
   show_full_entry_in_nav: False
 ```
 
-Then, we import the module (in the same folder) and use the `bind()` method with this configuration file as argument:
+Then, we import the module (in the same folder) and use the `bind()` function with this configuration file as argument:
 
 ```python
 import nbbinder as nbb
