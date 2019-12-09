@@ -45,7 +45,7 @@ def indexed_notebooks(path_to_notes: str=''):
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.
+            where the code is being ran. It defaults to '.'.
 
     Returns:
     --------
@@ -135,7 +135,7 @@ def restructure(path_to_notes: str='.'):
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.
+            where the code is being ran. It defaults to '.'.
 
     """
 
@@ -216,7 +216,7 @@ def remove_marker_cell(MARKER: str, path_to_notes: str='.'):
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.
+            where the code is being ran. It defaults to '.'.
 
     """
     for nb_name in indexed_notebooks(path_to_notes):
@@ -244,10 +244,11 @@ def get_notebook_title(nb_name: str, path_to_notes: str='.') -> str:
     ----------
         nb_name: str
             The name of the jupyter notebook file.
+
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.
+            where the code is being ran. It defaults to '.'.
     
     Returns:
     --------
@@ -270,11 +271,12 @@ def get_notebook_full_entry(nb_name: str, path_to_notes: str='.') -> list:
     Arguments:
     ----------
         nb_name: str
-            The name of the jupyter notebook file. 
+            The name of the jupyter notebook file.
+
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.
+            where the code is being ran. It defaults to '.'.
 
     Returns:
     --------
@@ -323,10 +325,12 @@ def get_notebook_entry(nb_name: str, path_to_notes: str='.',
     ----------
         nb_name: str
             The name of the jupyter notebook file. 
+
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.
+            where the code is being ran. It defaults to '.'.
+
         show_full_entry: boolean
             Indicates whether to include the chapter and section numbers
             of the notebook in the table of contents (if True) or just 
@@ -360,7 +364,7 @@ def yield_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.
+            where the code is being ran. It defaults to '.'.
 
         show_full_entry_in_toc: bool
             Whether to display the navigator with the chapter
@@ -391,7 +395,7 @@ def get_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.
+            where the code is being ran. It defaults to '.'.
 
         show_full_entry_in_toc: bool
             Whether to display the table of contents with the chapter
@@ -428,7 +432,7 @@ def add_contents(toc_nb_name: str, path_to_notes: str='.',
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.        
+            where the code is being ran. It defaults to '.'.
 
         show_full_entry_in_toc: bool
             Whether to display the navigator with the chapter
@@ -480,7 +484,7 @@ def add_headers(header: str='', path_to_notes: str='.'):
         path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
-            where the code is being ran.
+            where the code is being ran. It defaults to '.'.
 
     """
     for nb_name in indexed_notebooks(path_to_notes):
@@ -503,9 +507,9 @@ def prev_this_next(it):
 def get_navigator_entries(core_navigators: list=[], 
         path_to_notes: str='.', 
         user: str='', repository: str='', 
-        branch: str='',
-        github_nb_dir: str='', 
-        github_io_slides_dir: str='',
+        branch: str='master',
+        github_nb_dir: str='.', 
+        github_io_slides_dir: str='.',
         show_full_entry_in_nav: bool=True):
 
     PREV_TEMPLATE = "[<- {title}]({url}) "
@@ -555,13 +559,73 @@ def get_navigator_entries(core_navigators: list=[],
             
         yield os.path.join(path_to_notes, this_nb), navbar, this_colab_link, this_binder_link, this_slide_link
 
-def add_navigators(core_navigators=[], path_to_notes='.', 
-                   user = '', repository = '', branch = '', 
-                   github_nb_dir = '',
-                   github_io_slides_dir = '',
-                   show_colab=False, show_binder=False, 
-                   show_slides=False,
-                   show_full_entry_in_nav=True):
+def add_navigators(core_navigators: list=[], path_to_notes: str='.', 
+                   user: str='', repository: str='', branch: str='master', 
+                   github_nb_dir: str='.',
+                   github_io_slides_dir: str='.',
+                   show_colab: bool=False, show_binder: bool=False, 
+                   show_slides: bool=False,
+                   show_full_entry_in_nav: bool=True):
+    """Adds navigators to each notebook in the collection.
+
+    Adds top and bottom navigators to each notebook in the collection 
+    of indexed notebooks in the folder 'path_to_notes'.
+
+    Arguments:
+    ----------
+        core_navigators: list
+            A lists of strings with the filenames of each notebook to be
+            included in the navigators, in between the links to the
+            'previous' and the 'next' notebooks. It defaults to the empty
+            list.
+
+        path_to_notes: str
+            The path to the directory that contains the notebooks, 
+            either the absolute path or the path relative from 
+            where the code is being ran. It defaults to '.'.
+
+        user: str
+            The github username of the onwer of the repository in which 
+            the notebooks reside, in case one wants to add a badge to 
+            open up the notebooks in one of the configured cloud 
+            computing platforms (google colab and binder). It defaults to 
+            the empty string.
+
+        repository: str
+            The name of the github repository mentioned in the description 
+            of the 'user' argument. It defaults to the empty string.
+
+        branch: str
+            The name of the branch of the github repository mentioned in
+            the description of the 'user' argument. It defaults to 'master'.
+
+        github_nb_dir: str
+            The path to the notebooks, from the root directory of the
+            repository mentioned in the description of the 'user' argument.  
+            It defaults to '.'.
+        
+        github_io_slides_dir: str
+            The path to the slides folder from the user.github.io site.  
+            It defaults to '.'.
+        
+        show_colab: bool
+            Whether to display the Google Colab badge or not. It defaults
+            to False.
+
+        show_binder: bool
+            Whether to display the Google Colab badge or not. It defaults
+            to False.
+
+        show_slides: bool
+            Whether to display the Google Colab badge or not. It defaults
+            to False.
+
+        show_full_entry_in_nav: bool
+            Whether to display the navigator with the chapter
+            and section number of each notebook or just their title.
+            It defaults to True.
+
+    """
     for nb_file, navbar, this_colab_link, this_binder_link, this_slide_link in get_navigator_entries(core_navigators, path_to_notes, 
                           user, repository, branch, 
                           github_nb_dir,
@@ -620,17 +684,89 @@ def add_navigators(core_navigators=[], path_to_notes='.',
             nb.cells.append(new_markdown_cell(source=navbar_bottom))
         nbformat.write(nb, nb_file)
 
-def bind_from_arguments(path_to_notes='.', 
-        toc_nb_name='', header='', 
-        core_navigators='',
-        restructure_notebooks=False,
-        user='', repository='', branch='', 
-        github_nb_dir='',
-        github_io_slides_dir='',
-        show_colab=False, show_binder=False, 
-        show_slides=False,
-        show_full_entry_in_toc=True,
-        show_full_entry_in_nav=True):
+def bind_from_arguments(path_to_notes: str='.', 
+        toc_nb_name: str='', header: str='', 
+        core_navigators: str='',
+        restructure_notebooks: bool=False,
+        user: str='', repository: str='', branch: str='master', 
+        github_nb_dir: str='.',
+        github_io_slides_dir: str='.',
+        show_colab: bool=False, show_binder: bool=False, 
+        show_slides: bool=False,
+        show_full_entry_in_toc: bool=True,
+        show_full_entry_in_nav: bool=True):
+    """Binds the collection of notebooks from the arguments provided.
+
+    Arguments:
+    ----------
+        path_to_notes: str
+            The path to the directory that contains the notebooks, 
+            either the absolute path or the path relative from 
+            where the code is being ran. It defaults to '.'.
+
+        toc_nb_name: str
+            filename of the notebook in which the table of contents
+            is to be inserted
+
+        header: str
+            The string with the contents to be included in the header cell.
+
+        core_navigators: list
+            A lists of strings with the filenames of each notebook to be
+            included in the navigators, in between the links to the
+            'previous' and the 'next' notebooks. It defaults to the empty
+            list.
+
+        restructure_notebooks: bool
+            Indicates whether to include notebooks in the collection of
+            indexed notebooks or not. It defaults to False.
+
+        user: str
+            The github username of the onwer of the repository in which 
+            the notebooks reside, in case one wants to add a badge to 
+            open up the notebooks in one of the configured cloud 
+            computing platforms (google colab and binder). It defaults to 
+            the empty string.
+
+        repository: str
+            The name of the github repository mentioned in the description 
+            of the 'user' argument. It defaults to the empty string.
+
+        branch: str
+            The name of the branch of the github repository mentioned in
+            the description of the 'user' argument. It defaults to 'master'.
+
+        github_nb_dir: str
+            The path to the notebooks, from the root directory of the
+            repository mentioned in the description of the 'user' argument.  
+            It defaults to '.'.
+        
+        github_io_slides_dir: str
+            The path to the slides folder from the user.github.io site.  
+            It defaults to '.'.
+        
+        show_colab: bool
+            Whether to display the Google Colab badge or not. It defaults
+            to False.
+
+        show_binder: bool
+            Whether to display the Google Colab badge or not. It defaults
+            to False.
+
+        show_slides: bool
+            Whether to display the Google Colab badge or not. It defaults
+            to False.
+
+        show_full_entry_in_toc: bool
+            Whether to display the navigator with the chapter
+            and section number of each notebook or just their title.
+
+        show_full_entry_in_nav: bool
+            Whether to display the navigator with the chapter
+            and section number of each notebook or just their title.
+            It defaults to True.
+
+    """
 
     if restructure_notebooks:
         restructure(path_to_notes)
@@ -655,7 +791,19 @@ def bind_from_arguments(path_to_notes='.',
                    show_slides=show_slides,
                    show_full_entry_in_nav=show_full_entry_in_nav)
 
-def bind_from_configfile(config_file):
+def bind_from_configfile(config_file: str):
+    """Binds the collection of notebooks from a configuration file.
+
+    It reads the given configuration file in YAML format and pass 
+    the arguments in the configuration file to the function
+    'bind_from_arguments()'.
+
+    Arguments:
+    ----------
+        config_file: str
+            The filename of the configuration file.
+
+    """
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -688,6 +836,20 @@ def bind_from_configfile(config_file):
                 path_to_notes=path_to_notes)
 
 def bind(*arg, **kargs):
+    """Binds the collection of notebooks.
+
+    It expects either a configuration file or a list of arguments in
+    order to bind the collection of indexed notebooks.
+
+    If the first argument is a string ending with either '.yml' or
+    '.yaml', it assumes this is the filename of a configuration file
+    and pass it on to the function 'bind_from_configfile()'.
+
+    Otherwise, it assumes it is given directly the arguments to bind
+    the collections and pass them on to the function 
+    'bind_from_arguments()'.
+
+    """
     if len(arg) > 0 and arg[0].endswith(('.yml', '.yaml')):
         bind_from_configfile(arg[0])
     elif 'path_to_notes' in kargs.keys():
@@ -704,4 +866,4 @@ if __name__ == '__main__':
         try:
             bind_from_configfile(sys.argv[1])
         except NotImplementedError:
-            print('provided argument is not a file or not a properly formated yaml configuration file.')
+            print('provided argument is not a yaml file or not a properly formated yaml configuration file.')
