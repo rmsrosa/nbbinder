@@ -12,8 +12,6 @@ from nbformat.v4.nbbase import new_markdown_cell
 
 from context import nbbinder as nbb
 
-#REG = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|)(\*|)-(.*)\.ipynb') 
-
 def create_notebooks(nb_dir, nb_filenames):
 
     if os.path.isdir(nb_dir):

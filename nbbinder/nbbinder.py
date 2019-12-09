@@ -6,13 +6,11 @@ Gives a navigable book-like structure to a collection of Jupyter notebooks.
 
 __author__ = "Ricardo M. S. Rosa <rmsrosa@gmail.com>"
 __homepage__ = "http://github.com/rmsrosa/nbbinder"
-__copyright__ = """
-Original work Copyright (c) 2016 Jacob VanderPlas
+__copyright__ = """Original work Copyright (c) 2016 Jacob VanderPlas
 Modified work Copyright (c) 2019 Ricardo M S Rosa
 """
 __license__ = "MIT"
 __version__ = "0.6a8"
-__status__ = "beta"
 
 import os
 import re
@@ -35,8 +33,7 @@ HEADER_MARKER = "<!--HEADER-->"
 NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 
 def indexed_notebooks(path_to_notes='.'):
-    """
-    Returns a sorted list with the filenames of the 'indexed notebooks'.
+    """Returns a sorted list with the filenames of the 'indexed notebooks'.
 
     The notebooks are expected to be in the folder indicated by the
     argument 'path_to_notes'. The 'indexed notebooks' are those that
@@ -45,14 +42,14 @@ def indexed_notebooks(path_to_notes='.'):
 
     Argument:
     ---------
-        path_to_notes: string
+        path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
             where the code is being ran.
 
     Returns:
-    -------
-        : list of strings
+    --------
+        : list of str
             A list with the filenames of the notebooks that match 
             the regular expression (the 'indexed notebooks'), 
             ordered by the lexicographycal order.
@@ -64,28 +61,82 @@ def indexed_notebooks(path_to_notes='.'):
     """
     return sorted(nb for nb in os.listdir(path_to_notes) if REG.match(nb))
 
-def increase_group(g:str):
+def is_index(g: str) -> bool:
+    """Checks whether a string is an index, returning True or False.
+    
+    An index is a string of length two composed only of numeric or uppercase
+    characters, with only 'A' and 'B' allowed in the first position of the
+    string.
+    """
+
+    if type(g)==str and len(g)==2 and (g[0].isdecimal() or g[0] in ('A', 'B')) and (g[1].isdecimal() or g[1].isupper()):
+        return True
+    else:
+        return False
+
+def increase_index(g: str):
+    """Increases an index by one.
+
+    If the index is numeric, in the range '00' to '98', it returns 
+    an index in the range '01' to '99'.
+
+    If the index is alphanumeric, in the range 'A0' to 'A8', 
+    or 'B0' to 'B8', it returns an index in the range 'A1' to 'A9', 
+    or 'B1' to B9', respectively.
+
+    If the index is alphanumeric, in the range 'AA' to 'AY', 
+    or 'BA' to 'BY', it returns an index in the range 'AB' to 'AZ', 
+    or 'BB' to 'BZ, respectively.
+
+    It raises exceptions if it is not an index or the index is increased
+    beyond the allowed ranges.
+
+    Argument:
+    ---------
+        g: str
+            The index to be increased
+
+    Returns:
+        : str
+            The index increased by one
+    
+    Raises:
+    -------
+        Exception if string is not an index
+        Exception if numeric index increases beyond 99
+        Exception if alphanumeric index increases beyond A9 or B9
+        Exception if alphanumeric index increases beyond AZ or BZ
+
+    """
+    if not is_index(g):
+        raise Exception('String is not an index')
+
     if g.isdecimal():
         n = int(g) + 1
+        if n>99:
+            raise Exception('Increasing numeric index beyond 99')
         if n>=10:
             g = str(n)
         else:
             g = '0'+str(n)
     elif g[1].isalnum():
+        if g[1]==9:
+            raise Exception('Increasing alphanumeric index beyond A9 or B9')
+        elif g[1]=='Z':
+            raise Exception('Increasing alphanumeric index beyond AZ or BZ')
         g = g[0] + chr(ord(g[1])+1)
     return g
 
 def restructure(path_to_notes='.'):
-    """
-    Includes a notebook in the colllections if needed.
+    """Includes a notebook in the colllection.
 
-    Check whether there is any notebook that matches the regular expression
-    indicating it is to be incuded in the collection of indexed notebooks.
-    If so, rename the affected notebooks in the appropriate order.
+    Checks whether there is any notebook that matches the regular expression
+    indicating it is to be incuded in the collection of indexed notebooks 
+    and, if so, renames the affected notebooks in the appropriate order.
 
     Argument:
     ---------
-        path_to_notes: string
+        path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
             where the code is being ran.
@@ -109,10 +160,10 @@ def restructure(path_to_notes='.'):
                     if nbk_reg.group(1,2) == nbj_reg.group(1,2):
                         gk3 = nbk_reg.group(3)
                         if nbk_reg.group(1,2,3,4) == nbj_reg.group(1,2,3,4):
-                            gk3_new = increase_group(gk3)
+                            gk3_new = increase_index(gk3)
                             gk4_new = ''
                         else:
-                            gk3_new = increase_group(gk3)
+                            gk3_new = increase_index(gk3)
                             gk4_new = nbk_reg.group(4)
                         nbfiles_new[k] = nbk_reg.group(1) + nbk_reg.group(2) + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) + '.ipynb'
             if nbj_reg.group(2):
@@ -120,7 +171,7 @@ def restructure(path_to_notes='.'):
                 for k in range(j,len(nbfiles)):
                     nbk_reg = REG_STAR.match(nbfiles_new[k])
                     if nbk_reg.group(1)[0] == nbj_reg.group(1)[0]: 
-                        gk1_new = increase_group(nbk_reg.group(1))
+                        gk1_new = increase_index(nbk_reg.group(1))
                         if nbk_reg.group(1,2) == nbj_reg.group(1,2):
                             gk2_new = ''
                         else:
@@ -141,15 +192,41 @@ def restructure(path_to_notes='.'):
             count +=1
             os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new), os.path.join(path_to_notes, f_new))
 
-    return
-
 
 def is_marker_cell(MARKER, cell):
-    """Check where the given cell starts with the given MARKER."""
+    """Checks where the given cell starts with the given MARKER.
+    
+    Arguments:
+    ----------
+        MARKER: str
+            The MARKER to be searched for.
+
+        cell: nbformat.notebooknode.NotebookNode
+            The cell to be checked.
+
+    Returns:
+    --------
+        : bool
+            True or False, depending on whether the MARKER exists in the
+            cell or not.
+
+    """
     return  cell.source.startswith(MARKER)
 
-def remove_marker_cell(MARKER, path_to_notes='.'):
-    """Removes any MARKER cell from the indexed notebooks in path_to_notes."""
+def remove_marker_cell(MARKER: str, path_to_notes: str='.'):
+    """Removes any MARKER cell from the indexed notebooks in path_to_notes.
+    
+    Arguments:
+    ----------
+        MARKER: str
+            The MARKER to be searched for.
+
+        path_to_notes: str
+            The path to the directory that contains the notebooks, 
+            either the absolute path or the path relative from 
+            where the code is being ran.
+
+    """
     for nb_name in indexed_notebooks(path_to_notes):
         nb_file = os.path.join(path_to_notes, nb_name)
         nb = nbformat.read(nb_file, as_version=4)
@@ -164,26 +241,25 @@ def remove_marker_cell(MARKER, path_to_notes='.'):
         nb.cells = new_cells
         nbformat.write(nb, nb_file)
 
-def get_notebook_title(nb_name, path_to_notes='.'):
-    """
-    Returns the title of a juyter notebook.
+def get_notebook_title(nb_name: str, path_to_notes: str='.') -> str:
+    """Returns the title of a juyter notebook.
 
     It looks for the first cell, in the notebook, that starts with
     a single markdown symbol '#' and returns the contents of the first 
     line of this cell, striped out of '# ' and the remaining lines.
 
-    Input:
-    ------
-        nb_name: string
+    Arguments:
+    ----------
+        nb_name: str
             The name of the jupyter notebook file.
-        path_to_notes: string
+        path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
             where the code is being ran.
     
-    Output:
-    -------
-        : string
+    Returns:
+    --------
+        : str
             The desired title of the notebook or None if not found.
 
     """
@@ -193,29 +269,28 @@ def get_notebook_title(nb_name, path_to_notes='.'):
             return cell.source[1:].splitlines()[0].strip()
 
 
-def get_notebook_full_entry(nb_name, path_to_notes='.'):
-    """
-    Returns the full entry of a notebook.
+def get_notebook_full_entry(nb_name: str, path_to_notes: str='.') -> list:
+    """Returns the full entry of a notebook.
     
     This entry is to be used for the link to the notebook from the
     table of contents and from the navigators.
 
-    Input:
-    ------
-        nb_name: string
+    Arguments:
+    ----------
+        nb_name: str
             The name of the jupyter notebook file. 
-        path_to_notes: string
+        path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
             where the code is being ran.
 
-    Output:
-    -------
-        markdown_entry: string
+    Returns:
+    --------
+        markdown_entry: str
             The type of markdown header or identation for the entry in
             Table of Contents
         
-        notebook_entry: strings
+        notebook_entry: str
             The full notebook entry, with the title, preceeded, 
             depending on the case, of the Chapter and Section numbers
             or letters.
@@ -241,8 +316,8 @@ def get_notebook_full_entry(nb_name, path_to_notes='.'):
     
     return markdown_entry, num_entry, title
 
-def get_notebook_entry(nb_name, path_to_notes='.', 
-                       show_full_entry=True):
+def get_notebook_entry(nb_name: str, path_to_notes: str='.', 
+                       show_full_entry: bool = True) -> list:
     """Returns the entry of a notebook.
     
     This entry is to be used for the link to the notebook from the
@@ -252,11 +327,11 @@ def get_notebook_entry(nb_name, path_to_notes='.',
     or simply the title of the notebook, provided by the function
     'get_notebook_title()'.
 
-    Input:
-    ------
-        nb_name: string
+    Arguments:
+    ----------
+        nb_name: str
             The name of the jupyter notebook file. 
-        path_to_notes: string
+        path_to_notes: str
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
             where the code is being ran.
@@ -265,13 +340,13 @@ def get_notebook_entry(nb_name, path_to_notes='.',
             of the notebook in the table of contents (if True) or just 
             the title (if False).
 
-    Output:
-    -------
-        markdown_entry: string
+    Returns:
+    --------
+        markdown_entry: str
             The type of markdown header or identation for the entry in
             Table of Contents
         
-        entry: strings
+        entry: str
             A string with the entry name.
 
     """
@@ -282,6 +357,28 @@ def get_notebook_entry(nb_name, path_to_notes='.',
     return entry   
 
 def yield_contents(path_to_notes='.', show_full_entry_in_toc=True):
+    """Generator function with entries for each of the indexed notebooks.
+
+    It takes all the indexed notebooks and it creates a generator 
+    function to iterate from one notebook to the next, returning, 
+    each time, the navigator entry associated with that notebook.
+
+    Arguments:
+    ----------
+        path_to_notes: str
+            The path to the directory that contains the notebooks, 
+            either the absolute path or the path relative from 
+            where the code is being ran.
+        show_full_entry_in_toc: bool
+            Whether to display the navigator with the chapter
+            and section number of each notebook or just their title.
+
+    Returns:
+    --------
+        : str
+        Next navigator entry in the iterator
+    
+    """
     for nb_name in indexed_notebooks(path_to_notes):
         markdown_entry, num_entry, title = get_notebook_full_entry(nb_name, path_to_notes)
         if show_full_entry_in_toc:
@@ -290,12 +387,27 @@ def yield_contents(path_to_notes='.', show_full_entry_in_toc=True):
             yield f'{markdown_entry}[{title}]({nb_name})\n'
 
 def get_contents(path_to_notes='.', show_full_entry_in_toc=True):
-    """
-    Returns the 'Table of Contents'.
+    """Returns the 'Table of Contents'.
 
     Returns a string with the 'Table of Contents' constructed 
     from the collection of notebooks in the folder indicated by
     the argument 'path_to_notes'.
+
+    Arguments:
+    ----------
+        path_to_notes: str
+            The path to the directory that contains the notebooks, 
+            either the absolute path or the path relative from 
+            where the code is being ran.
+        show_full_entry_in_toc: bool
+            Whether to display the table of contents with the chapter
+            and section number of each notebook or just their title.
+
+    Returns:
+    --------
+        : str
+        The table of contents.
+
     """
 
     contents = ""
@@ -305,7 +417,20 @@ def get_contents(path_to_notes='.', show_full_entry_in_toc=True):
     return contents
 
 def add_contents(toc_nb_name, path_to_notes='.',
-                 show_full_entry_in_toc=True):
+        show_full_entry_in_toc=True):
+
+    """Adds the table of contentes to a selected notebook.
+
+    It adds the table of contents, generated the collection of notebooks
+    contained in the directory 'path_to_notes' to the notebook 'toc_nb_name'.
+    The inclusion, or not, of the Chapter and Section numbers in the table 
+    of contents is indicaded by the argument 'show_full_entry_in_toc'.
+
+    Arguments:
+    ----------
+
+
+    """    
     # error handling
     assert(type(path_to_notes)==str), "Argument 'path_to_notes' should be a string"
     assert(type(toc_nb_name)==str), "Argument 'toc_nb_name' should be a string"
@@ -548,7 +673,6 @@ def bind(*arg, **kargs):
         bind_from_arguments(**kargs)
     else:
         bind_from_arguments(arg[0], **kargs)
-    return
 
 if __name__ == '__main__':
     if len(sys.argv) == 1 or sys.argv[1] == '--help' or sys.argv[1] == '-h':
