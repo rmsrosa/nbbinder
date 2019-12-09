@@ -32,7 +32,7 @@ TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"
 HEADER_MARKER = "<!--HEADER-->"   
 NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 
-def indexed_notebooks(path_to_notes='.'):
+def indexed_notebooks(path_to_notes: str=''):
     """Returns a sorted list with the filenames of the 'indexed notebooks'.
 
     The notebooks are expected to be in the folder indicated by the
@@ -53,10 +53,6 @@ def indexed_notebooks(path_to_notes='.'):
             A list with the filenames of the notebooks that match 
             the regular expression (the 'indexed notebooks'), 
             ordered by the lexicographycal order.
-
-    Raises:
-    -------
-        No exceptions implemented yet.
     
     """
     return sorted(nb for nb in os.listdir(path_to_notes) if REG.match(nb))
@@ -74,7 +70,7 @@ def is_index(g: str) -> bool:
     else:
         return False
 
-def increase_index(g: str):
+def increase_index(g: str) -> str:
     """Increases an index by one.
 
     If the index is numeric, in the range '00' to '98', it returns 
@@ -127,7 +123,7 @@ def increase_index(g: str):
         g = g[0] + chr(ord(g[1])+1)
     return g
 
-def restructure(path_to_notes='.'):
+def restructure(path_to_notes: str='.'):
     """Includes a notebook in the colllection.
 
     Checks whether there is any notebook that matches the regular expression
@@ -140,10 +136,6 @@ def restructure(path_to_notes='.'):
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
             where the code is being ran.
-
-    Raises:
-    -------
-        No exceptions implemented yet.
 
     """
 
@@ -193,7 +185,7 @@ def restructure(path_to_notes='.'):
             os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new), os.path.join(path_to_notes, f_new))
 
 
-def is_marker_cell(MARKER, cell):
+def is_marker_cell(MARKER: str, cell: nbformat.notebooknode.NotebookNode) -> bool:
     """Checks where the given cell starts with the given MARKER.
     
     Arguments:
@@ -356,7 +348,7 @@ def get_notebook_entry(nb_name: str, path_to_notes: str='.',
         entry = get_notebook_title(nb_name, path_to_notes)
     return entry   
 
-def yield_contents(path_to_notes='.', show_full_entry_in_toc=True):
+def yield_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
     """Generator function with entries for each of the indexed notebooks.
 
     It takes all the indexed notebooks and it creates a generator 
@@ -369,6 +361,7 @@ def yield_contents(path_to_notes='.', show_full_entry_in_toc=True):
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
             where the code is being ran.
+
         show_full_entry_in_toc: bool
             Whether to display the navigator with the chapter
             and section number of each notebook or just their title.
@@ -386,7 +379,7 @@ def yield_contents(path_to_notes='.', show_full_entry_in_toc=True):
         else:
             yield f'{markdown_entry}[{title}]({nb_name})\n'
 
-def get_contents(path_to_notes='.', show_full_entry_in_toc=True):
+def get_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
     """Returns the 'Table of Contents'.
 
     Returns a string with the 'Table of Contents' constructed 
@@ -399,6 +392,7 @@ def get_contents(path_to_notes='.', show_full_entry_in_toc=True):
             The path to the directory that contains the notebooks, 
             either the absolute path or the path relative from 
             where the code is being ran.
+
         show_full_entry_in_toc: bool
             Whether to display the table of contents with the chapter
             and section number of each notebook or just their title.
@@ -416,21 +410,31 @@ def get_contents(path_to_notes='.', show_full_entry_in_toc=True):
     
     return contents
 
-def add_contents(toc_nb_name, path_to_notes='.',
-        show_full_entry_in_toc=True):
-
+def add_contents(toc_nb_name: str, path_to_notes: str='.',
+        show_full_entry_in_toc: bool=True):
     """Adds the table of contentes to a selected notebook.
 
-    It adds the table of contents, generated the collection of notebooks
-    contained in the directory 'path_to_notes' to the notebook 'toc_nb_name'.
-    The inclusion, or not, of the Chapter and Section numbers in the table 
-    of contents is indicaded by the argument 'show_full_entry_in_toc'.
+    It adds the table of contents, generated from the collection of 
+    notebooks in the directory 'path_to_notes', to the notebook 
+    'toc_nb_name'. The inclusion, or not, of the Chapter and Section 
+    numbers in the table of contents is indicaded by the argument 'show_full_entry_in_toc'.
 
     Arguments:
     ----------
+        toc_nb_name: str
+            filename of the notebook in which the table of contents
+            is to be inserted
 
+        path_to_notes: str
+            The path to the directory that contains the notebooks, 
+            either the absolute path or the path relative from 
+            where the code is being ran.        
 
-    """    
+        show_full_entry_in_toc: bool
+            Whether to display the navigator with the chapter
+            and section number of each notebook or just their title.
+
+    """
     # error handling
     assert(type(path_to_notes)==str), "Argument 'path_to_notes' should be a string"
     assert(type(toc_nb_name)==str), "Argument 'toc_nb_name' should be a string"
@@ -462,7 +466,23 @@ def add_contents(toc_nb_name, path_to_notes='.',
 
     nbformat.write(toc_nb, toc_nb_file)
 
-def add_headers(header, path_to_notes='.'):
+def add_headers(header: str='', path_to_notes: str='.'):
+    """Adds header to each notebook in the collection.
+
+    It adds the provided 'header' as the first cell of each notebook
+    in the collection of indexed notebooks in the folder 'path_to_notes'.
+
+    Arguments:
+    ----------
+        header: str
+            The string with the contents to be included in the header cell.
+
+        path_to_notes: str
+            The path to the directory that contains the notebooks, 
+            either the absolute path or the path relative from 
+            where the code is being ran.
+
+    """
     for nb_name in indexed_notebooks(path_to_notes):
         nb_file = os.path.join(path_to_notes, nb_name)
         nb = nbformat.read(nb_file, as_version=4)
@@ -480,12 +500,13 @@ def prev_this_next(it):
     next(c)
     return zip(itertools.chain([None], a), b, itertools.chain(c, [None]))
 
-def get_navigator_entries(core_navigators = [], path_to_notes='.', 
-                          user = '', repository = '', 
-                          branch = '',
-                          github_nb_dir = '', 
-                          github_io_slides_dir = '',
-                          show_full_entry_in_nav = True):
+def get_navigator_entries(core_navigators: list=[], 
+        path_to_notes: str='.', 
+        user: str='', repository: str='', 
+        branch: str='',
+        github_nb_dir: str='', 
+        github_io_slides_dir: str='',
+        show_full_entry_in_nav: bool=True):
 
     PREV_TEMPLATE = "[<- {title}]({url}) "
     CENTER_TEMPLATE = "| [{title}]({url}) "
