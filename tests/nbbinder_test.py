@@ -37,7 +37,7 @@ def create_notebooks(nb_dir, nb_filenames):
 
 if __name__ == '__main__':
 
-    print(f"# Changing to directory {os.path.dirname(__file__)}")
+    print("# Changing to directory {}".format(os.path.dirname(__file__)))
     os.chdir(os.path.dirname(__file__))
 
     nb_alice = [
@@ -56,10 +56,10 @@ if __name__ == '__main__':
         "12.00-Alice's_Evidence.ipynb"
     ]
 
-    print(f"# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_alice')}...")
+    print("# Creating notebooks in {} ...".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
     create_notebooks('nb_alice', nb_alice)
     print('... notebooks created')
-    print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_alice')}")
+    print("\n# Reestructuring the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
     nbb.restructure('nb_alice')
 
     print("\n# Binding notebooks with config file 'config_nb_alice.yml'")
@@ -106,23 +106,23 @@ if __name__ == '__main__':
         'BA.00-Index.ipynb'
     ]
 
-    print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar')}")
+    print("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar')))
     create_notebooks('nb_grammar', nb_grammar)
-    print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar')}")
+    print("\n# Reestructuring the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar')))
     nbb.restructure('nb_grammar')
 
-    print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')}")
+    print("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     create_notebooks('nb_grammar_bound', nb_grammar)
-    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar.yml'")
+    print("\n# Binding the notebooks in {} with 'config_nb_grammar.yml'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind('config_nb_grammar.yml')
 
-    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar_no_header.yml'")
+    print("\n# Binding the notebooks in {} with 'config_nb_grammar_no_header.yml'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind('config_nb_grammar_book.yml')
 
-    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'config_nb_grammar_book.yml'")
+    print("\n# Binding the notebooks in {} with 'config_nb_grammar_book.yml'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind('config_nb_grammar_no_header.yml')
 
-    print(f"\n# Binding the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')} with 'nbb.bind()'")
+    print("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind(path_to_notes='nb_grammar_bound',
             toc_nb_name='00.00-Front_Page.ipynb',
             show_full_entry_in_toc=True,
@@ -156,7 +156,7 @@ if __name__ == '__main__':
         'BB.00-Index.ipynb'
     ]
 
-    print(f"\n# Creating notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_missing')}")
+    print("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_missing')))
     create_notebooks('nb_grammar_missing', nb_grammar_missing)
-    print(f"\n# Reestructuring the notebooks in {os.path.join(os.path.dirname(__file__), 'nb_grammar_missing')}")    
+    print("\n# Reestructuring the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_missing')))    
     nbb.restructure('nb_grammar_missing')

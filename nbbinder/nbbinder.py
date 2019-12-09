@@ -177,7 +177,7 @@ def restructure(path_to_notes: str='.'):
         for f, f_new in zip(nbfiles, nbfiles_new):
             count +=1
             if f != f_new:
-                print(f'- replacing {f} with {f_new}')
+                print('- replacing {0} with {1}'.format(f, f_new))
             os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_new))
         count = 0
         for f_new in nbfiles_new:
@@ -228,7 +228,7 @@ def remove_marker_cell(MARKER: str, path_to_notes: str='.'):
             if not is_marker_cell(MARKER, cell):
                 new_cells.append(cell)
             else:
-                print(f"- removing '{MARKER}' cell from {nb_name}")
+                print("- removing '{}' cell from {}".format(MARKER, nb_name))
 
         nb.cells = new_cells
         nbformat.write(nb, nb_file)
@@ -301,10 +301,10 @@ def get_notebook_full_entry(nb_name: str, path_to_notes: str='.') -> list:
         num_entry = ''
     elif section=='00':
         markdown_entry = '### '
-        num_entry = f'{chapter_clean}. '
+        num_entry = '{}. '.format(chapter_clean)
     else:
         markdown_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
-        num_entry = f'{chapter_clean}.{int(section)}. '
+        num_entry = '{}.{}. '.format(chapter_clean, int(section))
     
     return markdown_entry, num_entry, title
 
@@ -375,9 +375,9 @@ def yield_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
     for nb_name in indexed_notebooks(path_to_notes):
         markdown_entry, num_entry, title = get_notebook_full_entry(nb_name, path_to_notes)
         if show_full_entry_in_toc:
-            yield f'{markdown_entry}[{num_entry + title}]({nb_name})\n'
+            yield '{}[{}]({})\n'.format(markdown_entry, num_entry + title, nb_name)
         else:
-            yield f'{markdown_entry}[{title}]({nb_name})\n'
+            yield '{}[{}]({})\n'.format(markdown_entry, title, nb_name)
 
 def get_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
     """Returns the 'Table of Contents'.
@@ -455,9 +455,9 @@ def add_contents(toc_nb_name: str, path_to_notes: str='.',
             
     if toc_cell_found:
         nbformat.write(toc_nb, toc_nb_file)
-        print(f'- Table of contents updated in {toc_nb_name}')
+        print('- Table of contents updated in {}'.format(toc_nb_name))
     else:
-        print(f'* No markdown cell starting with {TOC_MARKER} found in {toc_nb_name}')
+        print('* No markdown cell starting with {} found in {}'.format(TOC_MARKER, toc_nb_name))
         print("- inserting table of contents in {0}".format(toc_nb_name))
         if toc_nb.cells and is_marker_cell(NAVIGATOR_MARKER, toc_nb.cells[-1]):
             toc_nb.cells.insert(-1, new_markdown_cell(source=contents))
