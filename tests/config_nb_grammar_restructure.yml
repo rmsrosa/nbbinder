@@ -1,6 +1,8 @@
 directory:
   path_to_notes: nb_grammar_bound
 
+restructure_notebooks: True
+
 contents:
   toc_nb_name: 00.00-Front_Page.ipynb
   show_index_in_toc: True
@@ -11,5 +13,10 @@ header:
 navigator:
   core_navigators: 
     - 00.00-Front_Page.ipynb
-    - BB.00-Bibliography.ipynb
-  show_index_in_nav: False    
+  user: rmsrosa
+  repository: nbbinder
+  branch: master
+  github_nb_dir: tests/nb_grammar_bound
+  show_colab: True
+  show_binder: True
+  show_index_in_nav: False

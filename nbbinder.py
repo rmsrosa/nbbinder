@@ -307,12 +307,12 @@ def get_notebook_full_entry(nb_name: str, path_to_notes: str='.') -> list:
     return markdown_entry, num_entry, title
 
 def get_notebook_entry(nb_name: str, path_to_notes: str='.', 
-                       show_full_entry: bool = True) -> list:
+                       show_index: bool = True) -> list:
     """Returns the entry of a notebook.
     
     This entry is to be used for the link to the notebook from the
     table of contents and from the navigators. Depending on the
-    value of the argument `show_full_entry`, the entry can be either 
+    value of the argument `show_index`, the entry can be either 
     the full entry provided by the function `get_notebook_full_entry()`
     or simply the title of the notebook, provided by the function
     `get_notebook_title()`.
@@ -327,7 +327,7 @@ def get_notebook_entry(nb_name: str, path_to_notes: str='.',
         either the absolute path or the path relative from 
         where the code is being ran. It defaults to '.'.
 
-    show_full_entry : boolean
+    show_index : boolean
         Indicates whether to include the chapter and section numbers
         of the notebook in the table of contents (if True) or just 
         the title (if False).
@@ -341,13 +341,13 @@ def get_notebook_entry(nb_name: str, path_to_notes: str='.',
     entry : str
         A string with the entry name.
     """
-    if show_full_entry:
+    if show_index:
         entry = ''.join(list(get_notebook_full_entry(nb_name, path_to_notes)[1:3]))
     else:
         entry = get_notebook_title(nb_name, path_to_notes)
     return entry   
 
-def yield_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
+def yield_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
     """Generator function with entries for each of the indexed notebooks.
 
     It takes all the indexed notebooks and it creates a generator 
@@ -361,7 +361,7 @@ def yield_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
         either the absolute path or the path relative from 
         where the code is being ran. It defaults to '.'.
 
-    show_full_entry_in_toc : bool
+    show_index_in_toc : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
 
@@ -372,12 +372,12 @@ def yield_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
     """
     for nb_name in indexed_notebooks(path_to_notes):
         markdown_entry, num_entry, title = get_notebook_full_entry(nb_name, path_to_notes)
-        if show_full_entry_in_toc:
+        if show_index_in_toc:
             yield '{}[{}]({})\n'.format(markdown_entry, num_entry + title, nb_name)
         else:
             yield '{}[{}]({})\n'.format(markdown_entry, title, nb_name)
 
-def get_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
+def get_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
     """Returns the 'Table of Contents'.
 
     Returns a string with the 'Table of Contents' constructed 
@@ -391,7 +391,7 @@ def get_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
         either the absolute path or the path relative from 
         where the code is being ran. It defaults to '.'.
 
-    show_full_entry_in_toc : bool
+    show_index_in_toc : bool
         Whether to display the table of contents with the chapter
         and section number of each notebook or just their title.
 
@@ -402,19 +402,19 @@ def get_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
     """
 
     contents = ""
-    for item in yield_contents(path_to_notes, show_full_entry_in_toc):
+    for item in yield_contents(path_to_notes, show_index_in_toc):
         contents += item + "\n"
     
     return contents
 
 def add_contents(toc_nb_name: str, path_to_notes: str='.',
-        show_full_entry_in_toc: bool=True):
+        show_index_in_toc: bool=True):
     """Adds the table of contentes to a selected notebook.
 
     It adds the table of contents, generated from the collection of 
     notebooks in the directory `path_to_notes`, to the notebook 
     `toc_nb_name`. The inclusion, or not, of the Chapter and Section 
-    numbers in the table of contents is indicaded by the argument `show_full_entry_in_toc`.
+    numbers in the table of contents is indicaded by the argument `show_index_in_toc`.
 
     Parameters
     ----------
@@ -427,7 +427,7 @@ def add_contents(toc_nb_name: str, path_to_notes: str='.',
         either the absolute path or the path relative from 
         where the code is being ran. It defaults to '.'.
 
-    show_full_entry_in_toc : bool
+    show_index_in_toc : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
     """
@@ -436,7 +436,7 @@ def add_contents(toc_nb_name: str, path_to_notes: str='.',
     assert(type(toc_nb_name)==str), "Argument `toc_nb_name` should be a string"
 
     contents = TOC_MARKER + "\n\n"
-    for item in yield_contents(path_to_notes, show_full_entry_in_toc):
+    for item in yield_contents(path_to_notes, show_index_in_toc):
         contents += item + "\n"
 
     toc_nb_file = os.path.join(path_to_notes, toc_nb_name)
@@ -520,7 +520,7 @@ def get_navigator_entries(core_navigators: list=[],
         branch: str='master',
         github_nb_dir: str='.', 
         github_io_slides_dir: str='.',
-        show_full_entry_in_nav: bool=True):
+        show_index_in_nav: bool=True):
     """Iterable with the navigator info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and 
@@ -564,7 +564,7 @@ def get_navigator_entries(core_navigators: list=[],
         The path to the slides folder from the user.github.io site.  
         It defaults to '.'.
 
-    show_full_entry_in_nav : bool
+    show_index_in_nav : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
         It defaults to True.
@@ -601,17 +601,17 @@ def get_navigator_entries(core_navigators: list=[],
         navbar = ""
         if prev_nb:
             entry = get_notebook_entry(prev_nb, path_to_notes, 
-                                       show_full_entry_in_nav)
+                                       show_index_in_nav)
             navbar += PREV_TEMPLATE.format(title=entry, url=prev_nb)
 
         for center_nb in core_navigators:
             entry = get_notebook_entry(center_nb, path_to_notes, 
-                                       show_full_entry_in_nav)
+                                       show_index_in_nav)
             navbar += CENTER_TEMPLATE.format(title=entry, url=center_nb)
 
         if next_nb:
             entry = get_notebook_entry(next_nb, path_to_notes, 
-                                       show_full_entry_in_nav)
+                                       show_index_in_nav)
             navbar += NEXT_TEMPLATE.format(title=entry, url=next_nb)
 
         this_colab_link = COLAB_LINK.format(user=user,
@@ -636,7 +636,7 @@ def add_navigators(core_navigators: list=[], path_to_notes: str='.',
                    github_io_slides_dir: str='.',
                    show_colab: bool=False, show_binder: bool=False, 
                    show_slides: bool=False,
-                   show_full_entry_in_nav: bool=True):
+                   show_index_in_nav: bool=True):
     """Adds navigators to each notebook in the collection.
 
     Adds top and bottom navigators to each notebook in the collection 
@@ -691,7 +691,7 @@ def add_navigators(core_navigators: list=[], path_to_notes: str='.',
         Whether to display the Google Colab badge or not. It defaults
         to False.
 
-    show_full_entry_in_nav : bool
+    show_index_in_nav : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
         It defaults to True.
@@ -700,7 +700,7 @@ def add_navigators(core_navigators: list=[], path_to_notes: str='.',
                           user, repository, branch, 
                           github_nb_dir,
                           github_io_slides_dir, 
-                          show_full_entry_in_nav):
+                          show_index_in_nav):
         nb = nbformat.read(nb_file, as_version=4)
         nb_name = os.path.basename(nb_file)
 
@@ -763,8 +763,8 @@ def bind_from_arguments(path_to_notes: str='.',
         github_io_slides_dir: str='.',
         show_colab: bool=False, show_binder: bool=False, 
         show_slides: bool=False,
-        show_full_entry_in_toc: bool=True,
-        show_full_entry_in_nav: bool=True):
+        show_index_in_toc: bool=True,
+        show_index_in_nav: bool=True):
     """Binds the collection of notebooks from the arguments provided.
 
     Parameters
@@ -827,11 +827,11 @@ def bind_from_arguments(path_to_notes: str='.',
         Whether to display the Google Colab badge or not. It defaults
         to False.
 
-    show_full_entry_in_toc : bool
+    show_index_in_toc : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
 
-    show_full_entry_in_nav : bool
+    show_index_in_nav : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
         It defaults to True.
@@ -845,7 +845,7 @@ def bind_from_arguments(path_to_notes: str='.',
 
     add_contents(toc_nb_name=toc_nb_name, 
                  path_to_notes=path_to_notes,
-                 show_full_entry_in_toc=show_full_entry_in_toc)
+                 show_index_in_toc=show_index_in_toc)
 
     add_headers(header = header, path_to_notes = path_to_notes)
 
@@ -858,7 +858,7 @@ def bind_from_arguments(path_to_notes: str='.',
                    show_colab=show_colab, 
                    show_binder=show_binder,
                    show_slides=show_slides,
-                   show_full_entry_in_nav=show_full_entry_in_nav)
+                   show_index_in_nav=show_index_in_nav)
 
 def bind_from_configfile(config_file: str):
     """Binds the collection of notebooks from a configuration file.
@@ -887,21 +887,17 @@ def bind_from_configfile(config_file: str):
     remove_marker_cells(HEADER_MARKER, path_to_notes)
     remove_marker_cells(NAVIGATOR_MARKER, path_to_notes)
 
-    if 'book' in config:
-        bind_from_arguments(**config['book'], 
-             path_to_notes=path_to_notes)
-    else:
-        if 'contents' in config:
-            add_contents(**config['contents'], 
-                path_to_notes=path_to_notes)
+    if 'contents' in config:
+        add_contents(**config['contents'], 
+            path_to_notes=path_to_notes)
 
-        if 'header' in config:
-            add_headers(**config['header'], 
-                path_to_notes=path_to_notes)
+    if 'header' in config:
+        add_headers(**config['header'], 
+            path_to_notes=path_to_notes)
 
-        if 'navigator' in config:
-            add_navigators(**config['navigator'], 
-                path_to_notes=path_to_notes)
+    if 'navigator' in config:
+        add_navigators(**config['navigator'], 
+            path_to_notes=path_to_notes)
 
 def bind(*args, **kargs):
     """Binds the collection of notebooks.

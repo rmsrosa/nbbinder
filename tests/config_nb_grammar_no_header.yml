@@ -3,9 +3,9 @@ directory:
 
 contents:
   toc_nb_name: 00.00-Front_Page.ipynb
-  show_full_entry_in_toc: True
+  show_index_in_toc: True
 
 navigator:
   core_navigators: 
     - 00.00-Front_Page.ipynb
-  show_full_entry_in_nav: False
+  show_index_in_nav: False

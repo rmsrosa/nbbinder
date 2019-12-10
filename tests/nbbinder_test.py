@@ -68,7 +68,7 @@ if __name__ == '__main__':
     print("\n# Binding notebooks with config file 'config_nb_alice.yml'")
     nbb.bind(path_to_notes="nb_alice",
         toc_nb_name="00.00-Alice's_Adventures_in_Wonderland.ipynb",
-        show_full_entry_in_toc=True,
+        show_index_in_toc=True,
         header="[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)",
         core_navigators=[
             "00.00-Alice's_Adventures_in_Wonderland.ipynb"
@@ -79,7 +79,7 @@ if __name__ == '__main__':
         github_nb_dir='tests/nb_alice',
         show_colab=True,
         show_binder=True,
-        show_full_entry_in_nav=False)
+        show_index_in_nav=False)
 
     nb_grammar = [
         '00.00-Front_Page.ipynb',
@@ -117,19 +117,19 @@ if __name__ == '__main__':
     nbb.bind('config_nb_grammar.yml')
 
     print("\n# Binding the notebooks in {} with 'config_nb_grammar_no_header.yml'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
-    nbb.bind('config_nb_grammar_book.yml')
-
-    print("\n# Binding the notebooks in {} with 'config_nb_grammar_book.yml'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind('config_nb_grammar_no_header.yml')
+
+    print("\n# Binding the notebooks in {} with 'config_nb_grammar_restructure.yml'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
+    nbb.bind('config_nb_grammar_restructure.yml')
 
     print("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind(path_to_notes='nb_grammar_bound',
             toc_nb_name='00.00-Front_Page.ipynb',
-            show_full_entry_in_toc=True,
+            show_index_in_toc=True,
             header="[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)",
             core_navigators=['00.00-Front_Page.ipynb', 
             'BB.00-Bibliography.ipynb'],
-            show_full_entry_in_nav=False)
+            show_index_in_nav=False)
 
     nb_grammar_insertion = [
         '00.00-Front_Page.ipynb',
