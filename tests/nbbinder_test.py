@@ -22,7 +22,7 @@ def create_notebooks(nb_dir, nb_filenames):
 
     for nb_filename in nb_filenames:
         nb = nbformat.v4.new_notebook()
-        nb_reg = nbb.nbbinder.REG_STAR.match(nb_filename)
+        nb_reg = nbb.REG_STAR.match(nb_filename)
         nb.cells.insert(0, new_markdown_cell('# ' + nb_reg.group(5).replace('_', ' ').replace('+u003f','?')))
         if nb_reg.group(1) == '00':
             text = "That's all for this part of the Front Matter"

@@ -7,15 +7,13 @@ import os
 import re
 import setuptools
 
-import nbbinder as nbb
-
 def get_version():
     # Regular expression to capture version number
     # Tested in https://regexr.com/
     REG_VERSION = re.compile(r'\b(__version__\s*=\s*[\'"])([0-9]+[.][0-9]+(a|b|)[0-9]*)(["\'])')
 
     basedir = os.path.dirname(__file__)
-    with open(os.path.join(basedir, 'nbbinder.py')) as f:
+    with open(os.path.join(basedir, 'nbbinder/nbbinder.py')) as f:
         for line in f:
             if REG_VERSION.match(line):
                 return REG_VERSION.match(line).group(2)
@@ -23,7 +21,7 @@ def get_version():
 
 setuptools.setup(
     name='nbbinder',
-    version=nbb.__version__,
+    version=get_version(),
     author='Ricardo M. S. Rosa',
     author_email='rmsrosa@gmail.com',
     description='Generates a navigable book-like structure to a collection of jupyter notebooks',
@@ -34,8 +32,7 @@ setuptools.setup(
         "Documentation": "https://nbbinder.readthedocs.io/",
         "Source Code": "https://github.com/rmsrosa/nbbinder/nbbinder",
     },
-#    packages=setuptools.find_packages(), 
-    py_modules=["nbbinder"]
+    packages=setuptools.find_packages(), # or try py_modules=["nbbinder"]
     classifiers=[
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',

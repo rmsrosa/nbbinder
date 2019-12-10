@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """
-Gives a navigable book-like structure to a collection of Jupyter notebooks. Yes!
+Gives a navigable book-like structure to a collection of Jupyter notebooks.
 """
 
-__author__ = "Ricardo M. S. Rosa"
-__mantainer__ = __author__
-__email__ = "rmsrosa@gmail.com"
+__author__ = "Ricardo M. S. Rosa <rmsrosa@gmail.com>"
 __homepage__ = "http://github.com/rmsrosa/nbbinder"
 __copyright__ = """Original work Copyright (c) 2016 Jacob VanderPlas
 Modified work Copyright (c) 2019 Ricardo M S Rosa
