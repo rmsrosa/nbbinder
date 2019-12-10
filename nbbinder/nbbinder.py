@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Gives a navigable book-like structure to a collection of Jupyter notebooks.
 """
@@ -205,7 +204,7 @@ def is_marker_cell(MARKER: str, cell: nbformat.notebooknode.NotebookNode) -> boo
     """
     return  cell.source.startswith(MARKER)
 
-def remove_marker_cell(MARKER: str, path_to_notes: str='.'):
+def remove_marker_cells(MARKER: str, path_to_notes: str='.'):
     """Removes any MARKER cell from the indexed notebooks in path_to_notes.
     
     Parameters
@@ -366,10 +365,10 @@ def yield_contents(path_to_notes: str='.', show_full_entry_in_toc: bool=True):
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
 
-    Returns
-    -------
+    Yields
+    ------
     : str
-    Next navigator entry in the iterator
+        Next navigator entry in the iterator
     """
     for nb_name in indexed_notebooks(path_to_notes):
         markdown_entry, num_entry, title = get_notebook_full_entry(nb_name, path_to_notes)
@@ -491,8 +490,27 @@ def add_headers(header: str='', path_to_notes: str='.'):
             nb.cells.insert(0, new_markdown_cell(HEADER_MARKER + '\n' + header))
         nbformat.write(nb, nb_file)
 
-def prev_this_next(it):
-    a, b, c = itertools.tee(it,3)
+def prev_this_next(collection):
+    """Iterable with previous, current, and next notebooks in `collection`.
+
+    It reads a list of indexed notebooks and gives an iterable with the
+    previous, current, and next notebooks for each notebook in the list.
+
+    Parameters
+    ----------
+    collection : list of str
+        The collection of indexed notebooks.
+
+    Yields
+    ------
+    : str
+        A string with the filename of the previous notebook in the iteration.
+    : str
+        A string with the filename of the current notebook in the iteration.
+    : str
+        A string with the filename of the next notebook in the iteration.
+    """
+    a, b, c = itertools.tee(collection,3)
     next(c)
     return zip(itertools.chain([None], a), b, itertools.chain(c, [None]))
 
@@ -503,7 +521,68 @@ def get_navigator_entries(core_navigators: list=[],
         github_nb_dir: str='.', 
         github_io_slides_dir: str='.',
         show_full_entry_in_nav: bool=True):
+    """Iterable with the navigator info for each notebook.
 
+    It reads the indexed notebooks in the folder `path_to_notes` and 
+    generates an iterable with the information needed to build the
+    navigators for each notebook.
+
+    Parameters
+    ----------
+    core_navigators : list of str
+        A lists of strings with the filenames of each notebook to be
+        included in the navigators, in between the links to the
+        "previous" and the "next" notebooks. It defaults to the empty
+        list.
+
+    path_to_notes : str
+        The path to the directory that contains the notebooks, 
+        either the absolute path or the path relative from 
+        where the code is being ran. It defaults to '.'.
+
+    user : str
+        The github username of the onwer of the repository in which 
+        the notebooks reside, in case one wants to add a badge to 
+        open up the notebooks in one of the configured cloud 
+        computing platforms (google colab and binder). It defaults to 
+        the empty string.
+
+    repository : str
+        The name of the github repository mentioned in the description 
+        of the `user` argument. It defaults to the empty string.
+
+    branch : str
+        The name of the branch of the github repository mentioned in
+        the description of the `user` argument. It defaults to 'master'.
+
+    github_nb_dir : str
+        The path to the notebooks, from the root directory of the
+        repository mentioned in the description of the `user` argument.  
+        It defaults to '.'.
+    
+    github_io_slides_dir : str
+        The path to the slides folder from the user.github.io site.  
+        It defaults to '.'.
+
+    show_full_entry_in_nav : bool
+        Whether to display the navigator with the chapter
+        and section number of each notebook or just their title.
+        It defaults to True.
+
+    Yields
+    ------
+    : str
+        Path to current notebook in the iterator.
+    : str
+        Contents of the navigation bar for the current notebook in the
+        iterator.
+    : str
+        The google colab link for the current notebook in the iterator.
+    : str
+        The binder link for the current notebook in the iterator.
+    : str
+        The slides link for the current notebook in the iterator.      
+    """
     PREV_TEMPLATE = "[<- {title}]({url}) "
     CENTER_TEMPLATE = "| [{title}]({url}) "
     NEXT_TEMPLATE = "| [{title} ->]({url})"
@@ -565,7 +644,7 @@ def add_navigators(core_navigators: list=[], path_to_notes: str='.',
 
     Parameters
     ----------
-    core_navigators : list
+    core_navigators : list of str
         A lists of strings with the filenames of each notebook to be
         included in the navigators, in between the links to the
         "previous" and the "next" notebooks. It defaults to the empty
@@ -702,7 +781,7 @@ def bind_from_arguments(path_to_notes: str='.',
     header : str
         The string with the contents to be included in the header cell.
 
-    core_navigators : list
+    core_navigators : list of str
         A lists of strings with the filenames of each notebook to be
         included in the navigators, in between the links to the
         "previous" and the "next" notebooks. It defaults to the empty
@@ -761,8 +840,8 @@ def bind_from_arguments(path_to_notes: str='.',
     if restructure_notebooks:
         restructure(path_to_notes)
 
-    remove_marker_cell(HEADER_MARKER, path_to_notes)
-    remove_marker_cell(NAVIGATOR_MARKER, path_to_notes)
+    remove_marker_cells(HEADER_MARKER, path_to_notes)
+    remove_marker_cells(NAVIGATOR_MARKER, path_to_notes)
 
     add_contents(toc_nb_name=toc_nb_name, 
                  path_to_notes=path_to_notes,
@@ -805,8 +884,8 @@ def bind_from_configfile(config_file: str):
         if config['restructure_notebooks']:
             restructure(path_to_notes)
 
-    remove_marker_cell(HEADER_MARKER, path_to_notes)
-    remove_marker_cell(NAVIGATOR_MARKER, path_to_notes)
+    remove_marker_cells(HEADER_MARKER, path_to_notes)
+    remove_marker_cells(NAVIGATOR_MARKER, path_to_notes)
 
     if 'book' in config:
         bind_from_arguments(**config['book'], 
