@@ -13,10 +13,10 @@ header:
 navigator:
   core_navigators: 
     - 00.00-Front_Page.ipynb
+  show_index_in_nav: False
   user: rmsrosa
   repository: nbbinder
   branch: master
   github_nb_dir: tests/nb_grammar_bound
   show_colab: True
   show_binder: True
-  show_index_in_nav: False

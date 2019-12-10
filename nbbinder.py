@@ -847,7 +847,7 @@ def bind_from_arguments(path_to_notes: str='.',
                  path_to_notes=path_to_notes,
                  show_index_in_toc=show_index_in_toc)
 
-    add_headers(header = header, path_to_notes = path_to_notes)
+    add_headers(header=header, path_to_notes=path_to_notes)
 
     add_navigators(core_navigators=core_navigators,
                    path_to_notes=path_to_notes, 
