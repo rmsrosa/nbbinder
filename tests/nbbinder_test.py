@@ -139,7 +139,7 @@ if __name__ == '__main__':
         '02.00-Parts_of_Speech.ipynb',
         '04.01-Nouns.ipynb',
         '04.01i-Verbs.ipynb',
-        '04.02j-Adjectives.ipynb',
+        '04.02-Adjectives.ipynb',
         '04.03-Adverbs.ipynb',
         '05.00-Sentences.ipynb',
         '05.00i-Complex_Sentences.ipynb',
@@ -147,12 +147,12 @@ if __name__ == '__main__':
         '06.00-Paragraphs.ipynb',
         '06.01-Descriptive.ipynb',
         '06.01i-Expository.ipynb',
-        '06.02ii-Narrative.ipynb',
-        '06.04-Persuasive.ipynb',
+        '06.01ii-Narrative.ipynb',
+        '06.02-Persuasive.ipynb',
         '07.00-Conclusion.ipynb',
         'AA.00-Appendix.ipynb',
         'BA.00-Glossary.ipynb',
-        'BBi.00-Bibliography.ipynb',
+        'BAi.00-Bibliography.ipynb',
         'BB.00-Index.ipynb'
     ]
 
