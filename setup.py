@@ -32,10 +32,9 @@ setuptools.setup(
     url='https://github.com/rmsrosa/nbbinder',
     project_urls={
         "Documentation": "https://nbbinder.readthedocs.io/",
-        "Source Code": "https://github.com/rmsrosa/nbbinder/nbbinder",
+        "Source Code": "https://github.com/rmsrosa/nbbinder",
     },
-#    packages=setuptools.find_packages(), 
-    py_modules=["nbbinder"]
+    py_modules=["nbbinder"],
     classifiers=[
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
