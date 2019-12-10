@@ -58,13 +58,13 @@ The **header** cell is always the first one in the notebook, when present.
 
 The **navigator** cells appear in two places in each notebook: as the last cell, for the bottom navigators, and as either the first or the second cell, depending on whether there is a **header** cell or not.
 
-The **Table of Contents** cell can vary in position. It can be given a priori at some place in the *Table of Contents* notebook file, or it can be included automatically by **NBBinder**. In the former case, the author of the notebook is responsible for opening up a cell and typing up the marker in the beginning of the cell. In the later case, **NBBinder** will create the table of contents in either the second to last cell, if there is a bottom **navigator**, or as the very last cell, otherwise. It must be stressed that the module will first look for the marker somewhere in the notebook and use the corresponding cell if it finds it. Only if it doesn't find it is that it will add a cell as the last or second to last cell.
+The **Table of Contents** cell can vary in position. It can be given a priori at some place in the *Table of Contents* notebook file, or it can be inserted automatically by **NBBinder**. In the former case, the author of the notebook is responsible for opening up a cell and typing up the marker in the beginning of the cell. In the later case, **NBBinder** will create the table of contents in either the second to last cell, if there is a bottom **navigator**, or as the very last cell, otherwise. It must be stressed that the module will first look for the marker somewhere in the notebook and use the corresponding cell if it finds it. Only if it doesn't find it is that it will add a cell as the last or second to last cell.
 
 If **NBBinder** is ran again, it will look for the marker cells and rewrite them with the updated information, removing any previous data.
 
 **One *should not* add nor edit the markers for the *header* and the *navigators*, the code does that automatically.**
 
-**One *can* add or edit the marker for the *table of contents* to place it in a specific positions, but this is *not necessary* since the code will include it if it doesn't find it.**
+**One *can* add or edit the marker for the *table of contents* to place it in a specific positions, but this is *not necessary* since the code will insert one if it doesn't find it.**
 
 ## Restructuring the collection of notebooks
 

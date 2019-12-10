@@ -9,7 +9,7 @@ The main function in this package is called `bind()`. It reads a collection of J
 - adds a **Table of Contents** to a selected notebook file, with links to the other notebooks;
 - adds a **header** to each notebook, with custom informations;
 - adds, in the **header** and in the **footline** of each notebook, **navigator links**, to traverse  to the previous or the next notebook, or to other selected notebooks, such as the Table of Contents and the Bibliography;
-- includes, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com);
+- insert, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com);
 - **restructures** the notebooks, by automatically renaming the files, in case a new notebook is to be inserted in between other notebooks.
 
 ## Functions

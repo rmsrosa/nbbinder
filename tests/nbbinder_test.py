@@ -131,7 +131,7 @@ if __name__ == '__main__':
             'BB.00-Bibliography.ipynb'],
             show_full_entry_in_nav=False)
 
-    nb_grammar_missing = [
+    nb_grammar_insertion = [
         '00.00-Front_Page.ipynb',
         '01.00-Introduction.ipynb',
         '01a.00-Project_Requirements.ipynb',
@@ -156,7 +156,7 @@ if __name__ == '__main__':
         'BB.00-Index.ipynb'
     ]
 
-    print("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_missing')))
-    create_notebooks('nb_grammar_missing', nb_grammar_missing)
-    print("\n# Reestructuring the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_missing')))    
-    nbb.restructure('nb_grammar_missing')
+    print("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_insertion')))
+    create_notebooks('nb_grammar_insertion', nb_grammar_insertion)
+    print("\n# Reestructuring the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_insertion')))    
+    nbb.restructure('nb_grammar_insertion')
