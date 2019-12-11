@@ -24,7 +24,7 @@ from nbformat.v4.nbbase import new_markdown_cell
 # Regular expression for indexing the notebooks
 # Tested in https://regexr.com/
 REG = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|)-(.*)\.ipynb')
-REG_STAR = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])([a-z]+|)\.(\d{2}|)([a-z]+|)-(.*)\.ipynb')
+REG_INSERT = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])([a-z]+|)\.(\d{2}|)([a-z]+|)-(.*)\.ipynb')
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"    
@@ -124,7 +124,8 @@ def increase_index(g: str) -> str:
         g = g[0] + chr(ord(g[1])+1)
     return g
 
-def restructure(path_to_notes: str='.'):
+def restructure(path_to_notes: str='.', insert: bool=True, 
+        tighten: bool=False):
     """Includes a notebook in the colllection.
 
     Checks whether there is any notebook that matches the regular expression
@@ -139,16 +140,16 @@ def restructure(path_to_notes: str='.'):
         where the code is being ran. It defaults to '.'.
     """
 
-    nbfiles = sorted(nb for nb in os.listdir(path_to_notes) if REG_STAR.match(nb))
+    nbfiles = sorted(nb for nb in os.listdir(path_to_notes) if REG_INSERT.match(nb))
     nbfiles_new = nbfiles.copy()
-    additions = [1 if REG_STAR.match(nb).group(2) or REG_STAR.match(nb).group(4) else 0 for nb in nbfiles]
+    additions = [1 if REG_INSERT.match(nb).group(2) or REG_INSERT.match(nb).group(4) else 0 for nb in nbfiles]
 
-    if sum(additions):
+    if insert and sum(additions):
         for j in range(len(nbfiles)):
-            nbj_reg = REG_STAR.match(nbfiles_new[j])
+            nbj_reg = REG_INSERT.match(nbfiles_new[j])
             if nbj_reg.group(4):
                 for k in range(j,len(nbfiles)):
-                    nbk_reg = REG_STAR.match(nbfiles_new[k])
+                    nbk_reg = REG_INSERT.match(nbfiles_new[k])
                     if nbk_reg.group(1,2) == nbj_reg.group(1,2):
                         gk3 = nbk_reg.group(3)
                         if nbk_reg.group(1,2,3,4) == nbj_reg.group(1,2,3,4):
@@ -161,7 +162,7 @@ def restructure(path_to_notes: str='.'):
             if nbj_reg.group(2):
                 nbfiles_new[j] = nbfiles_new[j][:nbj_reg.start(2)] + nbfiles_new[j][nbj_reg.end(2):]
                 for k in range(j,len(nbfiles)):
-                    nbk_reg = REG_STAR.match(nbfiles_new[k])
+                    nbk_reg = REG_INSERT.match(nbfiles_new[k])
                     if nbk_reg.group(1)[0] == nbj_reg.group(1)[0]: 
                         gk1_new = increase_index(nbk_reg.group(1))
                         if nbk_reg.group(1,2) == nbj_reg.group(1,2):
@@ -169,6 +170,9 @@ def restructure(path_to_notes: str='.'):
                         else:
                             gk2_new = nbk_reg.group(2)
                         nbfiles_new[k] = gk1_new + gk2_new + '.' + nbk_reg.group(3) + nbk_reg.group(4) + '-' + nbk_reg.group(5) + '.ipynb'
+
+    if tighten:
+        pass
 
     if nbfiles == nbfiles_new:
         print('- no files need renaming, no restructuring needed')
@@ -881,8 +885,9 @@ def bind_from_configfile(config_file: str):
         path_to_notes = '.'
 
     if 'restructure_notebooks' in config:
-        if config['restructure_notebooks']:
-            restructure(path_to_notes)
+#        if config['restructure_notebooks']:
+#            restructure(path_to_notes)
+        restructure(path_to_notes, **config['restructure_notebooks'])
 
     remove_marker_cells(HEADER_MARKER, path_to_notes)
     remove_marker_cells(NAVIGATOR_MARKER, path_to_notes)

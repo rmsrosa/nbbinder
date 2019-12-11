@@ -1,7 +1,9 @@
 directory:
   path_to_notes: nb_grammar_bound
 
-restructure_notebooks: True
+restructure_notebooks: 
+  insert: True
+  tighten: False
 
 contents:
   toc_nb_name: 00.00-Front_Page.ipynb
