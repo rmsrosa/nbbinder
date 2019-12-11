@@ -264,7 +264,7 @@ def get_notebook_title(path_to_notes: str='.', nb_name: str=None) -> str:
             return cell.source[1:].splitlines()[0].strip()
 
 
-def get_notebook_full_entry(nb_name: str, path_to_notes: str='.') -> list:
+def get_notebook_full_entry(path_to_notes: str='.', nb_name: str=None) -> list:
     """Returns the full entry of a notebook.
     
     This entry is to be used for the link to the notebook from the
@@ -311,7 +311,7 @@ def get_notebook_full_entry(nb_name: str, path_to_notes: str='.') -> list:
     
     return markdown_entry, num_entry, title
 
-def get_notebook_entry(nb_name: str, path_to_notes: str='.', 
+def get_notebook_entry(path_to_notes: str='.', nb_name: str=None, 
                        show_index: bool = True) -> list:
     """Returns the entry of a notebook.
     
@@ -347,7 +347,7 @@ def get_notebook_entry(nb_name: str, path_to_notes: str='.',
         A string with the entry name.
     """
     if show_index:
-        entry = ''.join(list(get_notebook_full_entry(nb_name, path_to_notes)[1:3]))
+        entry = ''.join(list(get_notebook_full_entry(path_to_notes, nb_name)[1:3]))
     else:
         entry = get_notebook_title(path_to_notes, nb_name)
     return entry   
@@ -376,7 +376,7 @@ def yield_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
         Next navigator entry in the iterator
     """
     for nb_name in indexed_notebooks(path_to_notes):
-        markdown_entry, num_entry, title = get_notebook_full_entry(nb_name, path_to_notes)
+        markdown_entry, num_entry, title = get_notebook_full_entry(path_to_notes, nb_name)
         if show_index_in_toc:
             yield '{}[{}]({})\n'.format(markdown_entry, num_entry + title, nb_name)
         else:
@@ -605,17 +605,17 @@ def get_navigator_entries(core_navigators: list=[],
     for prev_nb, this_nb, next_nb in prev_this_next(indexed_notebooks(path_to_notes)):
         navbar = ""
         if prev_nb:
-            entry = get_notebook_entry(prev_nb, path_to_notes, 
+            entry = get_notebook_entry(path_to_notes, prev_nb, 
                                        show_index_in_nav)
             navbar += PREV_TEMPLATE.format(title=entry, url=prev_nb)
 
         for center_nb in core_navigators:
-            entry = get_notebook_entry(center_nb, path_to_notes, 
+            entry = get_notebook_entry(path_to_notes, center_nb, 
                                        show_index_in_nav)
             navbar += CENTER_TEMPLATE.format(title=entry, url=center_nb)
 
         if next_nb:
-            entry = get_notebook_entry(next_nb, path_to_notes, 
+            entry = get_notebook_entry(path_to_notes, next_nb, 
                                        show_index_in_nav)
             navbar += NEXT_TEMPLATE.format(title=entry, url=next_nb)
 
