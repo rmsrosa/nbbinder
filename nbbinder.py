@@ -412,7 +412,7 @@ def get_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
     
     return contents
 
-def add_contents(toc_nb_name: str, path_to_notes: str='.',
+def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
         show_index_in_toc: bool=True):
     """Adds the table of contentes to a selected notebook.
 
@@ -467,7 +467,7 @@ def add_contents(toc_nb_name: str, path_to_notes: str='.',
 
     nbformat.write(toc_nb, toc_nb_file)
 
-def add_headers(header: str='', path_to_notes: str='.'):
+def add_headers(path_to_notes: str='.', header: str=None):
     """Adds header to each notebook in the collection.
 
     It adds the provided `header`as the first cell of each notebook
@@ -519,10 +519,10 @@ def prev_this_next(collection):
     next(c)
     return zip(itertools.chain([None], a), b, itertools.chain(c, [None]))
 
-def get_navigator_entries(core_navigators: list=[], 
-        path_to_notes: str='.', 
+def get_navigator_entries(path_to_notes: str='.', 
+        core_navigators: list=[], 
         user: str='', repository: str='', 
-        branch: str='master',
+        branch: str='master', 
         github_nb_dir: str='.', 
         github_io_slides_dir: str='.',
         show_index_in_nav: bool=True):
@@ -635,7 +635,7 @@ def get_navigator_entries(core_navigators: list=[],
             
         yield os.path.join(path_to_notes, this_nb), navbar, this_colab_link, this_binder_link, this_slide_link
 
-def add_navigators(core_navigators: list=[], path_to_notes: str='.', 
+def add_navigators(path_to_notes: str='.', core_navigators: list=[], 
                    user: str='', repository: str='', branch: str='master', 
                    github_nb_dir: str='.',
                    github_io_slides_dir: str='.',
@@ -701,7 +701,7 @@ def add_navigators(core_navigators: list=[], path_to_notes: str='.',
         and section number of each notebook or just their title.
         It defaults to True.
     """
-    for nb_file, navbar, this_colab_link, this_binder_link, this_slide_link in get_navigator_entries(core_navigators, path_to_notes, 
+    for nb_file, navbar, this_colab_link, this_binder_link, this_slide_link in get_navigator_entries(path_to_notes, core_navigators, 
                           user, repository, branch, 
                           github_nb_dir,
                           github_io_slides_dir, 
@@ -848,22 +848,22 @@ def bind_from_arguments(path_to_notes: str='.',
     remove_marker_cells(path_to_notes, HEADER_MARKER)
     remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
 
-    add_contents(toc_nb_name=toc_nb_name, 
-                 path_to_notes=path_to_notes,
-                 show_index_in_toc=show_index_in_toc)
+    add_contents(path_to_notes=path_to_notes, 
+        toc_nb_name=toc_nb_name, 
+        show_index_in_toc=show_index_in_toc)
 
-    add_headers(header=header, path_to_notes=path_to_notes)
+    add_headers(path_to_notes=path_to_notes, header=header)
 
-    add_navigators(core_navigators=core_navigators,
-                   path_to_notes=path_to_notes, 
-                   user=user, 
-                   repository=repository, branch=branch, 
-                   github_nb_dir=github_nb_dir,
-                   github_io_slides_dir=github_io_slides_dir,
-                   show_colab=show_colab, 
-                   show_binder=show_binder,
-                   show_slides=show_slides,
-                   show_index_in_nav=show_index_in_nav)
+    add_navigators(path_to_notes=path_to_notes, 
+        core_navigators=core_navigators,
+        user=user, 
+        repository=repository, branch=branch, 
+        github_nb_dir=github_nb_dir,
+        github_io_slides_dir=github_io_slides_dir,
+        show_colab=show_colab, 
+        show_binder=show_binder,
+        show_slides=show_slides,
+        show_index_in_nav=show_index_in_nav)
 
 def bind_from_configfile(config_file: str):
     """Binds the collection of notebooks from a configuration file.
@@ -894,15 +894,13 @@ def bind_from_configfile(config_file: str):
     remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
 
     if 'contents' in config:
-        add_contents(**config['contents'], 
-            path_to_notes=path_to_notes)
+        add_contents(path_to_notes=path_to_notes, **config['contents'])
 
     if 'header' in config:
-        add_headers(config['header'], path_to_notes=path_to_notes)
+        add_headers(path_to_notes=path_to_notes, header=config['header'])
 
     if 'navigator' in config:
-        add_navigators(**config['navigator'], 
-            path_to_notes=path_to_notes)
+        add_navigators(path_to_notes=path_to_notes, **config['navigator'])
 
 def bind(*args, **kargs):
     """Binds the collection of notebooks.
