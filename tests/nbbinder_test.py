@@ -124,12 +124,12 @@ if __name__ == '__main__':
 
     print("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind(path_to_notes='nb_grammar_bound',
-            toc_nb_name='00.00-Front_Page.ipynb',
-            show_index_in_toc=True,
-            header="[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)",
-            core_navigators=['00.00-Front_Page.ipynb', 
-            'BB.00-Bibliography.ipynb'],
-            show_index_in_nav=False)
+        toc_nb_name='00.00-Front_Page.ipynb',
+        show_index_in_toc=True,
+        header="[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)",
+        core_navigators=['00.00-Front_Page.ipynb', 
+        'BB.00-Bibliography.ipynb'],
+        show_index_in_nav=False)
 
     nb_grammar_insertion = [
         '00.00-Front_Page.ipynb',

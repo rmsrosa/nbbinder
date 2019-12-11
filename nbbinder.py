@@ -189,7 +189,8 @@ def restructure(path_to_notes: str='.', insert: bool=True,
             os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new), os.path.join(path_to_notes, f_new))
 
 
-def is_marker_cell(MARKER: str, cell: nbformat.notebooknode.NotebookNode) -> bool:
+def is_marker_cell(MARKER: str=Null, 
+        cell: nbformat.notebooknode.NotebookNode) -> bool:
     """Checks where the given cell starts with the given MARKER.
     
     Parameters
@@ -206,7 +207,7 @@ def is_marker_cell(MARKER: str, cell: nbformat.notebooknode.NotebookNode) -> boo
         True or False, depending on whether the MARKER exists in the
         cell or not.
     """
-    return  cell.source.startswith(MARKER)
+    return cell.source.startswith(MARKER)
 
 def remove_marker_cells(path_to_notes: str='.', MARKER: str=None):
     """Removes any MARKER cell from the indexed notebooks in path_to_notes.
@@ -312,7 +313,7 @@ def get_notebook_full_entry(path_to_notes: str='.', nb_name: str=None) -> list:
     return markdown_entry, num_entry, title
 
 def get_notebook_entry(path_to_notes: str='.', nb_name: str=None, 
-                       show_index: bool = True) -> list:
+        show_index: bool = True) -> list:
     """Returns the entry of a notebook.
     
     This entry is to be used for the link to the notebook from the
@@ -636,12 +637,12 @@ def get_navigator_entries(path_to_notes: str='.',
         yield os.path.join(path_to_notes, this_nb), navbar, this_colab_link, this_binder_link, this_slide_link
 
 def add_navigators(path_to_notes: str='.', core_navigators: list=[], 
-                   user: str='', repository: str='', branch: str='master', 
-                   github_nb_dir: str='.',
-                   github_io_slides_dir: str='.',
-                   show_colab: bool=False, show_binder: bool=False, 
-                   show_slides: bool=False,
-                   show_index_in_nav: bool=True):
+        user: str='', repository: str='', branch: str='master', 
+        github_nb_dir: str='.',
+        github_io_slides_dir: str='.',
+        show_colab: bool=False, show_binder: bool=False, 
+        show_slides: bool=False,
+        show_index_in_nav: bool=True):
     """Adds navigators to each notebook in the collection.
 
     Adds top and bottom navigators to each notebook in the collection 
