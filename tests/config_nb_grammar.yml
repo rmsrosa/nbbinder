@@ -1,5 +1,4 @@
-directory:
-  path_to_notes: nb_grammar_bound
+path_to_notes: nb_grammar_bound
 
 contents:
   toc_nb_name: 00.00-Front_Page.ipynb

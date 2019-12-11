@@ -879,8 +879,8 @@ def bind_from_configfile(config_file: str):
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
 
-    if 'directory' in config:
-        path_to_notes = config['directory']['path_to_notes']
+    if 'path_to_notes' in config:
+        path_to_notes = config['path_to_notes']
     else:
         path_to_notes = '.'
 

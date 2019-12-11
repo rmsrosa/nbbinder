@@ -1,5 +1,4 @@
-directory:
-  path_to_notes: nb_grammar_bound
+path_to_notes: nb_grammar_bound
 
 restructure_notebooks: 
   insert: True

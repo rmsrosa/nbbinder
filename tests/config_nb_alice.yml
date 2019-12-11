@@ -1,5 +1,4 @@
-directory:
-  path_to_notes: nb_alice
+path_to_notes: nb_alice
 
 contents:
   toc_nb_name: 00.00-Alice's_Adventures_in_Wonderland.ipynb
