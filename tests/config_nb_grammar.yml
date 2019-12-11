@@ -4,8 +4,7 @@ contents:
   toc_nb_name: 00.00-Front_Page.ipynb
   show_index_in_toc: True
 
-header:
-  header: "[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)"
+header: "[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)"
 
 navigator:
   core_navigators: 

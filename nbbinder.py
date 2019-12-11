@@ -208,7 +208,7 @@ def is_marker_cell(MARKER: str, cell: nbformat.notebooknode.NotebookNode) -> boo
     """
     return  cell.source.startswith(MARKER)
 
-def remove_marker_cells(MARKER: str, path_to_notes: str='.'):
+def remove_marker_cells(path_to_notes: str='.', MARKER: str=None):
     """Removes any MARKER cell from the indexed notebooks in path_to_notes.
     
     Parameters
@@ -221,21 +221,22 @@ def remove_marker_cells(MARKER: str, path_to_notes: str='.'):
         either the absolute path or the path relative from 
         where the code is being ran. It defaults to '.'.
     """
-    for nb_name in indexed_notebooks(path_to_notes):
-        nb_file = os.path.join(path_to_notes, nb_name)
-        nb = nbformat.read(nb_file, as_version=4)
+    if MARKER:
+        for nb_name in indexed_notebooks(path_to_notes):
+            nb_file = os.path.join(path_to_notes, nb_name)
+            nb = nbformat.read(nb_file, as_version=4)
 
-        new_cells = []
-        for cell in nb.cells:
-            if not is_marker_cell(MARKER, cell):
-                new_cells.append(cell)
-            else:
-                print("- removing '{}' cell from {}".format(MARKER, nb_name))
+            new_cells = []
+            for cell in nb.cells:
+                if not is_marker_cell(MARKER, cell):
+                    new_cells.append(cell)
+                else:
+                    print("- removing '{}' cell from {}".format(MARKER, nb_name))
 
-        nb.cells = new_cells
-        nbformat.write(nb, nb_file)
+            nb.cells = new_cells
+            nbformat.write(nb, nb_file)
 
-def get_notebook_title(nb_name: str, path_to_notes: str='.') -> str:
+def get_notebook_title(path_to_notes: str='.', nb_name: str=None) -> str:
     """Returns the title of a juyter notebook.
 
     It looks for the first cell, in the notebook, that starts with
@@ -296,7 +297,7 @@ def get_notebook_full_entry(nb_name: str, path_to_notes: str='.') -> list:
         chapter_clean = int(chapter)
     else:
         chapter_clean = chapter[1]
-    title = get_notebook_title(nb_name, path_to_notes)
+    title = get_notebook_title(path_to_notes, nb_name)
 
     if chapter=='00' or chapter[0]=='B' or section=='':
         markdown_entry = '### '
@@ -348,7 +349,7 @@ def get_notebook_entry(nb_name: str, path_to_notes: str='.',
     if show_index:
         entry = ''.join(list(get_notebook_full_entry(nb_name, path_to_notes)[1:3]))
     else:
-        entry = get_notebook_title(nb_name, path_to_notes)
+        entry = get_notebook_title(path_to_notes, nb_name)
     return entry   
 
 def yield_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
@@ -844,8 +845,8 @@ def bind_from_arguments(path_to_notes: str='.',
     if restructure_notebooks:
         restructure(path_to_notes)
 
-    remove_marker_cells(HEADER_MARKER, path_to_notes)
-    remove_marker_cells(NAVIGATOR_MARKER, path_to_notes)
+    remove_marker_cells(path_to_notes, HEADER_MARKER)
+    remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
 
     add_contents(toc_nb_name=toc_nb_name, 
                  path_to_notes=path_to_notes,
@@ -889,16 +890,15 @@ def bind_from_configfile(config_file: str):
 #            restructure(path_to_notes)
         restructure(path_to_notes, **config['restructure_notebooks'])
 
-    remove_marker_cells(HEADER_MARKER, path_to_notes)
-    remove_marker_cells(NAVIGATOR_MARKER, path_to_notes)
+    remove_marker_cells(path_to_notes, HEADER_MARKER)
+    remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
 
     if 'contents' in config:
         add_contents(**config['contents'], 
             path_to_notes=path_to_notes)
 
     if 'header' in config:
-        add_headers(**config['header'], 
-            path_to_notes=path_to_notes)
+        add_headers(config['header'], path_to_notes=path_to_notes)
 
     if 'navigator' in config:
         add_navigators(**config['navigator'], 
