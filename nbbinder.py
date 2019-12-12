@@ -171,22 +171,27 @@ def reindex(path_to_notes: str='.', insert: bool=True,
                             gk2_new = nbk_reg.group(2)
                         nb_names_new[k] = gk1_new + gk2_new + '.' + nbk_reg.group(3) + nbk_reg.group(4) + '-' + nbk_reg.group(5) + '.ipynb'
 
+    nb_names_newest = nb_names_new.copy()
     if tighten:
-        pass
+        for j in range(len(nb_names_new)):
+            nbj_reg = REG.match(nb_names_new[j])
+            
+            for k in range(j,len(nb_names_new)):
+                nbk_reg = REG.match(nb_names_new[k])
 
-    if nb_names_new == nb_names_ins:
+    if nb_names_newest == nb_names_ins:
         print('- no files need renaming, no reindexing needed')
     else:
         count = 0
-        for f, f_new in zip(nb_names_ins, nb_names_new):
+        for f, f_newest in zip(nb_names_ins, nb_names_newest):
             count +=1
-            if f != f_new:
-                print('- replacing {0} with {1}'.format(f, f_new))
-            os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_new))
+            if f != f_newest:
+                print('- replacing {0} with {1}'.format(f, f_newest))
+            os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_newest))
         count = 0
-        for f_new in nb_names_new:
+        for f_newest in nb_names_newest:
             count +=1
-            os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new), os.path.join(path_to_notes, f_new))
+            os.rename(os.path.join(path_to_notes, str(count) + '-' + f_newest), os.path.join(path_to_notes, f_newest))
 
 
 def is_marker_cell(MARKER: str=None, 
