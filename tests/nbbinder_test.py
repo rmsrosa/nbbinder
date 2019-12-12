@@ -12,13 +12,14 @@ from nbformat.v4.nbbase import new_markdown_cell
 
 from context import nbbinder as nbb
 
-def create_notebooks(nb_dir, nb_filenames):
+def create_notebooks(path_to_notes, nb_filenames):
 
-    if os.path.isdir(nb_dir):
-        for f in os.listdir(nb_dir):
-            os.remove(os.path.join(nb_dir,f))
+    assert(type(path_to_notes)==str), "Argument `path_to_notes` should be a string"
+    if os.path.isdir(path_to_notes):
+        for f in os.listdir(path_to_notes):
+            os.remove(os.path.join(path_to_notes,f))
     else:
-        os.mkdir(nb_dir)
+        os.mkdir(path_to_notes)
 
     for nb_filename in nb_filenames:
         nb = nbformat.v4.new_notebook()
@@ -33,7 +34,7 @@ def create_notebooks(nb_dir, nb_filenames):
         else:
             text = "That's all for this Section"
         nb.cells.insert(1, new_markdown_cell(text))
-        nbformat.write(nb, os.path.join(nb_dir, nb_filename))
+        nbformat.write(nb, os.path.join(path_to_notes, nb_filename))
 
 if __name__ == '__main__':
 
