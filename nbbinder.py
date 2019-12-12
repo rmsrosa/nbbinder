@@ -140,16 +140,16 @@ def reindex(path_to_notes: str='.', insert: bool=True,
         where the code is being ran. It defaults to '.'.
     """
 
-    nbfiles = sorted(nb for nb in os.listdir(path_to_notes) if REG_INSERT.match(nb))
-    nbfiles_new = nbfiles.copy()
-    additions = [1 if REG_INSERT.match(nb).group(2) or REG_INSERT.match(nb).group(4) else 0 for nb in nbfiles]
+    nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes) if REG_INSERT.match(nb))
+    nb_names_new = nb_names_ins.copy()
+    additions = [1 if REG_INSERT.match(nb).group(2) or REG_INSERT.match(nb).group(4) else 0 for nb in nb_names_ins]
 
     if insert and sum(additions):
-        for j in range(len(nbfiles)):
-            nbj_reg = REG_INSERT.match(nbfiles_new[j])
+        for j in range(len(nb_names_ins)):
+            nbj_reg = REG_INSERT.match(nb_names_new[j])
             if nbj_reg.group(4):
-                for k in range(j,len(nbfiles)):
-                    nbk_reg = REG_INSERT.match(nbfiles_new[k])
+                for k in range(j,len(nb_names_ins)):
+                    nbk_reg = REG_INSERT.match(nb_names_new[k])
                     if nbk_reg.group(1,2) == nbj_reg.group(1,2):
                         gk3 = nbk_reg.group(3)
                         if nbk_reg.group(1,2,3,4) == nbj_reg.group(1,2,3,4):
@@ -158,33 +158,33 @@ def reindex(path_to_notes: str='.', insert: bool=True,
                         else:
                             gk3_new = increase_index(gk3)
                             gk4_new = nbk_reg.group(4)
-                        nbfiles_new[k] = nbk_reg.group(1) + nbk_reg.group(2) + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) + '.ipynb'
+                        nb_names_new[k] = nbk_reg.group(1) + nbk_reg.group(2) + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) + '.ipynb'
             if nbj_reg.group(2):
-                nbfiles_new[j] = nbfiles_new[j][:nbj_reg.start(2)] + nbfiles_new[j][nbj_reg.end(2):]
-                for k in range(j,len(nbfiles)):
-                    nbk_reg = REG_INSERT.match(nbfiles_new[k])
+                nb_names_new[j] = nb_names_new[j][:nbj_reg.start(2)] + nb_names_new[j][nbj_reg.end(2):]
+                for k in range(j,len(nb_names_ins)):
+                    nbk_reg = REG_INSERT.match(nb_names_new[k])
                     if nbk_reg.group(1)[0] == nbj_reg.group(1)[0]: 
                         gk1_new = increase_index(nbk_reg.group(1))
                         if nbk_reg.group(1,2) == nbj_reg.group(1,2):
                             gk2_new = ''
                         else:
                             gk2_new = nbk_reg.group(2)
-                        nbfiles_new[k] = gk1_new + gk2_new + '.' + nbk_reg.group(3) + nbk_reg.group(4) + '-' + nbk_reg.group(5) + '.ipynb'
+                        nb_names_new[k] = gk1_new + gk2_new + '.' + nbk_reg.group(3) + nbk_reg.group(4) + '-' + nbk_reg.group(5) + '.ipynb'
 
     if tighten:
         pass
 
-    if nbfiles == nbfiles_new:
+    if nb_names_new == nb_names_ins:
         print('- no files need renaming, no reindexing needed')
     else:
         count = 0
-        for f, f_new in zip(nbfiles, nbfiles_new):
+        for f, f_new in zip(nb_names_ins, nb_names_new):
             count +=1
             if f != f_new:
                 print('- replacing {0} with {1}'.format(f, f_new))
             os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_new))
         count = 0
-        for f_new in nbfiles_new:
+        for f_new in nb_names_new:
             count +=1
             os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new), os.path.join(path_to_notes, f_new))
 
