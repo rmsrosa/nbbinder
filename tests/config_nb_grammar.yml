@@ -2,6 +2,7 @@ path_to_notes: nb_grammar_bound
 
 contents:
   toc_nb_name: 00.00-Front_Page.ipynb
+  toc_title: Contents
   show_index_in_toc: True
 
 header: "[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)"

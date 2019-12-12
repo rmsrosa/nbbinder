@@ -189,8 +189,8 @@ def restructure(path_to_notes: str='.', insert: bool=True,
             os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new), os.path.join(path_to_notes, f_new))
 
 
-def is_marker_cell(MARKER: str=Null, 
-        cell: nbformat.notebooknode.NotebookNode) -> bool:
+def is_marker_cell(MARKER: str=None, 
+        cell: nbformat.notebooknode.NotebookNode=None) -> bool:
     """Checks where the given cell starts with the given MARKER.
     
     Parameters
@@ -414,7 +414,7 @@ def get_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
     return contents
 
 def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
-        show_index_in_toc: bool=True):
+        toc_title: str='', show_index_in_toc: bool=True):
     """Adds the table of contentes to a selected notebook.
 
     It adds the table of contents, generated from the collection of 
@@ -440,8 +440,9 @@ def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
     # error handling
     assert(type(path_to_notes)==str), "Argument `path_to_notes` should be a string"
     assert(type(toc_nb_name)==str), "Argument `toc_nb_name` should be a string"
+    assert(type(toc_title)==str), "Argument `toc_title` should be a string"
 
-    contents = TOC_MARKER + "\n\n"
+    contents = TOC_MARKER + "\n## [" + toc_title + "](#)\n\n"
     for item in yield_contents(path_to_notes, show_index_in_toc):
         contents += item + "\n"
 
@@ -761,7 +762,9 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         nbformat.write(nb, nb_file)
 
 def bind_from_arguments(path_to_notes: str='.', 
-        toc_nb_name: str='', header: str='', 
+        toc_nb_name: str='', 
+        toc_title: str='',
+        header: str='', 
         core_navigators: str='',
         restructure_notebooks: bool=False,
         user: str='', repository: str='', branch: str='master', 
@@ -781,8 +784,13 @@ def bind_from_arguments(path_to_notes: str='.',
         where the code is being ran. It defaults to '.'.
 
     toc_nb_name : str
-        filename of the notebook in which the table of contents
+        Filename of the notebook in which the table of contents
         is to be inserted
+
+    toc_title : str
+        Text to be displayed as a title for the table of contents cell, 
+        e.g. 'Contents', 'Table of Contents', or in other languages, 
+        'Conteúdo', 'Table des Matières', and so on.
 
     header : str
         The string with the contents to be included in the header cell.
@@ -850,7 +858,8 @@ def bind_from_arguments(path_to_notes: str='.',
     remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
 
     add_contents(path_to_notes=path_to_notes, 
-        toc_nb_name=toc_nb_name, 
+        toc_nb_name=toc_nb_name,
+        toc_title=toc_title, 
         show_index_in_toc=show_index_in_toc)
 
     add_headers(path_to_notes=path_to_notes, header=header)
@@ -887,8 +896,6 @@ def bind_from_configfile(config_file: str):
         path_to_notes = '.'
 
     if 'restructure_notebooks' in config:
-#        if config['restructure_notebooks']:
-#            restructure(path_to_notes)
         restructure(path_to_notes, **config['restructure_notebooks'])
 
     remove_marker_cells(path_to_notes, HEADER_MARKER)
