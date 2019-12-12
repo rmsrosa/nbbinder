@@ -60,8 +60,8 @@ if __name__ == '__main__':
     print("# Creating notebooks in {} ...".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
     create_notebooks('nb_alice', nb_alice)
     print('... notebooks created')
-    print("\n# Reestructuring the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
-    nbb.restructure('nb_alice')
+    print("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
+    nbb.reindex('nb_alice')
 
     print("\n# Binding notebooks with config file 'config_nb_alice.yml'")
     nbb.bind('config_nb_alice.yml')
@@ -109,8 +109,8 @@ if __name__ == '__main__':
 
     print("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar')))
     create_notebooks('nb_grammar', nb_grammar)
-    print("\n# Reestructuring the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar')))
-    nbb.restructure('nb_grammar')
+    print("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar')))
+    nbb.reindex('nb_grammar')
 
     print("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     create_notebooks('nb_grammar_bound', nb_grammar)
@@ -120,8 +120,8 @@ if __name__ == '__main__':
     print("\n# Binding the notebooks in {} with 'config_nb_grammar_no_header.yml'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind('config_nb_grammar_no_header.yml')
 
-    print("\n# Binding the notebooks in {} with 'config_nb_grammar_restructure.yml'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
-    nbb.bind('config_nb_grammar_restructure.yml')
+    print("\n# Binding the notebooks in {} with 'config_nb_grammar_reindex.yml'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
+    nbb.bind('config_nb_grammar_reindex.yml')
 
     print("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind(path_to_notes='nb_grammar_bound',
@@ -160,5 +160,5 @@ if __name__ == '__main__':
 
     print("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_insertion')))
     create_notebooks('nb_grammar_insertion', nb_grammar_insertion)
-    print("\n# Reestructuring the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_insertion')))    
-    nbb.restructure('nb_grammar_insertion', insert=True)
+    print("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_insertion')))    
+    nbb.reindex('nb_grammar_insertion', insert=True)

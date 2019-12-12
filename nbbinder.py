@@ -124,7 +124,7 @@ def increase_index(g: str) -> str:
         g = g[0] + chr(ord(g[1])+1)
     return g
 
-def restructure(path_to_notes: str='.', insert: bool=True, 
+def reindex(path_to_notes: str='.', insert: bool=True, 
         tighten: bool=False):
     """Includes a notebook in the colllection.
 
@@ -175,7 +175,7 @@ def restructure(path_to_notes: str='.', insert: bool=True,
         pass
 
     if nbfiles == nbfiles_new:
-        print('- no files need renaming, no restructuring needed')
+        print('- no files need renaming, no reindexing needed')
     else:
         count = 0
         for f, f_new in zip(nbfiles, nbfiles_new):
@@ -766,7 +766,7 @@ def bind_from_arguments(path_to_notes: str='.',
         toc_title: str='',
         header: str='', 
         core_navigators: str='',
-        restructure_notebooks: bool=False,
+        reindex_notebooks: bool=False,
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.',
         github_io_slides_dir: str='.',
@@ -801,7 +801,7 @@ def bind_from_arguments(path_to_notes: str='.',
         "previous" and the "next" notebooks. It defaults to the empty
         list.
 
-    restructure_notebooks : bool
+    reindex_notebooks : bool
         Indicates whether to include notebooks in the collection of
         indexed notebooks or not. It defaults to False.
 
@@ -851,8 +851,8 @@ def bind_from_arguments(path_to_notes: str='.',
         It defaults to True.
     """
 
-    if restructure_notebooks:
-        restructure(path_to_notes)
+    if reindex_notebooks:
+        reindex(path_to_notes)
 
     remove_marker_cells(path_to_notes, HEADER_MARKER)
     remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
@@ -895,8 +895,8 @@ def bind_from_configfile(config_file: str):
     else:
         path_to_notes = '.'
 
-    if 'restructure_notebooks' in config:
-        restructure(path_to_notes, **config['restructure_notebooks'])
+    if 'reindex_notebooks' in config:
+        reindex(path_to_notes, **config['reindex_notebooks'])
 
     remove_marker_cells(path_to_notes, HEADER_MARKER)
     remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)

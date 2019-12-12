@@ -1,6 +1,6 @@
 path_to_notes: nb_grammar_bound
 
-restructure_notebooks: 
+reindex_notebooks: 
   insert: True
   tighten: False
 
