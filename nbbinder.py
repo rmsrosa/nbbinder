@@ -9,7 +9,7 @@ __copyright__ = """Original work Copyright (c) 2016 Jacob VanderPlas
 Modified work Copyright (c) 2019 Ricardo M S Rosa
 """
 __license__ = "MIT"
-__version__ = "0.6a10"
+__version__ = "0.7a1"
 
 import os
 import re
@@ -23,8 +23,8 @@ from nbformat.v4.nbbase import new_markdown_cell
 
 # Regular expression for indexing the notebooks
 # Tested in https://regexr.com/
-REG = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|)-(.*)\.ipynb')
-REG_INSERT = re.compile(r'(\b\d\d|\b[A][A-Z]|\b[B][A-Z])([a-z]+|)\.(\d{2}|)([a-z]+|)-(.*)\.ipynb')
+REG = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-(.*)\.ipynb')
+REG_INSERT = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])([a-z]|)\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)([a-z]|)-(.*)\.ipynb')
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"    

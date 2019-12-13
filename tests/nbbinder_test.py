@@ -149,7 +149,7 @@ if __name__ == '__main__':
         '06.00-Paragraphs.ipynb',
         '06.01-Descriptive.ipynb',
         '06.01i-Expository.ipynb',
-        '06.01ii-Narrative.ipynb',
+        '06.01j-Narrative.ipynb',
         '06.02-Persuasive.ipynb',
         '07.00-Conclusion.ipynb',
         'AA.00-Appendix.ipynb',
