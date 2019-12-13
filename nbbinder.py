@@ -142,7 +142,9 @@ def reindex(path_to_notes: str='.', insert: bool=True,
 
     nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes) if REG_INSERT.match(nb))
     nb_names_new = nb_names_ins.copy()
-    additions = [1 if REG_INSERT.match(nb).group(2) or REG_INSERT.match(nb).group(4) else 0 for nb in nb_names_ins]
+    additions = [1 if REG_INSERT.match(nb).group(2) 
+                    or REG_INSERT.match(nb).group(4) 
+                    else 0 for nb in nb_names_ins]
 
     if insert and sum(additions):
         for j in range(len(nb_names_ins)):
@@ -172,12 +174,75 @@ def reindex(path_to_notes: str='.', insert: bool=True,
                         nb_names_new[k] = gk1_new + gk2_new + '.' + nbk_reg.group(3) + nbk_reg.group(4) + '-' + nbk_reg.group(5) + '.ipynb'
 
     nb_names_newest = nb_names_new.copy()
+
+    nb_new_reg = [REG.match(nb_names_new[j]) 
+                    for j in range(len(nb_names_new))]
+    nb_newest_reg = nb_new_reg.copy()
+
     if tighten:
         for j in range(len(nb_names_new)):
-            nbj_reg = REG.match(nb_names_new[j])
-            
-            for k in range(j,len(nb_names_new)):
-                nbk_reg = REG.match(nb_names_new[k])
+            print(f'j={j}')
+            if j==0:
+                if (nb_new_reg[j].group(1).isdecimal() 
+                        and nb_new_reg[j].group(1)>='02'):
+                    print('case j=0 and decimal')
+                    nb_names_newest[j] = '01.' + nb_new_reg[j].group(2) \
+                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
+                elif (nb_new_reg[j].group(1).isalpha()
+                        and nb_new_reg[j].group(1)[1]>='B'):
+                    print('case j=0 and alpha')
+                    nb_names_newest[j] = nb_new_reg[j].group(1)[0] \
+                        + 'A.' + nb_new_reg[j].group(2) \
+                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
+                elif (nb_new_reg[j].group(1).isalnum()
+                        and nb_new_reg[j].group(1)[1]>='2'):
+                    print('case j=0 and alpha')
+                    nb_names_newest[j] = nb_new_reg[j].group(1)[0] \
+                        + '1.' + nb_new_reg[j].group(2) \
+                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
+                else:
+                    print('case j=0 and nothing to be done')
+            else:
+                if (nb_new_reg[j].group(1).isdecimal() 
+                        and nb_new_reg[j].group(1)>='02'):               
+                    if nb_new_reg[j].group(1) == nb_new_reg[j-1].group(1):
+                        print('case j>0 and same')
+                        nb_names_newest[j] = nb_newest_reg[j-1].group(1) \
+                            + '.' + nb_new_reg[j].group(2) \
+                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
+                    elif (nb_new_reg[j].group(1)
+                            >increase_index(nb_newest_reg[j-1].group(1))):
+                        print('case j>0 and dettached')
+                        nb_names_newest[j] = \
+                            increase_index(nb_newest_reg[j-1].group(1)) \
+                            + '.' + nb_new_reg[j].group(2) \
+                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
+                elif (nb_new_reg[j].group(1)[0] in ('A', 'B')
+                        and (nb_new_reg[j].group(1)[1]>='B'
+                                or '2'<=nb_new_reg[j].group(1)[1]<='9')):
+                    if (nb_new_reg[j].group(1)[0]=='A' 
+                            and nb_newest_reg[j-1].group(1).isdecimal()):
+                        nb_names_newest[j] = 'AA.' + nb_new_reg[j].group(2) \
+                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
+                    elif (nb_new_reg[j].group(1)[0]=='B' 
+                            and nb_newest_reg[j-1].group(1)[0]=='A'):
+                        nb_names_newest[j] = 'BA.' + nb_new_reg[j].group(2) \
+                            + '-' + nb_new_reg[j].group(3) + '.ipynb'    
+                    elif nb_new_reg[j].group(1) == nb_new_reg[j-1].group(1):
+                        print('case j>0 and alnum and same')
+                        nb_names_newest[j] = nb_newest_reg[j-1].group(1) \
+                            + '.' + nb_new_reg[j].group(2) \
+                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
+                    elif (nb_new_reg[j].group(1)
+                            >increase_index(nb_newest_reg[j-1].group(1))):
+                        print('case j>0 and alnum and dettached')
+                        nb_names_newest[j] = \
+                            increase_index(nb_newest_reg[j-1].group(1)) \
+                            + '.' + nb_new_reg[j].group(2) \
+                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
+            nb_newest_reg[j] = REG.match(nb_names_newest[j])
+#            print(f'groups for nb_newest at j={j}: {nb_newest_reg[j].groups()}')
+#            print(f'groups for nb_new at j={j+1}: {nb_new_reg[j+1].groups()}')
 
     if nb_names_newest == nb_names_ins:
         print('- no files need renaming, no reindexing needed')
