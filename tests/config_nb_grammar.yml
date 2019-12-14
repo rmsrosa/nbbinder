@@ -7,7 +7,7 @@ contents:
 
 header: "[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)"
 
-navigator:
+navigators:
   core_navigators: 
     - 00.00-Front_Page.ipynb
     - BB.00-Bibliography.ipynb

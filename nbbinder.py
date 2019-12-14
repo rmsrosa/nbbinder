@@ -1014,8 +1014,13 @@ def bind_from_configfile(config_file: str):
     if 'header' in config:
         add_headers(path_to_notes=path_to_notes, header=config['header'])
 
-    if 'navigator' in config:
-        add_navigators(path_to_notes=path_to_notes, **config['navigator'])
+    if 'navigators' and 'badges' in config:
+        add_navigators(path_to_notes=path_to_notes, **config['navigators'],
+            **config['badges'])
+    elif 'navigators' in config:
+        add_navigators(path_to_notes=path_to_notes, **config['navigators'])
+    elif 'badges' in config:
+        add_navigators(path_to_notes=path_to_notes, **config['badges'])        
 
 def bind(*args, **kargs):
     """Binds the collection of notebooks.
