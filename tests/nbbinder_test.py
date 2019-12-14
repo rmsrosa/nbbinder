@@ -169,13 +169,13 @@ if __name__ == '__main__':
         '04.00-Project_Requirements.ipynb',
         '05.00-The_History_of_Grammar.ipynb',
         '06.00-Parts_of_Speech.ipynb',
-        '06.01-Nouns.ipynb',
-        '06.02-Verbs.ipynb',
-        '06.03-Adjectives.ipynb',
-        '06.04-Adverbs.ipynb',
+        '06.02-Nouns.ipynb',
+        '06.03-Verbs.ipynb',
+        '06.05-Adjectives.ipynb',
+        '06.08-Adverbs.ipynb',
         '08.00-Sentences.ipynb',
         '08.01-Complex_Sentences.ipynb',
-        '08.02-Compound_Sentences.ipynb',
+        '08.03-Compound_Sentences.ipynb',
         '09.00-Paragraphs.ipynb',
         '09.01-Descriptive.ipynb',
         '09.02-Expository.ipynb',
@@ -184,8 +184,8 @@ if __name__ == '__main__':
         '11.00-Conclusion.ipynb',
         'AB.00-Appendix.ipynb',
         'BA.00-Glossary.ipynb',
-        'BC.00-Bibliography.ipynb',
-        'BD.00-Index.ipynb'
+        'BC.02-Bibliography.ipynb',
+        'BC.04-Index.ipynb'
     ]
 
     print("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_tighten')))
