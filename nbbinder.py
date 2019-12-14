@@ -15,11 +15,15 @@ import os
 import re
 import itertools
 import sys
+import logging
 
 import yaml
 
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
+
+# Loggin level
+logging.basicConfig(level=logging.INFO)
 
 # Regular expression for indexing the notebooks
 # Tested in https://regexr.com/
@@ -277,13 +281,15 @@ def reindex(path_to_notes: str='.', insert: bool=True,
             nb_newest_reg[j] = REG.match(nb_names_newest[j])
 
     if nb_names_newest == nb_names_ins:
-        print('- no files need renaming, no reindexing needed')
+        logging.info('- no files need renaming, no reindexing needed')
+        logging.info('- no files need renaming, no reindexing needed')
     else:
         count = 0
         for f, f_newest in zip(nb_names_ins, nb_names_newest):
             count +=1
             if f != f_newest:
-                print('- replacing {0} with {1}'.format(f, f_newest))
+                logging.info('- replacing {0} with {1}'.format(f, f_newest))
+                logging.info('- replacing {0} with {1}'.format(f, f_newest))
             os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_newest))
         count = 0
         for f_newest in nb_names_newest:
@@ -333,7 +339,7 @@ def remove_marker_cells(path_to_notes: str='.', MARKER: str=None):
                 if not is_marker_cell(MARKER, cell):
                     new_cells.append(cell)
                 else:
-                    print("- removing '{}' cell from {}".format(MARKER, nb_name))
+                    logging.info("- removing '{}' cell from {}".format(MARKER, nb_name))
 
             nb.cells = new_cells
             nbformat.write(nb, nb_file)
@@ -559,10 +565,10 @@ def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
             
     if toc_cell_found:
         nbformat.write(toc_nb, toc_nb_file)
-        print('- Table of contents updated in {}'.format(toc_nb_name))
+        logging.info('- Table of contents updated in {}'.format(toc_nb_name))
     else:
-        print('* No markdown cell starting with {} found in {}'.format(TOC_MARKER, toc_nb_name))
-        print("- inserting table of contents in {0}".format(toc_nb_name))
+        logging.info('* No markdown cell starting with {} found in {}'.format(TOC_MARKER, toc_nb_name))
+        logging.info("- inserting table of contents in {0}".format(toc_nb_name))
         if toc_nb.cells and is_marker_cell(NAVIGATOR_MARKER, toc_nb.cells[-1]):
             toc_nb.cells.insert(-1, new_markdown_cell(source=contents))
         else:
@@ -591,10 +597,10 @@ def add_headers(path_to_notes: str='.', header: str=None):
         nb = nbformat.read(nb_file, as_version=4)
 
         if nb.cells and is_marker_cell(HEADER_MARKER, nb.cells[0]):    
-            print('- updating header for {0}'.format(nb_name))
+            logging.info('- updating header for {0}'.format(nb_name))
             nb.cells[0].source = HEADER_MARKER + '\n' + header
         else:
-            print('- inserting header for {0}'.format(nb_name))
+            logging.info('- inserting header for {0}'.format(nb_name))
             nb.cells.insert(0, new_markdown_cell(HEADER_MARKER + '\n' + header))
         nbformat.write(nb, nb_file)
 
@@ -850,10 +856,10 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         navbar_top += "\n" + navbar + "\n\n---\n"
 
         if len(nb.cells) > 1 and is_marker_cell(NAVIGATOR_MARKER, nb.cells[1]):         
-            print("- updating navbar for {0}".format(nb_name))
+            logging.info("- updating navbar for {0}".format(nb_name))
             nb.cells[1].source = navbar_top
         else:
-            print("- inserting navbar for {0}".format(nb_name))
+            logging.info("- inserting navbar for {0}".format(nb_name))
             nb.cells.insert(1, new_markdown_cell(source=navbar_top))
 
         if len(nb.cells)>2 and is_marker_cell(NAVIGATOR_MARKER, nb.cells[-1]):
@@ -1047,11 +1053,11 @@ def bind(*args, **kargs):
 
 if __name__ == '__main__':
     if len(sys.argv) == 1 or sys.argv[1] == '--help' or sys.argv[1] == '-h':
-        print("\n Run the script with a configuration file as argument, e.g.")
-        print("\n   ./nbbinder.py config.yml")
-        print("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
+        logging.info("\n Run the script with a configuration file as argument, e.g.")
+        logging.info("\n   ./nbbinder.py config.yml")
+        logging.info("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
     else:
         try:
             bind_from_configfile(sys.argv[1])
         except NotImplementedError:
-            print('provided argument is not a yaml file or not a properly formated yaml configuration file.')
+            logging.info('provided argument is not a yaml file or not a properly formated yaml configuration file.')
