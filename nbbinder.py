@@ -23,7 +23,7 @@ import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 
 # Loggin level
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
 
 # Regular expression for indexing the notebooks
 # Tested in https://regexr.com/
