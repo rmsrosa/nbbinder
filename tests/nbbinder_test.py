@@ -125,6 +125,7 @@ if __name__ == '__main__':
 
     print("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     nbb.bind(path_to_notes='nb_grammar_bound',
+        insert=True, tighten=True,
         toc_nb_name='00.00-Front_Page.ipynb',
         toc_title='Table of Contents',
         show_index_in_toc=True,

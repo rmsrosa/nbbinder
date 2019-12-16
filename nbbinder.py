@@ -905,12 +905,12 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         nbformat.write(nb, nb_file)
 
 def bind_from_arguments(path_to_notes: str='.', 
+        insert: bool=False,
+        tighten: bool=False,
         toc_nb_name: str='', 
         toc_title: str='',
         header: str='', 
         core_navigators: str='',
-        insert: bool=False,
-        tighten: bool=False,
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.',
         github_io_slides_dir: str='.',
@@ -926,6 +926,16 @@ def bind_from_arguments(path_to_notes: str='.',
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
         where the code is being ran. It defaults to '.'.
+
+    insert : bool
+        Indicates whether to insert notebooks in the collection of
+        indexed notebooks or not. It defaults to False.
+
+    tighten : bool
+        Indicates whether to tighten the indices of the notebooks,
+        i.e. whether there are gaps in the indices of the notebooks
+        and, if so, rename the affected notebooks in the 
+        appropriate order. It defaults to False.
 
     toc_nb_name : str
         Filename of the notebook in which the table of contents
@@ -944,10 +954,6 @@ def bind_from_arguments(path_to_notes: str='.',
         included in the navigators, in between the links to the
         "previous" and the "next" notebooks. It defaults to the empty
         list.
-
-    reindex_notebooks : bool
-        Indicates whether to include notebooks in the collection of
-        indexed notebooks or not. It defaults to False.
 
     user : str
         The github username of the onwer of the repository in which 
@@ -995,11 +1001,8 @@ def bind_from_arguments(path_to_notes: str='.',
         It defaults to True.
     """
 
-    if insert:
-        insert_notebooks(path_to_notes)
-    
-    if tighten:
-        tighten_notebooks(path_to_notes)
+    if insert or tighten:
+        reindex(path_to_notes, insert, tighten)
 
     remove_marker_cells(path_to_notes, HEADER_MARKER)
     remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
