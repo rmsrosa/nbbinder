@@ -9,7 +9,7 @@ __copyright__ = """Original work Copyright (c) 2016 Jacob VanderPlas
 Modified work Copyright (c) 2019 Ricardo M S Rosa
 """
 __license__ = "MIT"
-__version__ = "0.7a1"
+__version__ = "0.7a2"
 
 import os
 import re
@@ -21,9 +21,6 @@ import yaml
 
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
-
-# Loggin level
-#logging.basicConfig(level=logging.INFO)
 
 # Regular expression for indexing the notebooks
 # Tested in https://regexr.com/
@@ -669,7 +666,12 @@ def get_navigator_entries(path_to_notes: str='.',
         user: str='', repository: str='', 
         branch: str='master', 
         github_nb_dir: str='.', 
-        github_io_slides_dir: str='.',
+        extra_badge_url: str=None,
+        extra_badge_replace_nb_extension: str='',
+        extra_badge_label: str='',
+        extra_badge_message: str='',
+        extra_badge_color: str=None,
+        extra_badge_alt_title: str='',
         show_index_in_nav: bool=True):
     """Iterable with the navigator info for each notebook.
 
@@ -709,10 +711,13 @@ def get_navigator_entries(path_to_notes: str='.',
         The path to the notebooks, from the root directory of the
         repository mentioned in the description of the `user` argument.  
         It defaults to '.'.
-    
-    github_io_slides_dir : str
-        The path to the slides folder from the user.github.io site.  
-        It defaults to '.'.
+
+    extra_badge_url : str
+    extra_badge_replace_nb_extension : str
+    extra_badge_label : str
+    extra_badge_message : str
+    extra_badge_color : str
+    extra_badge_alt_title : str
 
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
@@ -731,21 +736,21 @@ def get_navigator_entries(path_to_notes: str='.',
     : str
         The binder link for the current notebook in the iterator.
     : str
-        The slides link for the current notebook in the iterator.      
+        The extra badge link for the current notebook in the iterator.      
     """
     PREV_TEMPLATE = "[<- {title}]({url}) "
     CENTER_TEMPLATE = "| [{title}]({url}) "
     NEXT_TEMPLATE = "| [{title} ->]({url})"
 
     COLAB_LINK = """
-<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{github_nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open and Execute in Google Colaboratory"></a>
+<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{github_nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Google Colab" title="Open in Google Colab"></a>
 """
     BINDER_LINK = """
-<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Open in binder" title="Open and Execute in Binder"></a>
+<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Open in binder" title="Open in binder"></a>
 """
-    SLIDES_LINK = """
-<a href="https://{user}.github.io/{repository}/{github_io_slides_dir}/{slides_filename}"><img align="left" src="https://rmsrosa.github.io/nbbinder/badges/slides_badge.svg" alt="Open slides" title="Open and View Slides"></a>
-"""
+    EXTRA_BADGE_LINK = """
+ <a href="{extra_badge_url}/{extra_badge_filename}"><img align="left" src="https://img.shields.io/badge/{extra_badge_label}-{extra_badge_message}-{extra_badge_color}" alt="{extra_badge_alt_title}" title="{extra_badge_alt_title}"></a>
+"""   
 
     for prev_nb, this_nb, next_nb in prev_this_next(indexed_notebooks(path_to_notes)):
         navbar = ""
@@ -768,24 +773,34 @@ def get_navigator_entries(path_to_notes: str='.',
             repository=repository, 
             branch=branch, github_nb_dir=github_nb_dir, 
             notebook_filename=os.path.basename(this_nb))
+
         this_binder_link = BINDER_LINK.format(user=user,
             repository=repository, 
             branch=branch, github_nb_dir=github_nb_dir, 
             notebook_filename=os.path.basename(this_nb))
-        this_slide_link = SLIDES_LINK.format(user=user, 
-            repository=repository,
-            github_io_slides_dir=github_io_slides_dir,
-            slides_filename=os.path.basename(this_nb.replace('.ipynb',
-                                                             '.slides.html')))
+
+        this_extra_badge_link = EXTRA_BADGE_LINK.format(
+            extra_badge_url=extra_badge_url, 
+            extra_badge_filename=this_nb.replace('.ipynb',
+                extra_badge_replace_nb_extension),
+            extra_badge_label=extra_badge_label,
+            extra_badge_message=extra_badge_message,
+            extra_badge_color=extra_badge_color,
+            extra_badge_alt_title=extra_badge_alt_title)
             
-        yield os.path.join(path_to_notes, this_nb), navbar, this_colab_link, this_binder_link, this_slide_link
+        yield os.path.join(path_to_notes, this_nb), navbar, this_colab_link, this_binder_link, this_extra_badge_link
 
 def add_navigators(path_to_notes: str='.', core_navigators: list=[], 
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.',
-        github_io_slides_dir: str='.',
+        extra_badge_url: str=None,
+        extra_badge_replace_nb_extension: str='',
+        extra_badge_label: str=None,
+        extra_badge_message: str=None,
+        extra_badge_color: str=None,
+        extra_badge_alt_title: str=None,
         show_colab: bool=False, show_binder: bool=False, 
-        show_slides: bool=False,
+        show_extra_badge: bool=False,
         show_index_in_nav: bool=True):
     """Adds navigators to each notebook in the collection.
 
@@ -824,21 +839,24 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         The path to the notebooks, from the root directory of the
         repository mentioned in the description of the `user` argument.  
         It defaults to '.'.
-    
-    github_io_slides_dir : str
-        The path to the slides folder from the user.github.io site.  
-        It defaults to '.'.
-        
+
+    extra_badge_url : str
+    extra_badge_replace_nb_extension : str
+    extra_badge_label : str
+    extra_badge_message : str
+    extra_badge_color : str
+    extra_badge_alt_title : str
+
     show_colab : bool
         Whether to display the Google Colab badge or not. It defaults
         to False.
 
     show_binder : bool
-        Whether to display the Google Colab badge or not. It defaults
+        Whether to display the Binder badge or not. It defaults
         to False.
 
-    show_slides : bool
-        Whether to display the Google Colab badge or not. It defaults
+    show_extra_badge : bool
+        Whether to display an Extra badge or not. It defaults
         to False.
 
     show_index_in_nav : bool
@@ -846,31 +864,24 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         and section number of each notebook or just their title.
         It defaults to True.
     """
-    for nb_file, navbar, this_colab_link, this_binder_link, this_slide_link in get_navigator_entries(path_to_notes, core_navigators, 
-                          user, repository, branch, 
-                          github_nb_dir,
-                          github_io_slides_dir, 
-                          show_index_in_nav):
+    for nb_file, navbar, this_colab_link, this_binder_link, this_extra_badge_link in get_navigator_entries(path_to_notes,
+            core_navigators, 
+            user, repository, branch, 
+            github_nb_dir,
+            extra_badge_url,
+            extra_badge_replace_nb_extension,
+            extra_badge_label,
+            extra_badge_message,
+            extra_badge_color,
+            extra_badge_alt_title,
+            show_index_in_nav):
         nb = nbformat.read(nb_file, as_version=4)
         nb_name = os.path.basename(nb_file)
 
         navbar_top = navbar_bottom = NAVIGATOR_MARKER + "\n"
         navbar_bottom = NAVIGATOR_MARKER + "\n\n---\n" + navbar
-            
-        if show_colab and show_binder:
-            navbar_top += this_colab_link + "&nbsp;" + this_binder_link + "&nbsp;\n"
-            navbar_bottom += "\n" + this_colab_link + this_binder_link + "&nbsp;" 
-        elif show_colab:
-            navbar_top += this_colab_link + "&nbsp;\n"
-            navbar_bottom += "\n" + this_colab_link
-        elif show_binder:
-            navbar_top += this_binder_link + "&nbsp;\n" 
-            navbar_bottom += "\n" + this_binder_link
 
-        navbar_top = navbar_bottom = NAVIGATOR_MARKER + "\n"
-        navbar_bottom = NAVIGATOR_MARKER + "\n\n---\n" + navbar
-
-        if show_colab or show_binder or show_slides:
+        if show_colab or show_binder or show_extra_badge:
             navbar_bottom += "\n"
 
         if show_colab:
@@ -881,11 +892,11 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
             navbar_top += this_binder_link + "&nbsp;"
             navbar_bottom += this_binder_link
 
-        if show_slides:
-            navbar_top += this_slide_link + "&nbsp;"
-            navbar_bottom += this_slide_link
+        if show_extra_badge:
+            navbar_top += this_extra_badge_link + "&nbsp;"
+            navbar_bottom += this_extra_badge_link
 
-        if show_colab or show_binder or show_slides:
+        if show_colab or show_binder or show_extra_badge:
             navbar_top += "\n"
             navbar_bottom += "&nbsp;"
 
@@ -913,9 +924,14 @@ def bind_from_arguments(path_to_notes: str='.',
         core_navigators: str='',
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.',
-        github_io_slides_dir: str='.',
+        extra_badge_url: str=None,
+        extra_badge_replace_nb_extension: str='',
+        extra_badge_label: str=None,
+        extra_badge_message: str=None,
+        extra_badge_color: str=None,
+        extra_badge_alt_title: str=None,
         show_colab: bool=False, show_binder: bool=False, 
-        show_slides: bool=False,
+        show_extra_badge: bool=False,
         show_index_in_toc: bool=True,
         show_index_in_nav: bool=True):
     """Binds the collection of notebooks from the arguments provided.
@@ -974,21 +990,24 @@ def bind_from_arguments(path_to_notes: str='.',
         The path to the notebooks, from the root directory of the
         repository mentioned in the description of the `user` argument.  
         It defaults to '.'.
-        
-    github_io_slides_dir : str
-        The path to the slides folder from the user.github.io site.  
-        It defaults to '.'.
-    
+
+    extra_badge_url : str
+    extra_badge_replace_nb_extension : str
+    extra_badge_label : str
+    extra_badge_message : str
+    extra_badge_color : str
+    extra_badge_alt_title : str
+
     show_colab : bool
         Whether to display the Google Colab badge or not. It defaults
         to False.
 
     show_binder : bool
-        Whether to display the Google Colab badge or not. It defaults
+        Whether to display the Binder badge or not. It defaults
         to False.
 
-    show_slides : bool
-        Whether to display the Google Colab badge or not. It defaults
+    show_extra_badge : bool
+        Whether to display an Extra badge or not. It defaults
         to False.
 
     show_index_in_toc : bool
@@ -1019,10 +1038,15 @@ def bind_from_arguments(path_to_notes: str='.',
         user=user, 
         repository=repository, branch=branch, 
         github_nb_dir=github_nb_dir,
-        github_io_slides_dir=github_io_slides_dir,
+        extra_badge_url=extra_badge_url,
+        extra_badge_replace_nb_extension=extra_badge_replace_nb_extension,
+        extra_badge_label=extra_badge_label,
+        extra_badge_message=extra_badge_message,
+        extra_badge_color=extra_badge_color,
+        extra_badge_alt_title=extra_badge_alt_title,
         show_colab=show_colab, 
         show_binder=show_binder,
-        show_slides=show_slides,
+        show_extra_badge=show_extra_badge,
         show_index_in_nav=show_index_in_nav)
 
 def bind_from_configfile(config_file: str):

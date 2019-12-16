@@ -17,5 +17,12 @@ badges:
   repository: nbbinder
   branch: master
   github_nb_dir: tests/nb_alice
+  extra_badge_url: https://rmsrosa.github.io/nbbinder/tests/nb_alice/slides
+  extra_badge_replace_nb_extension: .slides.html
+  extra_badge_label: view
+  extra_badge_message: slides
+  extra_badge_color: green
+  extra_badge_alt_title: View Slides
   show_colab: True
   show_binder: True
+  show_extra_badge: True

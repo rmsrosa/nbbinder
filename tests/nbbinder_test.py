@@ -67,10 +67,7 @@ if __name__ == '__main__':
     logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
     nbb.reindex('nb_alice')
 
-    logging.info("\n# Binding notebooks with config file 'config_nb_alice.yml'")
-    nbb.bind('config_nb_alice.yml')
-
-    logging.info("\n# Binding notebooks with config file 'config_nb_alice.yml'")
+    logging.info("\n# Binding 'nb_alice' notebooks with parameters")
     nbb.bind(path_to_notes="nb_alice",
         toc_nb_name="00.00-Alice's_Adventures_in_Wonderland.ipynb",
         show_index_in_toc=True,
@@ -85,6 +82,9 @@ if __name__ == '__main__':
         show_colab=True,
         show_binder=True,
         show_index_in_nav=False)
+
+    logging.info("\n# Binding 'nb_alice' notebooks with config file 'config_nb_alice.yml'")
+    nbb.bind('config_nb_alice.yml')
 
     nb_grammar = [
         '00.00-Front_Page.ipynb',
