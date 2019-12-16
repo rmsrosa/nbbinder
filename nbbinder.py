@@ -666,12 +666,7 @@ def get_navigator_entries(path_to_notes: str='.',
         user: str='', repository: str='', 
         branch: str='master', 
         github_nb_dir: str='.', 
-        extra_badge_url: str=None,
-        extra_badge_replace_nb_extension: str='',
-        extra_badge_label: str='',
-        extra_badge_message: str='',
-        extra_badge_color: str=None,
-        extra_badge_alt_title: str='',
+        extra_badges: list=None,
         show_index_in_nav: bool=True):
     """Iterable with the navigator info for each notebook.
 
@@ -712,12 +707,7 @@ def get_navigator_entries(path_to_notes: str='.',
         repository mentioned in the description of the `user` argument.  
         It defaults to '.'.
 
-    extra_badge_url : str
-    extra_badge_replace_nb_extension : str
-    extra_badge_label : str
-    extra_badge_message : str
-    extra_badge_color : str
-    extra_badge_alt_title : str
+    extra_badges : list of dict
 
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
@@ -749,7 +739,7 @@ def get_navigator_entries(path_to_notes: str='.',
 <a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Open in binder" title="Open in binder"></a>
 """
     EXTRA_BADGE_LINK = """
- <a href="{extra_badge_url}/{extra_badge_filename}"><img align="left" src="https://img.shields.io/badge/{extra_badge_label}-{extra_badge_message}-{extra_badge_color}" alt="{extra_badge_alt_title}" title="{extra_badge_alt_title}"></a>
+ <a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt_title}" title="{badge_alt_title}"></a>
 """   
 
     for prev_nb, this_nb, next_nb in prev_this_next(indexed_notebooks(path_to_notes)):
@@ -779,26 +769,24 @@ def get_navigator_entries(path_to_notes: str='.',
             branch=branch, github_nb_dir=github_nb_dir, 
             notebook_filename=os.path.basename(this_nb))
 
-        this_extra_badge_link = EXTRA_BADGE_LINK.format(
-            extra_badge_url=extra_badge_url, 
-            extra_badge_filename=this_nb.replace('.ipynb',
-                extra_badge_replace_nb_extension),
-            extra_badge_label=extra_badge_label,
-            extra_badge_message=extra_badge_message,
-            extra_badge_color=extra_badge_color,
-            extra_badge_alt_title=extra_badge_alt_title)
+        if extra_badges:
+            this_extra_badge_link = EXTRA_BADGE_LINK.format(
+                badge_url=extra_badges[0]['url'],
+                badge_filename=this_nb.replace('.ipynb',
+                    extra_badges[0]['extension']),
+                badge_label=extra_badges[0]['label'],
+                badge_message=extra_badges[0]['message'],
+                badge_color=extra_badges[0]['color'],
+                badge_alt_title=extra_badges[0]['alt_title'])
+        else:
+            this_extra_badge_link=''
             
         yield os.path.join(path_to_notes, this_nb), navbar, this_colab_link, this_binder_link, this_extra_badge_link
 
 def add_navigators(path_to_notes: str='.', core_navigators: list=[], 
         user: str='', repository: str='', branch: str='master', 
-        github_nb_dir: str='.',
-        extra_badge_url: str=None,
-        extra_badge_replace_nb_extension: str='',
-        extra_badge_label: str=None,
-        extra_badge_message: str=None,
-        extra_badge_color: str=None,
-        extra_badge_alt_title: str=None,
+        github_nb_dir: str='.', 
+        extra_badges: list=None,
         show_colab: bool=False, show_binder: bool=False, 
         show_extra_badge: bool=False,
         show_index_in_nav: bool=True):
@@ -867,13 +855,8 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
     for nb_file, navbar, this_colab_link, this_binder_link, this_extra_badge_link in get_navigator_entries(path_to_notes,
             core_navigators, 
             user, repository, branch, 
-            github_nb_dir,
-            extra_badge_url,
-            extra_badge_replace_nb_extension,
-            extra_badge_label,
-            extra_badge_message,
-            extra_badge_color,
-            extra_badge_alt_title,
+            github_nb_dir, 
+            extra_badges,
             show_index_in_nav):
         nb = nbformat.read(nb_file, as_version=4)
         nb_name = os.path.basename(nb_file)
@@ -923,13 +906,8 @@ def bind_from_arguments(path_to_notes: str='.',
         header: str='', 
         core_navigators: str='',
         user: str='', repository: str='', branch: str='master', 
-        github_nb_dir: str='.',
-        extra_badge_url: str=None,
-        extra_badge_replace_nb_extension: str='',
-        extra_badge_label: str=None,
-        extra_badge_message: str=None,
-        extra_badge_color: str=None,
-        extra_badge_alt_title: str=None,
+        github_nb_dir: str='.', 
+        extra_badges: list=None,
         show_colab: bool=False, show_binder: bool=False, 
         show_extra_badge: bool=False,
         show_index_in_toc: bool=True,
@@ -1038,12 +1016,7 @@ def bind_from_arguments(path_to_notes: str='.',
         user=user, 
         repository=repository, branch=branch, 
         github_nb_dir=github_nb_dir,
-        extra_badge_url=extra_badge_url,
-        extra_badge_replace_nb_extension=extra_badge_replace_nb_extension,
-        extra_badge_label=extra_badge_label,
-        extra_badge_message=extra_badge_message,
-        extra_badge_color=extra_badge_color,
-        extra_badge_alt_title=extra_badge_alt_title,
+        extra_badges = extra_badges,
         show_colab=show_colab, 
         show_binder=show_binder,
         show_extra_badge=show_extra_badge,
