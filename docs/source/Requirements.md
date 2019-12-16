@@ -6,6 +6,7 @@ The NBBinder package uses the following standard libraries
 - [os](https:/docs.python.org/3/library/os.html)
 - [itertools](https:/docs.python.org/3/library/itertools.html)
 - [sys](https:/docs.python.org/3/library/sys.html)
+- [logging](https:/docs.python.org/3/library/logging.html)
 
 and the following nonstandard libraries:
 
