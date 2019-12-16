@@ -128,174 +128,6 @@ def increase_index(g: str) -> str:
         g = g[0] + chr(ord(g[1])+1)
     return g
 
-def reindex(path_to_notes: str='.', insert: bool=True, 
-        tighten: bool=False):
-    """Includes a notebook in the colllection.
-
-    Checks whether there is any notebook that matches the regular expression
-    indicating it is to be incuded in the collection of indexed notebooks 
-    and, if so, renames the affected notebooks in the appropriate order.
-
-    Parameters
-    ----------
-    path_to_notes : str
-        The path to the directory that contains the notebooks, 
-        either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
-    """
-
-    nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes) if REG_INSERT.match(nb))
-    nb_names_new = nb_names_ins.copy()
-    additions = [1 if REG_INSERT.match(nb).group(2) 
-                    or REG_INSERT.match(nb).group(4) 
-                    else 0 for nb in nb_names_ins]
-
-    if insert and sum(additions):
-        for j in range(len(nb_names_ins)):
-            nbj_reg = REG_INSERT.match(nb_names_new[j])
-            if nbj_reg.group(4):
-                for k in range(j,len(nb_names_ins)):
-                    nbk_reg = REG_INSERT.match(nb_names_new[k])
-                    if nbk_reg.group(1,2) == nbj_reg.group(1,2):
-                        gk3 = nbk_reg.group(3)
-                        if nbk_reg.group(1,2,3,4) == nbj_reg.group(1,2,3,4):
-                            gk3_new = increase_index(gk3)
-                            gk4_new = ''
-                        else:
-                            gk3_new = increase_index(gk3)
-                            gk4_new = nbk_reg.group(4)
-                        nb_names_new[k] = nbk_reg.group(1) + nbk_reg.group(2) + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) + '.ipynb'
-            if nbj_reg.group(2):
-                nb_names_new[j] = nb_names_new[j][:nbj_reg.start(2)] + nb_names_new[j][nbj_reg.end(2):]
-                for k in range(j,len(nb_names_ins)):
-                    nbk_reg = REG_INSERT.match(nb_names_new[k])
-                    if nbk_reg.group(1)[0] == nbj_reg.group(1)[0]: 
-                        gk1_new = increase_index(nbk_reg.group(1))
-                        if nbk_reg.group(1,2) == nbj_reg.group(1,2):
-                            gk2_new = ''
-                        else:
-                            gk2_new = nbk_reg.group(2)
-                        nb_names_new[k] = gk1_new + gk2_new + '.' + nbk_reg.group(3) + nbk_reg.group(4) + '-' + nbk_reg.group(5) + '.ipynb'
-
-    nb_names_newest = nb_names_new.copy()
-
-    nb_new_reg = [REG.match(nb_names_new[j]) 
-                    for j in range(len(nb_names_new))]
-    nb_newest_reg = nb_new_reg.copy()
-
-    if tighten:
-        for j in range(len(nb_names_new)):
-            if j==0:
-                if (nb_new_reg[j].group(1).isdecimal() 
-                        and nb_new_reg[j].group(1)>='02'):
-                    nb_names_newest[j] = '01.' + nb_new_reg[j].group(2) \
-                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
-                elif (nb_new_reg[j].group(1).isalpha()
-                        and nb_new_reg[j].group(1)[1]>='B'):
-                    nb_names_newest[j] = nb_new_reg[j].group(1)[0] \
-                        + 'A.' + nb_new_reg[j].group(2) \
-                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
-                elif (nb_new_reg[j].group(1).isalnum()
-                        and nb_new_reg[j].group(1)[1]>='2'):
-                    nb_names_newest[j] = nb_new_reg[j].group(1)[0] \
-                        + '1.' + nb_new_reg[j].group(2) \
-                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
-            else:
-                if (nb_new_reg[j].group(1).isdecimal() 
-                        and nb_new_reg[j].group(1)>='02'):               
-                    if nb_new_reg[j].group(1) == nb_new_reg[j-1].group(1):
-                        nb_names_newest[j] = nb_newest_reg[j-1].group(1) \
-                            + '.' + nb_new_reg[j].group(2) \
-                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
-                    elif (nb_new_reg[j].group(1)
-                            >increase_index(nb_newest_reg[j-1].group(1))):
-                        nb_names_newest[j] = \
-                            increase_index(nb_newest_reg[j-1].group(1)) \
-                            + '.' + nb_new_reg[j].group(2) \
-                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
-                elif (nb_new_reg[j].group(1)[0] in ('A', 'B')
-                        and nb_new_reg[j].group(1)[1]>='B'):
-                    if (nb_new_reg[j].group(1)[0]=='A' 
-                            and nb_newest_reg[j-1].group(1).isdecimal()):
-                        nb_names_newest[j] = 'AA.' + nb_new_reg[j].group(2) \
-                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
-                    elif (nb_new_reg[j].group(1)[0]=='B' 
-                            and nb_newest_reg[j-1].group(1)[0]=='A'):
-                        nb_names_newest[j] = 'BA.' + nb_new_reg[j].group(2) \
-                            + '-' + nb_new_reg[j].group(3) + '.ipynb'    
-                    elif nb_new_reg[j].group(1) == nb_new_reg[j-1].group(1):
-                        nb_names_newest[j] = nb_newest_reg[j-1].group(1) \
-                            + '.' + nb_new_reg[j].group(2) \
-                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
-                    elif (nb_new_reg[j].group(1)
-                            >increase_index(nb_newest_reg[j-1].group(1))):
-                        nb_names_newest[j] = \
-                            increase_index(nb_newest_reg[j-1].group(1)) \
-                            + '.' + nb_new_reg[j].group(2) \
-                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
-            nb_newest_reg[j] = REG.match(nb_names_newest[j])
-
-    nb_names_new = nb_names_newest.copy()
-
-    nb_new_reg = [REG.match(nb_names_new[j]) 
-                    for j in range(len(nb_names_new))]
-    nb_newest_reg = nb_new_reg.copy()
-
-    if tighten:
-        for j in range(len(nb_names_new)):
-            if j==0 or nb_new_reg[j].group(1)!=nb_new_reg[j-1].group(1):
-                if (nb_new_reg[j].group(2).isdecimal() 
-                        and nb_new_reg[j].group(2)>='02'):
-                    nb_names_newest[j] = nb_new_reg[j].group(1) \
-                        + '.01-' + nb_new_reg[j].group(3) + '.ipynb'
-                elif (nb_new_reg[j].group(2)[0]=='A'
-                        and nb_new_reg[j].group(2)[1]>='B'):
-                    nb_names_newest[j] = nb_new_reg[j].group(1) \
-                        + '.AA-' + nb_new_reg[j].group(3) + '.ipynb'
-                elif (nb_new_reg[j].group(2)=='B'
-                        and nb_new_reg[j].group(2)[1]>='B'):
-                    nb_names_newest[j] = nb_new_reg[j].group(1) \
-                        + '.BA-' + nb_new_reg[j].group(3) + '.ipynb'
-            else:
-                if (nb_new_reg[j].group(2).isdecimal() 
-                        and nb_new_reg[j].group(2)
-                            >increase_index(nb_newest_reg[j-1].group(2))):
-                        nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
-                            + increase_index(nb_newest_reg[j-1].group(2)) \
-                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
-                elif (nb_new_reg[j].group(2)[0] in ('A', 'B')
-                        and nb_new_reg[j].group(2)[1]>='B'):
-                    if (nb_new_reg[j].group(2)[0]=='A' 
-                            and nb_newest_reg[j-1].group(2).isdecimal()):
-                        nb_names_newest[j] = nb_new_reg[j].group(1) \
-                            + '.AA-' + nb_new_reg[j].group(3) + '.ipynb'
-                    elif (nb_new_reg[j].group(2)[0]=='B' 
-                            and nb_newest_reg[j-1].group(1)[0]!='B'):
-                        nb_names_newest[j] = nb_new_reg[j].group(1) \
-                            + '.BA-' + nb_new_reg[j].group(3) + '.ipynb'    
-                    elif (nb_new_reg[j].group(2)
-                            >increase_index(nb_newest_reg[j-1].group(2))):
-                        nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
-                            + increase_index(nb_newest_reg[j-1].group(2)) \
-                            + '-' + nb_new_reg[j].group(3) + '.ipynb'
-            nb_newest_reg[j] = REG.match(nb_names_newest[j])
-
-    if nb_names_newest == nb_names_ins:
-        logging.info('- no files need renaming, no reindexing needed')
-        logging.info('- no files need renaming, no reindexing needed')
-    else:
-        count = 0
-        for f, f_newest in zip(nb_names_ins, nb_names_newest):
-            count +=1
-            if f != f_newest:
-                logging.info('- replacing {0} with {1}'.format(f, f_newest))
-                logging.info('- replacing {0} with {1}'.format(f, f_newest))
-            os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_newest))
-        count = 0
-        for f_newest in nb_names_newest:
-            count +=1
-            os.rename(os.path.join(path_to_notes, str(count) + '-' + f_newest), os.path.join(path_to_notes, f_newest))
-
 def is_marker_cell(MARKER: str=None, 
         cell: nbformat.notebooknode.NotebookNode=None) -> bool:
     """Checks where the given cell starts with the given MARKER.
@@ -519,6 +351,210 @@ def get_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
         contents += item + "\n"
     
     return contents
+
+
+def insert_notebooks(path_to_notes: str='.'):
+    """Includes a notebook in the colllection.
+
+    Checks whether there is any notebook that matches the regular expression
+    indicating it is to be incuded in the collection of indexed notebooks 
+    and, if so, renames the affected notebooks in the appropriate order.
+
+    Parameters
+    ----------
+    path_to_notes : str
+        The path to the directory that contains the notebooks, 
+        either the absolute path or the path relative from 
+        where the code is being ran. It defaults to '.'.
+    """
+
+    nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes) if REG_INSERT.match(nb))
+    nb_names_new = nb_names_ins.copy()
+    additions = [1 if REG_INSERT.match(nb).group(2) 
+                    or REG_INSERT.match(nb).group(4) 
+                    else 0 for nb in nb_names_ins]
+
+    for j in range(len(nb_names_ins)):
+        nbj_reg = REG_INSERT.match(nb_names_new[j])
+        if nbj_reg.group(4):
+            for k in range(j,len(nb_names_ins)):
+                nbk_reg = REG_INSERT.match(nb_names_new[k])
+                if nbk_reg.group(1,2) == nbj_reg.group(1,2):
+                    gk3 = nbk_reg.group(3)
+                    if nbk_reg.group(1,2,3,4) == nbj_reg.group(1,2,3,4):
+                        gk3_new = increase_index(gk3)
+                        gk4_new = ''
+                    else:
+                        gk3_new = increase_index(gk3)
+                        gk4_new = nbk_reg.group(4)
+                    nb_names_new[k] = nbk_reg.group(1) + nbk_reg.group(2) + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) + '.ipynb'
+        if nbj_reg.group(2):
+            nb_names_new[j] = nb_names_new[j][:nbj_reg.start(2)] + nb_names_new[j][nbj_reg.end(2):]
+            for k in range(j,len(nb_names_ins)):
+                nbk_reg = REG_INSERT.match(nb_names_new[k])
+                if nbk_reg.group(1)[0] == nbj_reg.group(1)[0]: 
+                    gk1_new = increase_index(nbk_reg.group(1))
+                    if nbk_reg.group(1,2) == nbj_reg.group(1,2):
+                        gk2_new = ''
+                    else:
+                        gk2_new = nbk_reg.group(2)
+                    nb_names_new[k] = gk1_new + gk2_new + '.' + nbk_reg.group(3) + nbk_reg.group(4) + '-' + nbk_reg.group(5) + '.ipynb'
+
+    if nb_names_new == nb_names_ins:
+        logging.info('- no files need renaming, no reindexing needed')
+        logging.info('- no files need renaming, no reindexing needed')
+    else:
+        count = 0
+        for f, f_new in zip(nb_names_ins, nb_names_new):
+            count +=1
+            if f != f_new:
+                logging.info('- replacing {0} with {1}'.format(f, f_new))
+                logging.info('- replacing {0} with {1}'.format(f, f_new))
+            os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_new))
+        count = 0
+        for f_new in nb_names_new:
+            count +=1
+            os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new), os.path.join(path_to_notes, f_new))
+
+def tighten_notebooks(path_to_notes: str='.'):
+    """Tighten the indexes of the notebooks in the colllection.
+
+    Checks whether there are gaps in the indices of the notebooks
+    and, if so, renames the affected notebooks in the appropriate 
+    order.
+
+    Parameters
+    ----------
+    path_to_notes : str
+        The path to the directory that contains the notebooks, 
+        either the absolute path or the path relative from 
+        where the code is being ran. It defaults to '.'.
+    """
+
+    nb_names = sorted(nb for nb in os.listdir(path_to_notes) if REG.match(nb))
+    nb_names_new = nb_names.copy()
+
+    nb_reg = [REG.match(nb_names[j]) for j in range(len(nb_names))]
+    nb_new_reg = nb_reg.copy()
+
+    for j in range(len(nb_names)):
+        if j==0:
+            if (nb_reg[j].group(1).isdecimal() 
+                    and nb_reg[j].group(1)>='02'):
+                nb_names_new[j] = '01.' + nb_reg[j].group(2) \
+                    + '-' + nb_reg[j].group(3) + '.ipynb'
+            elif (nb_reg[j].group(1).isalpha()
+                    and nb_reg[j].group(1)[1]>='B'):
+                nb_names_new[j] = nb_reg[j].group(1)[0] \
+                    + 'A.' + nb_reg[j].group(2) \
+                    + '-' + nb_reg[j].group(3) + '.ipynb'
+            elif (nb_reg[j].group(1).isalnum()
+                    and nb_reg[j].group(1)[1]>='2'):
+                nb_names_new[j] = nb_reg[j].group(1)[0] \
+                    + '1.' + nb_reg[j].group(2) \
+                    + '-' + nb_reg[j].group(3) + '.ipynb'
+        else:
+            if (nb_reg[j].group(1).isdecimal() 
+                    and nb_reg[j].group(1)>='02'):               
+                if nb_reg[j].group(1) == nb_reg[j-1].group(1):
+                    nb_names_new[j] = nb_new_reg[j-1].group(1) \
+                        + '.' + nb_reg[j].group(2) \
+                        + '-' + nb_reg[j].group(3) + '.ipynb'
+                elif (nb_reg[j].group(1)
+                        >increase_index(nb_new_reg[j-1].group(1))):
+                    nb_names_new[j] = \
+                        increase_index(nb_new_reg[j-1].group(1)) \
+                        + '.' + nb_reg[j].group(2) \
+                        + '-' + nb_reg[j].group(3) + '.ipynb'
+            elif (nb_reg[j].group(1)[0] in ('A', 'B')
+                    and nb_reg[j].group(1)[1]>='B'):
+                if (nb_reg[j].group(1)[0]=='A' 
+                        and nb_new_reg[j-1].group(1).isdecimal()):
+                    nb_names_new[j] = 'AA.' + nb_reg[j].group(2) \
+                        + '-' + nb_reg[j].group(3) + '.ipynb'
+                elif (nb_reg[j].group(1)[0]=='B' 
+                        and nb_new_reg[j-1].group(1)[0]=='A'):
+                    nb_names_new[j] = 'BA.' + nb_reg[j].group(2) \
+                        + '-' + nb_reg[j].group(3) + '.ipynb'    
+                elif nb_reg[j].group(1) == nb_reg[j-1].group(1):
+                    nb_names_new[j] = nb_new_reg[j-1].group(1) \
+                        + '.' + nb_reg[j].group(2) \
+                        + '-' + nb_reg[j].group(3) + '.ipynb'
+                elif (nb_reg[j].group(1)
+                        >increase_index(nb_new_reg[j-1].group(1))):
+                    nb_names_new[j] = \
+                        increase_index(nb_new_reg[j-1].group(1)) \
+                        + '.' + nb_reg[j].group(2) \
+                        + '-' + nb_reg[j].group(3) + '.ipynb'
+        nb_new_reg[j] = REG.match(nb_names_new[j])
+
+    nb_names_newest = nb_names_new.copy()
+
+    nb_new_reg = [REG.match(nb_names_new[j]) for j in range(len(nb_names_new))]
+    nb_newest_reg = nb_new_reg.copy()
+
+    for j in range(len(nb_names_new)):
+        if j==0 or nb_new_reg[j].group(1)!=nb_new_reg[j-1].group(1):
+            if (nb_new_reg[j].group(2).isdecimal() 
+                    and nb_new_reg[j].group(2)>='02'):
+                nb_names_newest[j] = nb_new_reg[j].group(1) \
+                    + '.01-' + nb_new_reg[j].group(3) + '.ipynb'
+            elif (nb_new_reg[j].group(2)[0]=='A'
+                    and nb_new_reg[j].group(2)[1]>='B'):
+                nb_names_newest[j] = nb_new_reg[j].group(1) \
+                    + '.AA-' + nb_new_reg[j].group(3) + '.ipynb'
+            elif (nb_new_reg[j].group(2)=='B'
+                    and nb_new_reg[j].group(2)[1]>='B'):
+                nb_names_newest[j] = nb_new_reg[j].group(1) \
+                    + '.BA-' + nb_new_reg[j].group(3) + '.ipynb'
+        else:
+            if (nb_new_reg[j].group(2).isdecimal() 
+                    and nb_new_reg[j].group(2)
+                        >increase_index(nb_newest_reg[j-1].group(2))):
+                    nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
+                        + increase_index(nb_newest_reg[j-1].group(2)) \
+                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
+            elif (nb_new_reg[j].group(2)[0] in ('A', 'B')
+                    and nb_new_reg[j].group(2)[1]>='B'):
+                if (nb_new_reg[j].group(2)[0]=='A' 
+                        and nb_newest_reg[j-1].group(2).isdecimal()):
+                    nb_names_newest[j] = nb_new_reg[j].group(1) \
+                        + '.AA-' + nb_new_reg[j].group(3) + '.ipynb'
+                elif (nb_new_reg[j].group(2)[0]=='B' 
+                        and nb_newest_reg[j-1].group(1)[0]!='B'):
+                    nb_names_newest[j] = nb_new_reg[j].group(1) \
+                        + '.BA-' + nb_new_reg[j].group(3) + '.ipynb'    
+                elif (nb_new_reg[j].group(2)
+                        >increase_index(nb_newest_reg[j-1].group(2))):
+                    nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
+                        + increase_index(nb_newest_reg[j-1].group(2)) \
+                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
+        nb_newest_reg[j] = REG.match(nb_names_newest[j])
+
+    if nb_names_newest == nb_names:
+        logging.info('- no files need renaming, no reindexing needed')
+        logging.info('- no files need renaming, no reindexing needed')
+    else:
+        count = 0
+        for f, f_newest in zip(nb_names, nb_names_newest):
+            count +=1
+            if f != f_newest:
+                logging.info('- replacing {0} with {1}'.format(f, f_newest))
+                logging.info('- replacing {0} with {1}'.format(f, f_newest))
+            os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_newest))
+        count = 0
+        for f_newest in nb_names_newest:
+            count +=1
+            os.rename(os.path.join(path_to_notes, str(count) + '-' + f_newest), os.path.join(path_to_notes, f_newest))
+
+def reindex(path_to_notes: str='.', insert: bool=True, tighten: bool=False):
+
+    if insert:
+        insert_notebooks(path_to_notes)
+    
+    if tighten:
+        tighten_notebooks(path_to_notes)
+
 
 def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
         toc_title: str='', show_index_in_toc: bool=True):
@@ -873,7 +909,8 @@ def bind_from_arguments(path_to_notes: str='.',
         toc_title: str='',
         header: str='', 
         core_navigators: str='',
-        reindex_notebooks: bool=False,
+        insert: bool=False,
+        tighten: bool=False,
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.',
         github_io_slides_dir: str='.',
@@ -958,8 +995,11 @@ def bind_from_arguments(path_to_notes: str='.',
         It defaults to True.
     """
 
-    if reindex_notebooks:
-        reindex(path_to_notes)
+    if insert:
+        insert_notebooks(path_to_notes)
+    
+    if tighten:
+        tighten_notebooks(path_to_notes)
 
     remove_marker_cells(path_to_notes, HEADER_MARKER)
     remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
@@ -1002,8 +1042,8 @@ def bind_from_configfile(config_file: str):
     else:
         path_to_notes = '.'
 
-    if 'reindex_notebooks' in config:
-        reindex(path_to_notes, **config['reindex_notebooks'])
+    if 'reindexing' in config:
+        reindex(path_to_notes, **config['reindexing'])
 
     remove_marker_cells(path_to_notes, HEADER_MARKER)
     remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
