@@ -21,10 +21,17 @@ badges:
   show_binder: True
   show_extra_badge: True
   extra_badges:
-    - badge: slides
+    - alt: slides
+      title: View Slides
       url: https://rmsrosa.github.io/nbbinder/tests/nb_alice/slides
       extension: .slides.html
       label: view
       message: slides
       color: darkgreen
-      alt_title: View Slides  
+    - alt: nbviewer
+      title: View in NBViewer 
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_alice
+      extension: .ipynb
+      label: view in
+      message: nbviewer
+      color: orange

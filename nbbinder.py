@@ -666,7 +666,7 @@ def get_navigator_entries(path_to_notes: str='.',
         user: str='', repository: str='', 
         branch: str='master', 
         github_nb_dir: str='.', 
-        extra_badges: list=None,
+        extra_badges: list=[],
         show_index_in_nav: bool=True):
     """Iterable with the navigator info for each notebook.
 
@@ -733,13 +733,13 @@ def get_navigator_entries(path_to_notes: str='.',
     NEXT_TEMPLATE = "| [{title} ->]({url})"
 
     COLAB_LINK = """
-<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{github_nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Google Colab" title="Open in Google Colab"></a>
+<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{github_nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Google Colab" title="Open in Google Colab"></a>
 """
     BINDER_LINK = """
-<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Open in binder" title="Open in binder"></a>
+<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Binder" title="Open in binder"></a>
 """
     EXTRA_BADGE_LINK = """
- <a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt_title}" title="{badge_alt_title}"></a>
+ <a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
 """   
 
     for prev_nb, this_nb, next_nb in prev_this_next(indexed_notebooks(path_to_notes)):
@@ -759,34 +759,34 @@ def get_navigator_entries(path_to_notes: str='.',
                                        show_index_in_nav)
             navbar += NEXT_TEMPLATE.format(title=entry, url=next_nb)
 
-        this_colab_link = COLAB_LINK.format(user=user,
+        this_nb_colab_link = COLAB_LINK.format(user=user,
             repository=repository, 
             branch=branch, github_nb_dir=github_nb_dir, 
             notebook_filename=os.path.basename(this_nb))
 
-        this_binder_link = BINDER_LINK.format(user=user,
+        this_nb_binder_link = BINDER_LINK.format(user=user,
             repository=repository, 
             branch=branch, github_nb_dir=github_nb_dir, 
             notebook_filename=os.path.basename(this_nb))
 
-        if extra_badges:
-            this_extra_badge_link = EXTRA_BADGE_LINK.format(
-                badge_url=extra_badges[0]['url'],
+        this_nb_extra_badge_links = []
+        for badge in extra_badges:
+            this_nb_extra_badge_links.append(EXTRA_BADGE_LINK.format(
+                badge_url=badge['url'],
                 badge_filename=this_nb.replace('.ipynb',
-                    extra_badges[0]['extension']),
-                badge_label=extra_badges[0]['label'],
-                badge_message=extra_badges[0]['message'],
-                badge_color=extra_badges[0]['color'],
-                badge_alt_title=extra_badges[0]['alt_title'])
-        else:
-            this_extra_badge_link=''
+                    badge['extension']),
+                badge_label=badge['label'],
+                badge_message=badge['message'],
+                badge_color=badge['color'],
+                badge_alt=badge['alt'],
+                badge_title=badge['title']))
             
-        yield os.path.join(path_to_notes, this_nb), navbar, this_colab_link, this_binder_link, this_extra_badge_link
+        yield os.path.join(path_to_notes, this_nb), navbar, this_nb_colab_link, this_nb_binder_link, this_nb_extra_badge_links
 
 def add_navigators(path_to_notes: str='.', core_navigators: list=[], 
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
-        extra_badges: list=None,
+        extra_badges: list=[],
         show_colab: bool=False, show_binder: bool=False, 
         show_extra_badge: bool=False,
         show_index_in_nav: bool=True):
@@ -852,7 +852,7 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         and section number of each notebook or just their title.
         It defaults to True.
     """
-    for nb_file, navbar, this_colab_link, this_binder_link, this_extra_badge_link in get_navigator_entries(path_to_notes,
+    for nb_file, navbar, this_nb_colab_link, this_nb_binder_link, this_nb_extra_badge_links in get_navigator_entries(path_to_notes,
             core_navigators, 
             user, repository, branch, 
             github_nb_dir, 
@@ -868,16 +868,16 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
             navbar_bottom += "\n"
 
         if show_colab:
-            navbar_top += this_colab_link + "&nbsp;"
-            navbar_bottom += this_colab_link
+            navbar_top += this_nb_colab_link + "&nbsp;"
+            navbar_bottom += this_nb_colab_link
 
         if show_binder:
-            navbar_top += this_binder_link + "&nbsp;"
-            navbar_bottom += this_binder_link
+            navbar_top += this_nb_binder_link + "&nbsp;"
+            navbar_bottom += this_nb_binder_link
 
-        if show_extra_badge:
-            navbar_top += this_extra_badge_link + "&nbsp;"
-            navbar_bottom += this_extra_badge_link
+        for this_nb_extra_badge_link in this_nb_extra_badge_links:
+            navbar_top += this_nb_extra_badge_link + "&nbsp;"
+            navbar_bottom += this_nb_extra_badge_link
 
         if show_colab or show_binder or show_extra_badge:
             navbar_top += "\n"
@@ -907,7 +907,7 @@ def bind_from_arguments(path_to_notes: str='.',
         core_navigators: str='',
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
-        extra_badges: list=None,
+        extra_badges: list=[],
         show_colab: bool=False, show_binder: bool=False, 
         show_extra_badge: bool=False,
         show_index_in_toc: bool=True,
