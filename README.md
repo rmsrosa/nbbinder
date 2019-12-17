@@ -96,6 +96,8 @@ Then, the following table of contents is inserted in the first notebook:
 
 ### [12. Alice's Evidence](#/)
 
+See [Markdown for 00.00-Alice's_Adventures_in_Wonderland](tests/nb_alice_md/00.00-Alice's_Adventures_in_Wonderland.md) for the markdown converted version of this notebook (experiment clicking on the badges with the mouse's right button to open the notebook in different renders and cloud computing platforms).
+
 More information on the [Documentation of NBBinder on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
 
 ## Installation
