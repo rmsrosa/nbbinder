@@ -11,7 +11,8 @@ import logging
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 
-import nbconvert
+from nbconvert import MarkdownExporter
+from nbconvert import exporters
 
 from context import nbbinder as nbb
 
@@ -21,6 +22,7 @@ logging.basicConfig(level=logging.WARNING)
 def create_notebooks(path_to_notes, nb_filenames):
 
     assert(type(path_to_notes)==str), "Argument `path_to_notes` should be a string"
+
     if os.path.isdir(path_to_notes):
         for f in os.listdir(path_to_notes):
             os.remove(os.path.join(path_to_notes,f))
@@ -41,6 +43,30 @@ def create_notebooks(path_to_notes, nb_filenames):
             text = "That's all for this Section"
         nb.cells.insert(1, new_markdown_cell(text))
         nbformat.write(nb, os.path.join(path_to_notes, nb_filename))
+
+def export_notebooks_to_rst(path_to_notes, path_to_rst):
+
+    assert(type(path_to_notes)==str), "Argument `path_to_notes` should be a string"
+    assert(os.path.isdir(path_to_notes)), "Argument `path_to_notes` should be an existing directory"
+    assert(type(path_to_rst)==str), "Argument `path_to_rst` should be a string"
+
+    if os.path.isdir(path_to_rst):
+        for f in os.listdir(path_to_rst):
+            os.remove(os.path.join(path_to_rst,f))
+    else:
+        os.mkdir(path_to_rst)
+
+    md_exporter = MarkdownExporter()
+    for nb_name in nbb.indexed_notebooks(path_to_notes):
+        nb_file = os.path.join(path_to_notes, nb_name)
+        nb = nbformat.read(nb_file, as_version=4)
+        (body, resources) = md_exporter.from_notebook_node(nb)
+        md_file = os.path.join(path_to_rst, nb_name.replace('.ipynb', '.md'))
+        md_filename = open(md_file, 'w+')
+        md_filename.write(body)
+#        print(nb_name, resources)
+    md_filename.close()
+
 
 if __name__ == '__main__':
 
@@ -87,6 +113,9 @@ if __name__ == '__main__':
 
     logging.info("\n# Binding 'nb_alice' notebooks with config file 'config_nb_alice.yml'")
     nbb.bind('config_nb_alice.yml')
+
+    logging.info("# Exporting notebooks in {} to markdown format".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
+    export_notebooks_to_rst('nb_alice', 'nb_alice_md')
 
     nb_grammar = [
         '00.00-Front_Page.ipynb',
