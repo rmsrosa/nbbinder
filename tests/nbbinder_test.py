@@ -11,6 +11,8 @@ import logging
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 
+import nbconvert
+
 from context import nbbinder as nbb
 
 # Loggin level
