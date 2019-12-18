@@ -32,6 +32,19 @@ TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"
 HEADER_MARKER = "<!--HEADER-->"   
 NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 
+# Metadata to flag cells for the slides
+SLIDE_INCLUDE = {
+        "slideshow": {
+        "slide_type": "slide"
+        }
+    }
+
+SLIDE_SKIP = {
+    "slideshow": {
+    "slide_type": "skip"
+    }
+}
+
 def indexed_notebooks(path_to_notes: str=''):
     """Returns a sorted list with the filenames of the 'indexed notebooks'.
 
@@ -594,6 +607,7 @@ def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
     for cell in toc_nb.cells:
         if is_marker_cell(TOC_MARKER, cell):
             cell.source = contents
+            cell.metadata = SLIDE_INCLUDE
             toc_cell_found = True
             
     if toc_cell_found:
@@ -603,9 +617,11 @@ def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
         logging.info('* No markdown cell starting with {} found in {}'.format(TOC_MARKER, toc_nb_name))
         logging.info("- inserting table of contents in {0}".format(toc_nb_name))
         if toc_nb.cells and is_marker_cell(NAVIGATOR_MARKER, toc_nb.cells[-1]):
-            toc_nb.cells.insert(-1, new_markdown_cell(source=contents))
+            toc_nb.cells.insert(-1, new_markdown_cell(source=contents,
+                metadata=SLIDE_INCLUDE))
         else:
-            toc_nb.cells.append(new_markdown_cell(source=contents))
+            toc_nb.cells.append(new_markdown_cell(source=contents,
+                metadata=SLIDE_INCLUDE))
 
     nbformat.write(toc_nb, toc_nb_file)
 
@@ -632,9 +648,12 @@ def add_headers(path_to_notes: str='.', header: str=None):
         if nb.cells and is_marker_cell(HEADER_MARKER, nb.cells[0]):    
             logging.info('- updating header for {0}'.format(nb_name))
             nb.cells[0].source = HEADER_MARKER + '\n' + header
+            nb.cells[0].metadata = SLIDE_SKIP
         else:
             logging.info('- inserting header for {0}'.format(nb_name))
-            nb.cells.insert(0, new_markdown_cell(HEADER_MARKER + '\n' + header))
+            nb.cells.insert(0, new_markdown_cell(
+                source=HEADER_MARKER + '\n' + header, 
+                metadata=SLIDE_SKIP))
         nbformat.write(nb, nb_file)
 
 def prev_this_next(collection):
@@ -888,14 +907,18 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         if len(nb.cells) > 1 and is_marker_cell(NAVIGATOR_MARKER, nb.cells[1]):         
             logging.info("- updating navbar for {0}".format(nb_name))
             nb.cells[1].source = navbar_top
+            nb.cells[1].metadata = SLIDE_SKIP
         else:
             logging.info("- inserting navbar for {0}".format(nb_name))
-            nb.cells.insert(1, new_markdown_cell(source=navbar_top))
+            nb.cells.insert(1, new_markdown_cell(source=navbar_top,
+                metadata=SLIDE_SKIP))
 
         if len(nb.cells)>2 and is_marker_cell(NAVIGATOR_MARKER, nb.cells[-1]):
             nb.cells[-1].source = navbar_bottom
+            nb.cells[-1].metadata = SLIDE_SKIP
         else:
-            nb.cells.append(new_markdown_cell(source=navbar_bottom))
+            nb.cells.append(new_markdown_cell(source=navbar_bottom,
+                metadata=SLIDE_SKIP))
         nbformat.write(nb, nb_file)
 
 def bind_from_arguments(path_to_notes: str='.', 

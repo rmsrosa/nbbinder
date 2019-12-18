@@ -29,7 +29,7 @@ badges:
       extension: .md
       label: view
       message: markdown
-      color: darkgreen
+      color: blueviolet
     - alt: nbviewer
       title: View in NBViewer 
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_alice
@@ -37,3 +37,10 @@ badges:
       label: view in
       message: nbviewer
       color: orange
+    - alt: slides
+      title: View Slides
+      url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_alice_slides
+      extension: .slides.html
+      label: view
+      message: slides
+      color: darkgreen

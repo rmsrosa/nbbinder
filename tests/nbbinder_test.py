@@ -38,9 +38,12 @@ def create_notebooks(path_to_notes, nb_filenames):
         nb = nbformat.v4.new_notebook()
         nb_reg = nbb.REG_INSERT.match(nb_filename)
         nb.cells.insert(0, new_markdown_cell('# ' + nb_reg.group(5).replace('_', ' ').replace('+u003f','?')))
-        nb.cells.insert(1, new_markdown_cell(fake.text()))
-        nb.cells.insert(2, new_markdown_cell(fake.text()))
-        nb.cells.insert(3, new_markdown_cell(fake.text()))
+        nb.cells.insert(1, new_markdown_cell(source=fake.text(), 
+            metadata=nbb.SLIDE_INCLUDE))
+        nb.cells.insert(2, new_markdown_cell(source=fake.text(),
+            metadata=nbb.SLIDE_INCLUDE))
+        nb.cells.insert(3, new_markdown_cell(source=fake.text(),
+            metadata=nbb.SLIDE_INCLUDE))
         nbformat.write(nb, os.path.join(path_to_notes, nb_filename))
 
 def export_notebooks(path_to_notes, path_to_export, export_type):
@@ -59,7 +62,7 @@ def export_notebooks(path_to_notes, path_to_export, export_type):
         exporter = MarkdownExporter()
         extension = '.md'
     elif export_type == 'slides':
-        exporter = SlidesExporter()
+        exporter = SlidesExporter(reveal_scroll=True)
         extension = '.slides.html'
 
     for nb_name in nbb.indexed_notebooks(path_to_notes):
