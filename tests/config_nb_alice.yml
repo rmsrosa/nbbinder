@@ -27,6 +27,7 @@ badges:
       title: View Markdown
       url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_alice_md
       extension: .md
+      replace_links: True
       label: view
       message: markdown
       color: blueviolet
@@ -34,6 +35,7 @@ badges:
       title: View in NBViewer 
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_alice
       extension: .ipynb
+      replace_links: False
       label: view in
       message: nbviewer
       color: orange
@@ -41,6 +43,7 @@ badges:
       title: View Slides
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_alice_slides
       extension: .slides.html
+      replace_links: True
       label: view
       message: slides
       color: darkgreen

@@ -31,8 +31,9 @@ def create_notebooks(path_to_notes, nb_filenames):
     else:
         os.mkdir(path_to_notes)
 
+#    Faker().seed(1234)
     fake = Faker()
-    fake.seed(1234)
+    fake.seed_instance(1234)
 
     for nb_filename in nb_filenames:
         nb = nbformat.v4.new_notebook()
