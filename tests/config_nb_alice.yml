@@ -39,7 +39,7 @@ badges:
       color: orange
     - alt: slides
       title: View Slides
-      url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_alice_slides
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_alice_slides
       extension: .slides.html
       label: view
       message: slides
