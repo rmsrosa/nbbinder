@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/anaconda3/envs/nbbinder/bin/python
 # -*- coding: utf-8 -*-
 '''
 Notebook Binder test
@@ -8,11 +8,13 @@ import os
 import re
 import logging
 
+from faker import Faker
+
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 
 from nbconvert import MarkdownExporter
-from nbconvert import exporters
+from nbconvert import SlidesExporter
 
 from context import nbbinder as nbb
 
@@ -29,39 +31,42 @@ def create_notebooks(path_to_notes, nb_filenames):
     else:
         os.mkdir(path_to_notes)
 
+    fake = Faker()
+    fake.seed(1234)
+
     for nb_filename in nb_filenames:
         nb = nbformat.v4.new_notebook()
         nb_reg = nbb.REG_INSERT.match(nb_filename)
         nb.cells.insert(0, new_markdown_cell('# ' + nb_reg.group(5).replace('_', ' ').replace('+u003f','?')))
-        if nb_reg.group(1) == '00':
-            text = "That's all for this part of the Front Matter"
-        elif nb_reg.group(1)[0] == 'A':
-            text = "That's all for this part of the Appendix"
-        elif nb_reg.group(1)[0] == 'B':
-            text = "That's all for this part of the End Matter"
-        else:
-            text = "That's all for this Section"
-        nb.cells.insert(1, new_markdown_cell(text))
+        nb.cells.insert(1, new_markdown_cell(fake.text()))
+        nb.cells.insert(2, new_markdown_cell(fake.text()))
+        nb.cells.insert(3, new_markdown_cell(fake.text()))
         nbformat.write(nb, os.path.join(path_to_notes, nb_filename))
 
-def export_notebooks_to_rst(path_to_notes, path_to_rst):
+def export_notebooks(path_to_notes, path_to_export, export_type):
 
     assert(type(path_to_notes)==str), "Argument `path_to_notes` should be a string"
     assert(os.path.isdir(path_to_notes)), "Argument `path_to_notes` should be an existing directory"
-    assert(type(path_to_rst)==str), "Argument `path_to_rst` should be a string"
+    assert(type(path_to_export)==str), "Argument `path_to_export` should be a string"
 
-    if os.path.isdir(path_to_rst):
-        for f in os.listdir(path_to_rst):
-            os.remove(os.path.join(path_to_rst,f))
+    if os.path.isdir(path_to_export):
+        for f in os.listdir(path_to_export):
+            os.remove(os.path.join(path_to_export,f))
     else:
-        os.mkdir(path_to_rst)
+        os.mkdir(path_to_export)
 
-    md_exporter = MarkdownExporter()
+    if export_type == 'md':
+        exporter = MarkdownExporter()
+        extension = '.md'
+    elif export_type == 'slides':
+        exporter = SlidesExporter()
+        extension = '.slides.html'
+
     for nb_name in nbb.indexed_notebooks(path_to_notes):
         nb_file = os.path.join(path_to_notes, nb_name)
         nb = nbformat.read(nb_file, as_version=4)
-        (body, resources) = md_exporter.from_notebook_node(nb)
-        md_file = os.path.join(path_to_rst, nb_name.replace('.ipynb', '.md'))
+        (body, resources) = exporter.from_notebook_node(nb)
+        md_file = os.path.join(path_to_export, nb_name.replace('.ipynb', extension))
         md_filename = open(md_file, 'w+')
         md_filename.write(body)
 #        print(nb_name, resources)
@@ -115,7 +120,10 @@ if __name__ == '__main__':
     nbb.bind('config_nb_alice.yml')
 
     logging.info("# Exporting notebooks in {} to markdown format".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
-    export_notebooks_to_rst('nb_alice', 'nb_alice_md')
+    export_notebooks('nb_alice', 'nb_alice_md', 'md')
+
+    logging.info("# Exporting notebooks in {} to slides format".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
+    export_notebooks('nb_alice', 'nb_alice_slides', 'slides')
 
     nb_grammar = [
         '00.00-Front_Page.ipynb',
