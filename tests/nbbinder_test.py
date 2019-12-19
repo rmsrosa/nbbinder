@@ -18,7 +18,7 @@ from nbconvert import SlidesExporter
 
 from context import nbbinder as nbb
 
-# Loggin level
+# Logging level
 logging.basicConfig(level=logging.WARNING)
 
 def create_notebooks(path_to_notes, nb_filenames):

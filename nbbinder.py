@@ -32,7 +32,8 @@ REG_INSERT = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])([a-z]|)\.(\d{2}|\b[A][
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"    
-HEADER_MARKER = "<!--HEADER-->"   
+HEADER_MARKER = "<!--HEADER-->"
+BADGES_MARKER = "<!--BADGES-->"
 NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 
 # Metadata to flag cells for the slides
@@ -596,7 +597,7 @@ def export_notebooks(path_to_notes: str='.',
         for cell in nb.cells:
             for MARKER in (NAVIGATOR_MARKER, TOC_MARKER):
                 if is_marker_cell(MARKER, cell):
-                    print('found', MARKER, 'cell')
+                    pass
 
         (body, resources) = exporter.from_notebook_node(nb)
 
@@ -696,51 +697,19 @@ def add_headers(path_to_notes: str='.', header: str=None):
                 metadata=SLIDE_SKIP))
         nbformat.write(nb, nb_file)
 
-def prev_this_next(collection):
-    """Iterable with previous, current, and next notebooks in `collection`.
-
-    It reads a list of indexed notebooks and gives an iterable with the
-    previous, current, and next notebooks for each notebook in the list.
-
-    Parameters
-    ----------
-    collection : list of str
-        The collection of indexed notebooks.
-
-    Yields
-    ------
-    : str
-        A string with the filename of the previous notebook in the iteration.
-    : str
-        A string with the filename of the current notebook in the iteration.
-    : str
-        A string with the filename of the next notebook in the iteration.
-    """
-    a, b, c = itertools.tee(collection,3)
-    next(c)
-    return zip(itertools.chain([None], a), b, itertools.chain(c, [None]))
-
-def get_navigator_entries(path_to_notes: str='.', 
-        core_navigators: list=[], 
+def get_badge_entries(path_to_notes: str='.', 
         user: str='', repository: str='', 
         branch: str='master', 
         github_nb_dir: str='.', 
-        extra_badges: list=[],
-        show_index_in_nav: bool=True):
-    """Iterable with the navigator info for each notebook.
+        extra_badges: list=[]):
+    """Iterable with the bagdes info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and 
     generates an iterable with the information needed to build the
-    navigators for each notebook.
+    badges for each notebook.
 
     Parameters
     ----------
-    core_navigators : list of str
-        A lists of strings with the filenames of each notebook to be
-        included in the navigators, in between the links to the
-        "previous" and the "next" notebooks. It defaults to the empty
-        list.
-
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
@@ -768,56 +737,26 @@ def get_navigator_entries(path_to_notes: str='.',
 
     extra_badges : list of dict
 
-    show_index_in_nav : bool
-        Whether to display the navigator with the chapter
-        and section number of each notebook or just their title.
-        It defaults to True.
-
     Yields
     ------
     : str
         Path to current notebook in the iterator.
     : str
-        Contents of the navigation bar for the current notebook in the
-        iterator.
-    : str
         The google colab link for the current notebook in the iterator.
     : str
         The binder link for the current notebook in the iterator.
-    : str
-        The extra badge link for the current notebook in the iterator.      
+    : list
+        The list of extra badge links for the current notebook 
+        in the iterator.      
     """
-    PREV_TEMPLATE = "[<- {title}]({url}) "
-    CENTER_TEMPLATE = "| [{title}]({url}) "
-    NEXT_TEMPLATE = "| [{title} ->]({url})"
-
-    COLAB_LINK = """
-<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{github_nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Google Colab" title="Open in Google Colab"></a>
+    COLAB_LINK = """<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{github_nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Google Colab" title="Open in Google Colab"></a>
 """
-    BINDER_LINK = """
-<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Binder" title="Open in binder"></a>
+    BINDER_LINK = """<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Binder" title="Open in binder"></a>
 """
-    EXTRA_BADGE_LINK = """
- <a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
+    EXTRA_BADGE_LINK = """<a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
 """   
 
-    for prev_nb, this_nb, next_nb in prev_this_next(indexed_notebooks(path_to_notes)):
-        navbar = ""
-        if prev_nb:
-            entry = get_notebook_entry(path_to_notes, prev_nb, 
-                                       show_index_in_nav)
-            navbar += PREV_TEMPLATE.format(title=entry, url=prev_nb)
-
-        for center_nb in core_navigators:
-            entry = get_notebook_entry(path_to_notes, center_nb, 
-                                       show_index_in_nav)
-            navbar += CENTER_TEMPLATE.format(title=entry, url=center_nb)
-
-        if next_nb:
-            entry = get_notebook_entry(path_to_notes, next_nb, 
-                                       show_index_in_nav)
-            navbar += NEXT_TEMPLATE.format(title=entry, url=next_nb)
-
+    for this_nb in indexed_notebooks(path_to_notes):
         this_nb_colab_link = COLAB_LINK.format(user=user,
             repository=repository, 
             branch=branch, github_nb_dir=github_nb_dir, 
@@ -829,6 +768,7 @@ def get_navigator_entries(path_to_notes: str='.',
             notebook_filename=os.path.basename(this_nb))
 
         this_nb_extra_badge_links = []
+
         for badge in extra_badges:
             this_nb_extra_badge_links.append(EXTRA_BADGE_LINK.format(
                 badge_url=badge['url'],
@@ -840,28 +780,21 @@ def get_navigator_entries(path_to_notes: str='.',
                 badge_alt=badge['name'],
                 badge_title=badge['title']))
             
-        yield os.path.join(path_to_notes, this_nb), navbar, this_nb_colab_link, this_nb_binder_link, this_nb_extra_badge_links
+        yield os.path.join(path_to_notes, this_nb), this_nb_colab_link, this_nb_binder_link, this_nb_extra_badge_links
 
-def add_navigators(path_to_notes: str='.', core_navigators: list=[], 
+def add_badges(path_to_notes: str='.', core_navigators: list=[], 
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
         extra_badges: list=[],
         show_colab: bool=False, show_binder: bool=False, 
-        show_extra_badge: bool=False,
-        show_index_in_nav: bool=True):
-    """Adds navigators to each notebook in the collection.
+        show_extra_badge: bool=False):
+    """Adds badges to each notebook in the collection.
 
-    Adds top and bottom navigators to each notebook in the collection 
+    Adds top and bottom badges to each notebook in the collection 
     of indexed notebooks in the folder `path_to_notes`.
 
     Parameters
     ----------
-    core_navigators : list of str
-        A lists of strings with the filenames of each notebook to be
-        included in the navigators, in between the links to the
-        "previous" and the "next" notebooks. It defaults to the empty
-        list.
-
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
@@ -887,12 +820,9 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         repository mentioned in the description of the `user` argument.  
         It defaults to '.'.
 
-    extra_badge_url : str
-    extra_badge_replace_nb_extension : str
-    extra_badge_label : str
-    extra_badge_message : str
-    extra_badge_color : str
-    extra_badge_alt_title : str
+    extra_badges: list of dict
+        Info for building extra badges. Each dict should have two keys:
+        `export_path` and `export_class`.
 
     show_colab : bool
         Whether to display the Google Colab badge or not. It defaults
@@ -901,53 +831,159 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
     show_binder : bool
         Whether to display the Binder badge or not. It defaults
         to False.
+    """
+    for nb_filename, this_nb_colab_link, this_nb_binder_link, this_nb_extra_badge_links in get_badge_entries(path_to_notes, 
+            user, repository, branch, 
+            github_nb_dir, 
+            extra_badges):
+        nb = nbformat.read(nb_filename, as_version=4)
+        nb_name = os.path.basename(nb_filename)
 
-    show_extra_badge : bool
-        Whether to display an Extra badge or not. It defaults
-        to False.
+        badges_top = BADGES_MARKER + "\n"
+
+        if show_colab:
+            badges_top += this_nb_colab_link + "&nbsp;"
+
+        if show_binder:
+            badges_top += this_nb_binder_link + "&nbsp;"
+
+        for this_nb_extra_badge_link in this_nb_extra_badge_links:
+            badges_top += this_nb_extra_badge_link + "&nbsp;"
+
+        if len(nb.cells) > 1 and is_marker_cell(BADGES_MARKER, nb.cells[1]):
+            logging.info("- updating badges for {0}".format(nb_name))
+            nb.cells[1].source = badges_top
+            nb.cells[1].metadata = SLIDE_SKIP
+        else:
+            logging.info("- inserting badges for {0}".format(nb_name))
+            nb.cells.insert(1, new_markdown_cell(source=badges_top,
+                metadata=SLIDE_SKIP))
+
+        nbformat.write(nb, nb_filename)
+
+def prev_this_next(collection):
+    """Iterable with previous, current, and next notebooks in `collection`.
+
+    It reads a list of indexed notebooks and gives an iterable with the
+    previous, current, and next notebooks for each notebook in the list.
+
+    Parameters
+    ----------
+    collection : list of str
+        The collection of indexed notebooks.
+
+    Yields
+    ------
+    : str
+        A string with the filename of the previous notebook in the iteration.
+    : str
+        A string with the filename of the current notebook in the iteration.
+    : str
+        A string with the filename of the next notebook in the iteration.
+    """
+    a, b, c = itertools.tee(collection,3)
+    next(c)
+    return zip(itertools.chain([None], a), b, itertools.chain(c, [None]))
+
+def get_navigator_entries(path_to_notes: str='.', 
+        core_navigators: list=[],
+        show_index_in_nav: bool=True):
+    """Iterable with the navigator info for each notebook.
+
+    It reads the indexed notebooks in the folder `path_to_notes` and 
+    generates an iterable with the information needed to build the
+    navigators for each notebook.
+
+    Parameters
+    ----------
+    path_to_notes : str
+        The path to the directory that contains the notebooks, 
+        either the absolute path or the path relative from 
+        where the code is being ran. It defaults to '.'.
+
+    core_navigators : list of str
+        A lists of strings with the filenames of each notebook to be
+        included in the navigators, in between the links to the
+        "previous" and the "next" notebooks. It defaults to the empty
+        list.
+
+    show_index_in_nav : bool
+        Whether to display the navigator with the chapter
+        and section number of each notebook or just their title.
+        It defaults to True.
+
+    Yields
+    ------
+    : str
+        Path to current notebook in the iterator.
+    : str
+        Contents of the navigation bar for the current notebook in the
+        iterator.     
+    """
+    PREV_TEMPLATE = "[<- {title}]({url}) "
+    CENTER_TEMPLATE = "| [{title}]({url}) "
+    NEXT_TEMPLATE = "| [{title} ->]({url})"
+
+    for prev_nb, this_nb, next_nb in prev_this_next(indexed_notebooks(path_to_notes)):
+        navbar = ""
+        if prev_nb:
+            entry = get_notebook_entry(path_to_notes, prev_nb, 
+                                       show_index_in_nav)
+            navbar += PREV_TEMPLATE.format(title=entry, url=prev_nb)
+
+        for center_nb in core_navigators:
+            entry = get_notebook_entry(path_to_notes, center_nb, 
+                                       show_index_in_nav)
+            navbar += CENTER_TEMPLATE.format(title=entry, url=center_nb)
+
+        if next_nb:
+            entry = get_notebook_entry(path_to_notes, next_nb, 
+                                       show_index_in_nav)
+            navbar += NEXT_TEMPLATE.format(title=entry, url=next_nb)
+            
+        yield os.path.join(path_to_notes, this_nb), navbar
+
+def add_navigators(path_to_notes: str='.', core_navigators: list=[],
+        show_index_in_nav: bool=True):
+    """Adds navigators to each notebook in the collection.
+
+    Adds top and bottom navigators to each notebook in the collection 
+    of indexed notebooks in the folder `path_to_notes`.
+
+    Parameters
+    ----------
+    path_to_notes : str
+        The path to the directory that contains the notebooks, 
+        either the absolute path or the path relative from 
+        where the code is being ran. It defaults to '.'.
+
+    core_navigators : list of str
+        A lists of strings with the filenames of each notebook to be
+        included in the navigators, in between the links to the
+        "previous" and the "next" notebooks. It defaults to the empty
+        list.
 
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
         It defaults to True.
     """
-    for nb_file, navbar, this_nb_colab_link, this_nb_binder_link, this_nb_extra_badge_links in get_navigator_entries(path_to_notes,
-            core_navigators, 
-            user, repository, branch, 
-            github_nb_dir, 
-            extra_badges,
-            show_index_in_nav):
+    for nb_file, navbar in get_navigator_entries(path_to_notes,
+            core_navigators, show_index_in_nav):
         nb = nbformat.read(nb_file, as_version=4)
         nb_name = os.path.basename(nb_file)
 
-        navbar_top = navbar_bottom = NAVIGATOR_MARKER + "\n"
+        navbar_top = NAVIGATOR_MARKER + "\n" + navbar + "\n\n---\n"
         navbar_bottom = NAVIGATOR_MARKER + "\n\n---\n" + navbar
 
-        if show_colab or show_binder or show_extra_badge:
-            navbar_bottom += "\n"
-
-        if show_colab:
-            navbar_top += this_nb_colab_link + "&nbsp;"
-            navbar_bottom += this_nb_colab_link
-
-        if show_binder:
-            navbar_top += this_nb_binder_link + "&nbsp;"
-            navbar_bottom += this_nb_binder_link
-
-        for this_nb_extra_badge_link in this_nb_extra_badge_links:
-            navbar_top += this_nb_extra_badge_link + "&nbsp;"
-            navbar_bottom += this_nb_extra_badge_link
-
-        if show_colab or show_binder or show_extra_badge:
-            navbar_top += "\n"
-            navbar_bottom += "&nbsp;"
-
-        navbar_top += "\n" + navbar + "\n\n---\n"
-
-        if len(nb.cells) > 1 and is_marker_cell(NAVIGATOR_MARKER, nb.cells[1]):         
+        if len(nb.cells)>=1 and is_marker_cell(NAVIGATOR_MARKER, nb.cells[1]):
             logging.info("- updating navbar for {0}".format(nb_name))
             nb.cells[1].source = navbar_top
             nb.cells[1].metadata = SLIDE_SKIP
+        elif len(nb.cells)>=2 and is_marker_cell(NAVIGATOR_MARKER, nb.cells[2]):
+            logging.info("- updating navbar for {0}".format(nb_name))
+            nb.cells[2].source = navbar_top
+            nb.cells[2].metadata = SLIDE_SKIP
         else:
             logging.info("- inserting navbar for {0}".format(nb_name))
             nb.cells.insert(1, new_markdown_cell(source=navbar_top,
@@ -967,7 +1003,7 @@ def bind_from_arguments(path_to_notes: str='.',
         toc_nb_name: str='', 
         toc_title: str='',
         header: str='', 
-        core_navigators: str='',
+        core_navigators: list=[],
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
         extra_badges: list=[],
@@ -1032,13 +1068,6 @@ def bind_from_arguments(path_to_notes: str='.',
         repository mentioned in the description of the `user` argument.  
         It defaults to '.'.
 
-    extra_badge_url : str
-    extra_badge_replace_nb_extension : str
-    extra_badge_label : str
-    extra_badge_message : str
-    extra_badge_color : str
-    extra_badge_alt_title : str
-
     show_colab : bool
         Whether to display the Google Colab badge or not. It defaults
         to False.
@@ -1076,13 +1105,6 @@ def bind_from_arguments(path_to_notes: str='.',
 
     add_navigators(path_to_notes=path_to_notes, 
         core_navigators=core_navigators,
-        user=user, 
-        repository=repository, branch=branch, 
-        github_nb_dir=github_nb_dir,
-        extra_badges = extra_badges,
-        show_colab=show_colab, 
-        show_binder=show_binder,
-        show_extra_badge=show_extra_badge,
         show_index_in_nav=show_index_in_nav)
 
 def bind_from_configfile(config_file: str):
@@ -1118,12 +1140,12 @@ def bind_from_configfile(config_file: str):
         add_headers(path_to_notes=path_to_notes, header=config['header'])
 
     if 'navigators' and 'badges' in config:
-        add_navigators(path_to_notes=path_to_notes, **config['navigators'],
-            **config['badges'])
+        add_navigators(path_to_notes=path_to_notes, **config['navigators'])
+        add_badges(path_to_notes=path_to_notes, **config['badges'])
     elif 'navigators' in config:
         add_navigators(path_to_notes=path_to_notes, **config['navigators'])
     elif 'badges' in config:
-        add_navigators(path_to_notes=path_to_notes, **config['badges'])  
+        add_badges(path_to_notes=path_to_notes, **config['badges'])  
 
     if 'exports' in config:
         for export in config['exports']:
