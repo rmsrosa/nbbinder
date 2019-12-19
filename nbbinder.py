@@ -162,7 +162,8 @@ def is_marker_cell(MARKER: str=None,
     """
     return cell.source.startswith(MARKER)
 
-def remove_marker_cells(path_to_notes: str='.', MARKER: str=None):
+def refresh_marker_cells(path_to_notes: str='.', MARKER: str=None, 
+        mode: str='remove'):
     """Removes any MARKER cell from the indexed notebooks in path_to_notes.
     
     Parameters
@@ -174,8 +175,17 @@ def remove_marker_cells(path_to_notes: str='.', MARKER: str=None):
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
         where the code is being ran. It defaults to '.'.
+    
+    mode : str
+        A string indicating whether to clean (if mode == 'clean')
+        or remove (if mode == 'remove') the cells marked with the
+        provided MARKER. The mode 'clean' leaves the MAKER in the cell, 
+        but no other content in the source. The useful thing about the
+        'clean' mode is to preserve any metadata (such as about the slide property), otherwise, if removed, any subsequent call to the function
+        to add a cell with this MARKER will set the metadata to be skipped
+        in the slides.
     """
-    if MARKER:
+    if MARKER and mode in ('clean', 'remove'):
         for nb_name in indexed_notebooks(path_to_notes):
             nb_file = os.path.join(path_to_notes, nb_name)
             nb = nbformat.read(nb_file, as_version=4)
@@ -184,7 +194,11 @@ def remove_marker_cells(path_to_notes: str='.', MARKER: str=None):
             for cell in nb.cells:
                 if not is_marker_cell(MARKER, cell):
                     new_cells.append(cell)
-                else:
+                elif mode == 'clean':
+                    logging.info("- cleaning '{}' cell from {}".format(MARKER, nb_name))
+                    new_cells.append(cell)
+                    new_cells[-1].source = MARKER
+                elif mode == 'remove':
                     logging.info("- removing '{}' cell from {}".format(MARKER, nb_name))
 
             nb.cells = new_cells
@@ -1093,8 +1107,8 @@ def bind_from_arguments(path_to_notes: str='.',
     if insert or tighten:
         reindex(path_to_notes, insert, tighten)
 
-    remove_marker_cells(path_to_notes, HEADER_MARKER)
-    remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
+    refresh_marker_cells(path_to_notes, HEADER_MARKER, 'remove')
+    refresh_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
 
     add_contents(path_to_notes=path_to_notes, 
         toc_nb_name=toc_nb_name,
@@ -1130,8 +1144,20 @@ def bind_from_configfile(config_file: str):
     if 'reindexing' in config:
         reindex(path_to_notes, **config['reindexing'])
 
-    remove_marker_cells(path_to_notes, HEADER_MARKER)
-    remove_marker_cells(path_to_notes, NAVIGATOR_MARKER)
+    if 'header' in config:
+        refresh_marker_cells(path_to_notes, HEADER_MARKER, 'clean')
+    else:
+        refresh_marker_cells(path_to_notes, HEADER_MARKER, 'remove')
+
+    if 'navigators' in config:
+        refresh_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'clean')
+    else:
+        refresh_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
+
+    if 'badges' in config:
+        refresh_marker_cells(path_to_notes, BADGES_MARKER, 'clean')
+    else:
+        refresh_marker_cells(path_to_notes, BADGES_MARKER, 'remove')
 
     if 'contents' in config:
         add_contents(path_to_notes=path_to_notes, **config['contents'])
@@ -1139,12 +1165,10 @@ def bind_from_configfile(config_file: str):
     if 'header' in config:
         add_headers(path_to_notes=path_to_notes, header=config['header'])
 
-    if 'navigators' and 'badges' in config:
+    if 'navigators' in config:
         add_navigators(path_to_notes=path_to_notes, **config['navigators'])
-        add_badges(path_to_notes=path_to_notes, **config['badges'])
-    elif 'navigators' in config:
-        add_navigators(path_to_notes=path_to_notes, **config['navigators'])
-    elif 'badges' in config:
+    
+    if 'badges' in config:
         add_badges(path_to_notes=path_to_notes, **config['badges'])  
 
     if 'exports' in config:
