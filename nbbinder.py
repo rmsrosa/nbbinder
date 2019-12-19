@@ -701,7 +701,7 @@ def get_badge_entries(path_to_notes: str='.',
         user: str='', repository: str='', 
         branch: str='master', 
         github_nb_dir: str='.', 
-        extra_badges: list=[]):
+        custom_badges: list=[]):
     """Iterable with the bagdes info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and 
@@ -735,7 +735,7 @@ def get_badge_entries(path_to_notes: str='.',
         repository mentioned in the description of the `user` argument.  
         It defaults to '.'.
 
-    extra_badges : list of dict
+    custom_badges : list of dict
 
     Yields
     ------
@@ -753,7 +753,7 @@ def get_badge_entries(path_to_notes: str='.',
 """
     BINDER_LINK = """<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Binder" title="Open in binder"></a>
 """
-    EXTRA_BADGE_LINK = """<a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
+    custom_badge_LINK = """<a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
 """   
 
     for this_nb in indexed_notebooks(path_to_notes):
@@ -767,10 +767,10 @@ def get_badge_entries(path_to_notes: str='.',
             branch=branch, github_nb_dir=github_nb_dir, 
             notebook_filename=os.path.basename(this_nb))
 
-        this_nb_extra_badge_links = []
+        this_nb_custom_badge_links = []
 
-        for badge in extra_badges:
-            this_nb_extra_badge_links.append(EXTRA_BADGE_LINK.format(
+        for badge in custom_badges:
+            this_nb_custom_badge_links.append(custom_badge_LINK.format(
                 badge_url=badge['url'],
                 badge_filename=this_nb.replace('.ipynb',
                     badge['extension']),
@@ -780,14 +780,14 @@ def get_badge_entries(path_to_notes: str='.',
                 badge_alt=badge['name'],
                 badge_title=badge['title']))
             
-        yield os.path.join(path_to_notes, this_nb), this_nb_colab_link, this_nb_binder_link, this_nb_extra_badge_links
+        yield os.path.join(path_to_notes, this_nb), this_nb_colab_link, this_nb_binder_link, this_nb_custom_badge_links
 
 def add_badges(path_to_notes: str='.', core_navigators: list=[], 
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
-        extra_badges: list=[],
+        custom_badges: list=[],
         show_colab: bool=False, show_binder: bool=False, 
-        show_extra_badge: bool=False):
+        show_custom_badge: bool=False):
     """Adds badges to each notebook in the collection.
 
     Adds top and bottom badges to each notebook in the collection 
@@ -820,7 +820,7 @@ def add_badges(path_to_notes: str='.', core_navigators: list=[],
         repository mentioned in the description of the `user` argument.  
         It defaults to '.'.
 
-    extra_badges: list of dict
+    custom_badges: list of dict
         Info for building extra badges. Each dict should have two keys:
         `export_path` and `export_class`.
 
@@ -832,10 +832,10 @@ def add_badges(path_to_notes: str='.', core_navigators: list=[],
         Whether to display the Binder badge or not. It defaults
         to False.
     """
-    for nb_filename, this_nb_colab_link, this_nb_binder_link, this_nb_extra_badge_links in get_badge_entries(path_to_notes, 
+    for nb_filename, this_nb_colab_link, this_nb_binder_link, this_nb_custom_badge_links in get_badge_entries(path_to_notes, 
             user, repository, branch, 
             github_nb_dir, 
-            extra_badges):
+            custom_badges):
         nb = nbformat.read(nb_filename, as_version=4)
         nb_name = os.path.basename(nb_filename)
 
@@ -847,8 +847,8 @@ def add_badges(path_to_notes: str='.', core_navigators: list=[],
         if show_binder:
             badges_top += this_nb_binder_link + "&nbsp;"
 
-        for this_nb_extra_badge_link in this_nb_extra_badge_links:
-            badges_top += this_nb_extra_badge_link + "&nbsp;"
+        for this_nb_custom_badge_link in this_nb_custom_badge_links:
+            badges_top += this_nb_custom_badge_link + "&nbsp;"
 
         if len(nb.cells) > 1 and is_marker_cell(BADGES_MARKER, nb.cells[1]):
             logging.info("- updating badges for {0}".format(nb_name))
@@ -1006,9 +1006,9 @@ def bind_from_arguments(path_to_notes: str='.',
         core_navigators: list=[],
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
-        extra_badges: list=[],
+        custom_badges: list=[],
         show_colab: bool=False, show_binder: bool=False, 
-        show_extra_badge: bool=False,
+        show_custom_badge: bool=False,
         show_index_in_toc: bool=True,
         show_index_in_nav: bool=True):
     """Binds the collection of notebooks from the arguments provided.
@@ -1076,7 +1076,7 @@ def bind_from_arguments(path_to_notes: str='.',
         Whether to display the Binder badge or not. It defaults
         to False.
 
-    show_extra_badge : bool
+    show_custom_badge : bool
         Whether to display an Extra badge or not. It defaults
         to False.
 

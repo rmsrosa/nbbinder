@@ -21,8 +21,8 @@ badges:
   github_nb_dir: tests/nb_alice
   show_colab: True
   show_binder: True
-  show_extra_badge: True
-  extra_badges:
+  show_custom_badge: True
+  custom_badges:
     - name: markdown
       title: View Markdown
       url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_alice_md
