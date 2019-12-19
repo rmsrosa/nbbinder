@@ -112,6 +112,10 @@ It can also be downloaded directly from github.com/rmsrosa/nbbinder.
 
 More information on the [Documentation of NBBinder on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/).
 
+## Development
+
+During the alpha stage, development is being done in the `master` branch, which is currently the only branch. When the first `beta` version is released, the latest stable version will stay in the `master` branch and development will belong to a separate `development` branch.
+
 ## License
 
 The original work in [Python Data Science Handbook/tools](https://github.com/jakevdp/PythonDataScienceHandbook/tree/master/tools) is licensed by [Jake VanderPlas](http://vanderplas.com/), under the [MIT license](https://opensource.org/licenses/MIT).
