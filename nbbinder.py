@@ -22,6 +22,9 @@ import yaml
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 
+from nbconvert import MarkdownExporter
+from nbconvert import SlidesExporter
+
 # Regular expression for indexing the notebooks
 # Tested in https://regexr.com/
 REG = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-(.*)\.ipynb')
@@ -565,6 +568,43 @@ def reindex(path_to_notes: str='.', insert: bool=True, tighten: bool=False):
     if tighten:
         tighten_notebooks(path_to_notes)
 
+def export_notebooks(path_to_notes: str='.', 
+        export_path: str=None, exporter_class: str=None):
+    assert(type(export_path)==str
+        ), "Argument `export_path` should be a string" 
+    assert(exporter_class in ('SlidesExporter', 'MarkdownExporter')
+        ), "Argument `exporter_class` should be either 'SlidesExporter' \
+            or 'MarkdownExporter'"
+        
+    if os.path.isdir(export_path):
+        for f in os.listdir(export_path):
+            os.remove(os.path.join(export_path,f))
+    else:
+        os.mkdir(export_path)
+
+    if exporter_class == 'SlidesExporter':
+        exporter = SlidesExporter(reveal_scroll=True)
+        extension = '.slides.html'
+    elif exporter_class == 'MarkdownExporter':
+        exporter = MarkdownExporter()
+        extension = '.md'
+
+    for nb_name in indexed_notebooks(path_to_notes):
+        nb_file = os.path.join(path_to_notes, nb_name)
+        nb = nbformat.read(nb_file, as_version=4)
+        
+        for cell in nb.cells:
+            for MARKER in (NAVIGATOR_MARKER, TOC_MARKER):
+                if is_marker_cell(MARKER, cell):
+                    print('found', MARKER, 'cell')
+
+        (body, resources) = exporter.from_notebook_node(nb)
+
+        export_filename = os.path.join(export_path, 
+            nb_name.replace('.ipynb', extension, 1))
+        export_file = open(export_filename, 'w+')
+        export_file.write(body)
+        export_file.close()
 
 def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
         toc_title: str='', show_index_in_toc: bool=True):
@@ -797,7 +837,7 @@ def get_navigator_entries(path_to_notes: str='.',
                 badge_label=badge['label'],
                 badge_message=badge['message'],
                 badge_color=badge['color'],
-                badge_alt=badge['alt'],
+                badge_alt=badge['name'],
                 badge_title=badge['title']))
             
         yield os.path.join(path_to_notes, this_nb), navbar, this_nb_colab_link, this_nb_binder_link, this_nb_extra_badge_links
@@ -1083,7 +1123,11 @@ def bind_from_configfile(config_file: str):
     elif 'navigators' in config:
         add_navigators(path_to_notes=path_to_notes, **config['navigators'])
     elif 'badges' in config:
-        add_navigators(path_to_notes=path_to_notes, **config['badges'])        
+        add_navigators(path_to_notes=path_to_notes, **config['badges'])  
+
+    if 'exports' in config:
+        for export in config['exports']:
+            export_notebooks(path_to_notes=path_to_notes, **export)
 
 def bind(*args, **kargs):
     """Binds the collection of notebooks.

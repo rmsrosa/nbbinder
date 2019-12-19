@@ -46,36 +46,6 @@ def create_notebooks(path_to_notes, nb_filenames):
             metadata=nbb.SLIDE_INCLUDE))
         nbformat.write(nb, os.path.join(path_to_notes, nb_filename))
 
-def export_notebooks(path_to_notes, path_to_export, export_type):
-
-    assert(type(path_to_notes)==str), "Argument `path_to_notes` should be a string"
-    assert(os.path.isdir(path_to_notes)), "Argument `path_to_notes` should be an existing directory"
-    assert(type(path_to_export)==str), "Argument `path_to_export` should be a string"
-
-    if os.path.isdir(path_to_export):
-        for f in os.listdir(path_to_export):
-            os.remove(os.path.join(path_to_export,f))
-    else:
-        os.mkdir(path_to_export)
-
-    if export_type == 'md':
-        exporter = MarkdownExporter()
-        extension = '.md'
-    elif export_type == 'slides':
-        exporter = SlidesExporter(reveal_scroll=True)
-        extension = '.slides.html'
-
-    for nb_name in nbb.indexed_notebooks(path_to_notes):
-        nb_file = os.path.join(path_to_notes, nb_name)
-        nb = nbformat.read(nb_file, as_version=4)
-        (body, resources) = exporter.from_notebook_node(nb)
-        md_file = os.path.join(path_to_export, nb_name.replace('.ipynb', extension))
-        md_filename = open(md_file, 'w+')
-        md_filename.write(body)
-#        print(nb_name, resources)
-    md_filename.close()
-
-
 if __name__ == '__main__':
 
     logging.info("# Changing to directory {}".format(os.path.dirname(__file__)))
@@ -121,12 +91,6 @@ if __name__ == '__main__':
 
     logging.info("\n# Binding 'nb_alice' notebooks with config file 'config_nb_alice.yml'")
     nbb.bind('config_nb_alice.yml')
-
-    logging.info("# Exporting notebooks in {} to markdown format".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
-    export_notebooks('nb_alice', 'nb_alice_md', 'md')
-
-    logging.info("# Exporting notebooks in {} to slides format".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
-    export_notebooks('nb_alice', 'nb_alice_slides', 'slides')
 
     nb_grammar = [
         '00.00-Front_Page.ipynb',

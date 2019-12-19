@@ -23,7 +23,7 @@ badges:
   show_binder: True
   show_extra_badge: True
   extra_badges:
-    - alt: markdown
+    - name: markdown
       title: View Markdown
       url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_alice_md
       extension: .md
@@ -31,7 +31,7 @@ badges:
       label: view
       message: markdown
       color: blueviolet
-    - alt: nbviewer
+    - name: nbviewer
       title: View in NBViewer 
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_alice
       extension: .ipynb
@@ -39,7 +39,7 @@ badges:
       label: view in
       message: nbviewer
       color: orange
-    - alt: slides
+    - name: slides
       title: View Slides
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_alice_slides
       extension: .slides.html
@@ -47,3 +47,9 @@ badges:
       label: view
       message: slides
       color: darkgreen
+
+exports:
+  - export_path: nb_alice_slides
+    exporter_class: SlidesExporter
+  - export_path: nb_alice_md
+    exporter_class: MarkdownExporter
