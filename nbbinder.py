@@ -27,8 +27,9 @@ from nbconvert import SlidesExporter
 
 # Regular expression for indexing the notebooks
 # Tested in https://regexr.com/
-REG = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-(.*)\.ipynb')
-REG_INSERT = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])([a-z]|)\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)([a-z]|)-(.*)\.ipynb')
+REG = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-(.*)(\.ipynb)')
+REG_INSERT = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])([a-z]|)\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)([a-z]|)-(.*)(\.ipynb)')
+REG_LINK = re.compile(r'(\b\]\()(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-(.*)(\.ipynb)')
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"    
@@ -164,7 +165,8 @@ def is_marker_cell(MARKER: str=None,
 
 def refresh_marker_cells(path_to_notes: str='.', MARKER: str=None, 
         mode: str='remove'):
-    """Removes any MARKER cell from the indexed notebooks in path_to_notes.
+    """Removes or cleans any MARKER cell from the indexed notebooks 
+    in path_to_notes.
     
     Parameters
     ----------
@@ -259,7 +261,7 @@ def get_notebook_full_entry(path_to_notes: str='.', nb_name: str=None) -> list:
         depending on the case, of the Chapter and Section numbers
         or letters.
     """
-    chapter, section, basename = REG.match(nb_name).groups()
+    chapter, section, basename, extensino = REG.match(nb_name).groups()
 
     if chapter.isdecimal():
         chapter_clean = int(chapter)
@@ -415,7 +417,9 @@ def insert_notebooks(path_to_notes: str='.'):
                     else:
                         gk3_new = increase_index(gk3)
                         gk4_new = nbk_reg.group(4)
-                    nb_names_new[k] = nbk_reg.group(1) + nbk_reg.group(2) + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) + '.ipynb'
+                    nb_names_new[k] = nbk_reg.group(1) + nbk_reg.group(2) \
+                        + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) \
+                        + nbk_reg.group(6)
         if nbj_reg.group(2):
             nb_names_new[j] = nb_names_new[j][:nbj_reg.start(2)] + nb_names_new[j][nbj_reg.end(2):]
             for k in range(j,len(nb_names_ins)):
@@ -426,7 +430,9 @@ def insert_notebooks(path_to_notes: str='.'):
                         gk2_new = ''
                     else:
                         gk2_new = nbk_reg.group(2)
-                    nb_names_new[k] = gk1_new + gk2_new + '.' + nbk_reg.group(3) + nbk_reg.group(4) + '-' + nbk_reg.group(5) + '.ipynb'
+                    nb_names_new[k] = gk1_new + gk2_new + '.' \
+                        + nbk_reg.group(3) + nbk_reg.group(4) + '-' \
+                        + nbk_reg.group(5) + nbk_reg.group(6)
 
     if nb_names_new == nb_names_ins:
         logging.info('- no files need renaming, no reindexing needed')
@@ -470,50 +476,50 @@ def tighten_notebooks(path_to_notes: str='.'):
             if (nb_reg[j].group(1).isdecimal() 
                     and nb_reg[j].group(1)>='02'):
                 nb_names_new[j] = '01.' + nb_reg[j].group(2) \
-                    + '-' + nb_reg[j].group(3) + '.ipynb'
+                    + '-' + nb_reg[j].group(3) + nbk_reg.group(4)
             elif (nb_reg[j].group(1).isalpha()
                     and nb_reg[j].group(1)[1]>='B'):
                 nb_names_new[j] = nb_reg[j].group(1)[0] \
                     + 'A.' + nb_reg[j].group(2) \
-                    + '-' + nb_reg[j].group(3) + '.ipynb'
+                    + '-' + nb_reg[j].group(3) + nbk_reg.group(4)
             elif (nb_reg[j].group(1).isalnum()
                     and nb_reg[j].group(1)[1]>='2'):
                 nb_names_new[j] = nb_reg[j].group(1)[0] \
                     + '1.' + nb_reg[j].group(2) \
-                    + '-' + nb_reg[j].group(3) + '.ipynb'
+                    + '-' + nb_reg[j].group(3) + nbk_reg.group(4)
         else:
             if (nb_reg[j].group(1).isdecimal() 
                     and nb_reg[j].group(1)>='02'):               
                 if nb_reg[j].group(1) == nb_reg[j-1].group(1):
                     nb_names_new[j] = nb_new_reg[j-1].group(1) \
                         + '.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + '.ipynb'
+                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
                 elif (nb_reg[j].group(1)
                         >increase_index(nb_new_reg[j-1].group(1))):
                     nb_names_new[j] = \
                         increase_index(nb_new_reg[j-1].group(1)) \
                         + '.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + '.ipynb'
+                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
             elif (nb_reg[j].group(1)[0] in ('A', 'B')
                     and nb_reg[j].group(1)[1]>='B'):
                 if (nb_reg[j].group(1)[0]=='A' 
                         and nb_new_reg[j-1].group(1).isdecimal()):
                     nb_names_new[j] = 'AA.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + '.ipynb'
+                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
                 elif (nb_reg[j].group(1)[0]=='B' 
                         and nb_new_reg[j-1].group(1)[0]=='A'):
                     nb_names_new[j] = 'BA.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + '.ipynb'    
+                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)   
                 elif nb_reg[j].group(1) == nb_reg[j-1].group(1):
                     nb_names_new[j] = nb_new_reg[j-1].group(1) \
                         + '.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + '.ipynb'
+                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
                 elif (nb_reg[j].group(1)
                         >increase_index(nb_new_reg[j-1].group(1))):
                     nb_names_new[j] = \
                         increase_index(nb_new_reg[j-1].group(1)) \
                         + '.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + '.ipynb'
+                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
         nb_new_reg[j] = REG.match(nb_names_new[j])
 
     nb_names_newest = nb_names_new.copy()
@@ -526,37 +532,41 @@ def tighten_notebooks(path_to_notes: str='.'):
             if (nb_new_reg[j].group(2).isdecimal() 
                     and nb_new_reg[j].group(2)>='02'):
                 nb_names_newest[j] = nb_new_reg[j].group(1) \
-                    + '.01-' + nb_new_reg[j].group(3) + '.ipynb'
+                    + '.01-' + nb_new_reg[j].group(3) + nb_new_reg[j].group(4)
             elif (nb_new_reg[j].group(2)[0]=='A'
                     and nb_new_reg[j].group(2)[1]>='B'):
                 nb_names_newest[j] = nb_new_reg[j].group(1) \
-                    + '.AA-' + nb_new_reg[j].group(3) + '.ipynb'
+                    + '.AA-' + nb_new_reg[j].group(3) + nb_new_reg[j].group(4)
             elif (nb_new_reg[j].group(2)=='B'
                     and nb_new_reg[j].group(2)[1]>='B'):
                 nb_names_newest[j] = nb_new_reg[j].group(1) \
-                    + '.BA-' + nb_new_reg[j].group(3) + '.ipynb'
+                    + '.BA-' + nb_new_reg[j].group(3) + nb_new_reg[j].group(4)
         else:
             if (nb_new_reg[j].group(2).isdecimal() 
                     and nb_new_reg[j].group(2)
                         >increase_index(nb_newest_reg[j-1].group(2))):
                     nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
                         + increase_index(nb_newest_reg[j-1].group(2)) \
-                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
+                        + '-' + nb_new_reg[j].group(3) \
+                        + nb_new_reg[j].group(4)
             elif (nb_new_reg[j].group(2)[0] in ('A', 'B')
                     and nb_new_reg[j].group(2)[1]>='B'):
                 if (nb_new_reg[j].group(2)[0]=='A' 
                         and nb_newest_reg[j-1].group(2).isdecimal()):
                     nb_names_newest[j] = nb_new_reg[j].group(1) \
-                        + '.AA-' + nb_new_reg[j].group(3) + '.ipynb'
+                        + '.AA-' + nb_new_reg[j].group(3) \
+                        + nb_new_reg[j].group(4)
                 elif (nb_new_reg[j].group(2)[0]=='B' 
                         and nb_newest_reg[j-1].group(1)[0]!='B'):
                     nb_names_newest[j] = nb_new_reg[j].group(1) \
-                        + '.BA-' + nb_new_reg[j].group(3) + '.ipynb'    
+                        + '.BA-' + nb_new_reg[j].group(3) \
+                        + nb_new_reg[j].group(4)   
                 elif (nb_new_reg[j].group(2)
                         >increase_index(nb_newest_reg[j-1].group(2))):
                     nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
                         + increase_index(nb_newest_reg[j-1].group(2)) \
-                        + '-' + nb_new_reg[j].group(3) + '.ipynb'
+                        + '-' + nb_new_reg[j].group(3) \
+                        + nb_new_reg[j].group(4)
         nb_newest_reg[j] = REG.match(nb_names_newest[j])
 
     if nb_names_newest == nb_names:
@@ -616,7 +626,8 @@ def export_notebooks(path_to_notes: str='.',
         (body, resources) = exporter.from_notebook_node(nb)
 
         export_filename = os.path.join(export_path, 
-            nb_name.replace('.ipynb', extension, 1))
+            nb_name[:REG.match(nb_name).start(4)] + extension)
+
         export_file = open(export_filename, 'w+')
         export_file.write(body)
         export_file.close()
@@ -786,8 +797,8 @@ def get_badge_entries(path_to_notes: str='.',
         for badge in custom_badges:
             this_nb_custom_badge_links.append(custom_badge_LINK.format(
                 badge_url=badge['url'],
-                badge_filename=this_nb.replace('.ipynb',
-                    badge['extension']),
+                badge_filename=this_nb[:REG.match(this_nb).start(4)] \
+                    + badge['extension'],
                 badge_label=badge['label'],
                 badge_message=badge['message'],
                 badge_color=badge['color'],
