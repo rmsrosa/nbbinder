@@ -611,24 +611,25 @@ def export_notebooks(path_to_notes: str='.',
         exporter = MarkdownExporter()
         extension = '.md'
 
-    print('---')
     for nb_name in indexed_notebooks(path_to_notes):
-        print(nb_name)
         nb_file = os.path.join(path_to_notes, nb_name)
         nb = nbformat.read(nb_file, as_version=4)
         
         for cell in nb.cells:
             for MARKER in (NAVIGATOR_MARKER, TOC_MARKER):
                 if is_marker_cell(MARKER, cell):
-                    print(MARKER)
+                    source_new = ''
+                    i = 0
                     for m in REG_LINK.finditer(cell.source):
-                        print(m)
+                        source_new += cell.source[i:m.start(5)] + extension
+                        i = m.end(5)
+                    source_new += cell.source[i:]
+                    cell.source = source_new
 
+        logging.info("Adjusting links for {}".format(export_path))
         (body, resources) = exporter.from_notebook_node(nb)
-
         export_filename = os.path.join(export_path, 
             nb_name[:REG.match(nb_name).start(4)] + extension)
-
         export_file = open(export_filename, 'w+')
         export_file.write(body)
         export_file.close()
