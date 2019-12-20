@@ -494,33 +494,33 @@ def tighten_notebooks(path_to_notes: str='.'):
                 if nb_reg[j].group(1) == nb_reg[j-1].group(1):
                     nb_names_new[j] = nb_new_reg[j-1].group(1) \
                         + '.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
+                        + '-' + ''.join(nb_reg[j].group(3,4))
                 elif (nb_reg[j].group(1)
                         >increase_index(nb_new_reg[j-1].group(1))):
                     nb_names_new[j] = \
                         increase_index(nb_new_reg[j-1].group(1)) \
                         + '.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
+                        + '-' + ''.join(nb_reg[j].group(3,4))
             elif (nb_reg[j].group(1)[0] in ('A', 'B')
                     and nb_reg[j].group(1)[1]>='B'):
                 if (nb_reg[j].group(1)[0]=='A' 
                         and nb_new_reg[j-1].group(1).isdecimal()):
                     nb_names_new[j] = 'AA.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
+                        + '-' + ''.join(nb_reg[j].group(3,4))
                 elif (nb_reg[j].group(1)[0]=='B' 
                         and nb_new_reg[j-1].group(1)[0]=='A'):
                     nb_names_new[j] = 'BA.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)   
+                        + '-' + ''.join(nb_reg[j].group(3,4))
                 elif nb_reg[j].group(1) == nb_reg[j-1].group(1):
                     nb_names_new[j] = nb_new_reg[j-1].group(1) \
                         + '.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
+                        + '-' + ''.join(nb_reg[j].group(3,4))
                 elif (nb_reg[j].group(1)
                         >increase_index(nb_new_reg[j-1].group(1))):
                     nb_names_new[j] = \
                         increase_index(nb_new_reg[j-1].group(1)) \
                         + '.' + nb_reg[j].group(2) \
-                        + '-' + nb_reg[j].group(3) + nb_reg[j].group(4)
+                        + '-' + ''.join(nb_reg[j].group(3,4))
         nb_new_reg[j] = REG.match(nb_names_new[j])
 
     nb_names_newest = nb_names_new.copy()
@@ -533,41 +533,37 @@ def tighten_notebooks(path_to_notes: str='.'):
             if (nb_new_reg[j].group(2).isdecimal() 
                     and nb_new_reg[j].group(2)>='02'):
                 nb_names_newest[j] = nb_new_reg[j].group(1) \
-                    + '.01-' + nb_new_reg[j].group(3) + nb_new_reg[j].group(4)
+                    + '.01-' + ''.join(nb_new_reg[j].group(3,4))
             elif (nb_new_reg[j].group(2)[0]=='A'
                     and nb_new_reg[j].group(2)[1]>='B'):
                 nb_names_newest[j] = nb_new_reg[j].group(1) \
-                    + '.AA-' + nb_new_reg[j].group(3) + nb_new_reg[j].group(4)
+                    + '.AA-' + ''.join(nb_new_reg[j].group(3,4))
             elif (nb_new_reg[j].group(2)=='B'
                     and nb_new_reg[j].group(2)[1]>='B'):
                 nb_names_newest[j] = nb_new_reg[j].group(1) \
-                    + '.BA-' + nb_new_reg[j].group(3) + nb_new_reg[j].group(4)
+                    + '.BA-' + ''.join(nb_new_reg[j].group(3,4))
         else:
             if (nb_new_reg[j].group(2).isdecimal() 
                     and nb_new_reg[j].group(2)
                         >increase_index(nb_newest_reg[j-1].group(2))):
                     nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
                         + increase_index(nb_newest_reg[j-1].group(2)) \
-                        + '-' + nb_new_reg[j].group(3) \
-                        + nb_new_reg[j].group(4)
+                        + '-' + ''.join(nb_new_reg[j].group(3,4))
             elif (nb_new_reg[j].group(2)[0] in ('A', 'B')
                     and nb_new_reg[j].group(2)[1]>='B'):
                 if (nb_new_reg[j].group(2)[0]=='A' 
                         and nb_newest_reg[j-1].group(2).isdecimal()):
                     nb_names_newest[j] = nb_new_reg[j].group(1) \
-                        + '.AA-' + nb_new_reg[j].group(3) \
-                        + nb_new_reg[j].group(4)
+                        + '.AA-' + ''.join(nb_new_reg[j].group(3,4))
                 elif (nb_new_reg[j].group(2)[0]=='B' 
                         and nb_newest_reg[j-1].group(1)[0]!='B'):
                     nb_names_newest[j] = nb_new_reg[j].group(1) \
-                        + '.BA-' + nb_new_reg[j].group(3) \
-                        + nb_new_reg[j].group(4)   
+                        + '.BA-' + ''.join(nb_new_reg[j].group(3,4))
                 elif (nb_new_reg[j].group(2)
                         >increase_index(nb_newest_reg[j-1].group(2))):
                     nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
                         + increase_index(nb_newest_reg[j-1].group(2)) \
-                        + '-' + nb_new_reg[j].group(3) \
-                        + nb_new_reg[j].group(4)
+                        + '-' + ''.join(nb_new_reg[j].group(3,4))
         nb_newest_reg[j] = REG.match(nb_names_newest[j])
 
     if nb_names_newest == nb_names:
@@ -625,7 +621,8 @@ def export_notebooks(path_to_notes: str='.',
             for MARKER in (NAVIGATOR_MARKER, TOC_MARKER):
                 if is_marker_cell(MARKER, cell):
                     print(MARKER)
-                    print(REG_LINK.findall(cell.source))
+                    for m in REG_LINK.finditer(cell.source):
+                        print(m)
 
         (body, resources) = exporter.from_notebook_node(nb)
 
