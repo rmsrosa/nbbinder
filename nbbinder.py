@@ -477,17 +477,17 @@ def tighten_notebooks(path_to_notes: str='.'):
             if (nb_reg[j].group(1).isdecimal() 
                     and nb_reg[j].group(1)>='02'):
                 nb_names_new[j] = '01.' + nb_reg[j].group(2) \
-                    + '-' + nb_reg[j].group(3) + nbk_reg.group(4)
+                    + '-' + ''.join(nb_reg[j].group(3,4))
             elif (nb_reg[j].group(1).isalpha()
                     and nb_reg[j].group(1)[1]>='B'):
                 nb_names_new[j] = nb_reg[j].group(1)[0] \
                     + 'A.' + nb_reg[j].group(2) \
-                    + '-' + nb_reg[j].group(3) + nbk_reg.group(4)
+                    + '-' + ''.join(nb_reg[j].group(3,4))
             elif (nb_reg[j].group(1).isalnum()
                     and nb_reg[j].group(1)[1]>='2'):
                 nb_names_new[j] = nb_reg[j].group(1)[0] \
                     + '1.' + nb_reg[j].group(2) \
-                    + '-' + nb_reg[j].group(3) + nbk_reg.group(4)
+                    + '-' + ''.join(nb_reg[j].group(3,4))
         else:
             if (nb_reg[j].group(1).isdecimal() 
                     and nb_reg[j].group(1)>='02'):               
