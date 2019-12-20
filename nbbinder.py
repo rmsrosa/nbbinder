@@ -26,10 +26,11 @@ from nbconvert import MarkdownExporter
 from nbconvert import SlidesExporter
 
 # Regular expression for indexing the notebooks
-# Tested in https://regexr.com/
-REG = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-(.*)(\.ipynb)')
-REG_INSERT = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])([a-z]|)\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)([a-z]|)-(.*)(\.ipynb)')
-REG_LINK = re.compile(r'(\b\]\()(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-(.*)(\.ipynb)')
+# First tested in https://regexr.com/ (which is not the same as in python)
+# then testeed with `re` library
+REG = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-([^\)]*|[^\)]*\([^\)]*\)[^\)]*)(\.ipynb\b)')
+REG_INSERT = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])([a-z]|)\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)([a-z]|)-([^\)]*|[^\)]*\([^\)]*\)[^\)]*)(\.ipynb\b)')
+REG_LINK = re.compile(r'(\]\()(\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-([^\)]*|[^\)]*\([^\)]*\)[^\)]*)(\.ipynb)\)')
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"    
@@ -614,14 +615,17 @@ def export_notebooks(path_to_notes: str='.',
         exporter = MarkdownExporter()
         extension = '.md'
 
+    print('---')
     for nb_name in indexed_notebooks(path_to_notes):
+        print(nb_name)
         nb_file = os.path.join(path_to_notes, nb_name)
         nb = nbformat.read(nb_file, as_version=4)
         
         for cell in nb.cells:
             for MARKER in (NAVIGATOR_MARKER, TOC_MARKER):
                 if is_marker_cell(MARKER, cell):
-                    pass
+                    print(MARKER)
+                    print(REG_LINK.findall(cell.source))
 
         (body, resources) = exporter.from_notebook_node(nb)
 
