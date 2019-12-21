@@ -22,8 +22,9 @@ import yaml
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 
-from nbconvert import MarkdownExporter
-from nbconvert import SlidesExporter
+#from nbconvert import MarkdownExporter
+#from nbconvert import SlidesExporter
+from nbconvert import exporters
 
 # Regular expression for indexing the notebooks
 # First tested in https://regexr.com/ (which is not the same as in python)
@@ -591,12 +592,13 @@ def reindex(path_to_notes: str='.', insert: bool=True, tighten: bool=False):
         tighten_notebooks(path_to_notes)
 
 def export_notebooks(path_to_notes: str='.', 
-        export_path: str=None, exporter_class: str=None):
+        export_path: str=None, exporter_name: str=None, **kargs):
     assert(type(export_path)==str
         ), "Argument `export_path` should be a string" 
-    assert(exporter_class in ('SlidesExporter', 'MarkdownExporter')
-        ), "Argument `exporter_class` should be either 'SlidesExporter' \
-            or 'MarkdownExporter'"
+    assert(exporter_name in exporters.get_export_names()
+        ), "The `exporter_name` argument with value {} is not in the \
+            list of available exporters listed in \
+            `nbconvert.exporters.get_export_names()`".format(exporter_name)
         
     if os.path.isdir(export_path):
         for f in os.listdir(export_path):
@@ -604,17 +606,13 @@ def export_notebooks(path_to_notes: str='.',
     else:
         os.mkdir(export_path)
 
-    if exporter_class == 'SlidesExporter':
-        exporter = SlidesExporter(reveal_scroll=True)
-        extension = '.slides.html'
-    elif exporter_class == 'MarkdownExporter':
-        exporter = MarkdownExporter()
-        extension = '.md'
+    exporter = exporters.get_exporter(exporter_name)(**kargs)
+    extension = exporter.file_extension
 
     for nb_name in indexed_notebooks(path_to_notes):
         nb_file = os.path.join(path_to_notes, nb_name)
         nb = nbformat.read(nb_file, as_version=4)
-        
+        (body, resources) = exporter.from_notebook_node(nb)     
         for cell in nb.cells:
             for MARKER in (NAVIGATOR_MARKER, TOC_MARKER):
                 if is_marker_cell(MARKER, cell):
