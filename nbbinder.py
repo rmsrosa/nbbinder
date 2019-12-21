@@ -592,7 +592,8 @@ def reindex(path_to_notes: str='.', insert: bool=True, tighten: bool=False):
         tighten_notebooks(path_to_notes)
 
 def export_notebooks(path_to_notes: str='.', 
-        export_path: str=None, exporter_name: str=None, **kargs):
+        export_path: str=None, exporter_name: str=None, 
+        exporter_args: dict={}):
     assert(type(export_path)==str
         ), "Argument `export_path` should be a string" 
     assert(exporter_name in exporters.get_export_names()
@@ -606,7 +607,7 @@ def export_notebooks(path_to_notes: str='.',
     else:
         os.mkdir(export_path)
 
-    exporter = exporters.get_exporter(exporter_name)(**kargs)
+    exporter = exporters.get_exporter(exporter_name)(**exporter_args)
     extension = exporter.file_extension
 
     for nb_name in indexed_notebooks(path_to_notes):

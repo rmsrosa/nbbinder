@@ -51,6 +51,7 @@ badges:
 exports:
   - export_path: nb_alice_slides
     exporter_name: slides
-    reveal_scroll: True
+    exporter_args:
+      reveal_scroll: True
   - export_path: nb_alice_md
     exporter_name: markdown
