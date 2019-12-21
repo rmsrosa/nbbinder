@@ -22,8 +22,6 @@ import yaml
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 
-#from nbconvert import MarkdownExporter
-#from nbconvert import SlidesExporter
 from nbconvert import exporters
 
 # Regular expression for indexing the notebooks
