@@ -1,0 +1,16 @@
+nbbversion: 0.7a
+
+path_to_notes: nb_builds/nb_grammar_bound
+
+contents:
+  toc_nb_name: 00.00-Front_Page.ipynb
+  toc_title: Contents
+  show_index_in_toc: True
+
+header: "[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)"
+
+navigators:
+  core_navigators: 
+    - 00.00-Front_Page.ipynb
+    - BB.00-Bibliography.ipynb
+  show_index_in_nav: False    
