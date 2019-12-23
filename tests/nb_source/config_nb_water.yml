@@ -1,0 +1,48 @@
+nbbversion: 0.7a
+
+path_to_notes: nb_builds/nb_water
+
+contents:
+  toc_nb_name: 00.00-Water.ipynb
+  toc_title: Table of Contents
+  show_index_in_toc: True
+
+header: "[*NBBinder test on a collection of notebooks about some thermodynamic properperties of water*](https://github.com/rmsrosa/nbbinder)"
+
+navigators:
+  core_navigators: 
+    - 00.00-Water.ipynb
+    - BA.00-References.ipynb
+  show_index_in_nav: False
+
+badges:
+  user: rmsrosa
+  repository: nbbinder
+  branch: master
+  github_nb_dir: nb_builds/tests/nb_alice
+  show_colab: True
+  show_binder: True
+  show_custom_badge: True
+  custom_badges:
+    - name: nbviewer
+      title: View in NBViewer 
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/nb_builds/tests/nb_water
+      extension: .ipynb
+      replace_links: False
+      label: view in
+      message: nbviewer
+      color: orange
+    - name: slides
+      title: View Slides
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_slides
+      extension: .slides.html
+      replace_links: True
+      label: view
+      message: slides
+      color: darkgreen
+
+exports:
+  - export_path: nb_builds/nb_water_slides
+    exporter_name: slides
+    exporter_args:
+      reveal_scroll: True
