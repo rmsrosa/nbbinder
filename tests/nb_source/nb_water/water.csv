@@ -1,5 +1,5 @@
-temp, density, viscosity
-Temperature (C), Density (g/cm^3), Viscosity (cm^2/s)
+temp,density,viscosity
+Temperature (C),Density (g/cm^3),Viscosity (cm^2/s)
 0,0.9999,0.01787
 5,1,1.514
 10,0.9997,1.304
