@@ -38,7 +38,7 @@ BADGES_MARKER = "<!--BADGES-->"
 NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 
 # Metadata to flag cells for the slides
-SLIDE_INCLUDE = {
+SLIDE_SHOW = {
         "slideshow": {
         "slide_type": "slide"
         }
@@ -672,7 +672,7 @@ def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
     for cell in toc_nb.cells:
         if is_marker_cell(TOC_MARKER, cell):
             cell.source = contents
-            cell.metadata = SLIDE_INCLUDE
+            cell.metadata = SLIDE_SHOW
             toc_cell_found = True
             
     if toc_cell_found:
@@ -683,10 +683,10 @@ def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
         logging.info("- inserting table of contents in {0}".format(toc_nb_name))
         if toc_nb.cells and is_marker_cell(NAVIGATOR_MARKER, toc_nb.cells[-1]):
             toc_nb.cells.insert(-1, new_markdown_cell(source=contents,
-                metadata=SLIDE_INCLUDE))
+                metadata=SLIDE_SHOW))
         else:
             toc_nb.cells.append(new_markdown_cell(source=contents,
-                metadata=SLIDE_INCLUDE))
+                metadata=SLIDE_SHOW))
 
     nbformat.write(toc_nb, toc_nb_file)
 
@@ -1015,10 +1015,10 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
 
         if len(nb.cells)>2 and is_marker_cell(NAVIGATOR_MARKER, nb.cells[-1]):
             nb.cells[-1].source = navbar_bottom
-            nb.cells[-1].metadata = SLIDE_SKIP
+            nb.cells[-1].metadata = SLIDE_SHOW
         else:
             nb.cells.append(new_markdown_cell(source=navbar_bottom,
-                metadata=SLIDE_SKIP))
+                metadata=SLIDE_SHOW))
         nbformat.write(nb, nb_file)
 
 def bind_from_arguments(path_to_notes: str='.', 

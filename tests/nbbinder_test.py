@@ -50,11 +50,11 @@ def create_notebooks(path_to_notes, nb_filenames):
         nb_reg = nbb.REG_INSERT.match(nb_filename)
         nb.cells.insert(0, new_markdown_cell('# ' + nb_reg.group(5).replace('_', ' ').replace('+u003f','?')))
         nb.cells.insert(1, new_markdown_cell(source=fake.text(), 
-            metadata=nbb.SLIDE_INCLUDE))
+            metadata=nbb.SLIDE_SHOW))
         nb.cells.insert(2, new_markdown_cell(source=fake.text(),
-            metadata=nbb.SLIDE_INCLUDE))
+            metadata=nbb.SLIDE_SHOW))
         nb.cells.insert(3, new_markdown_cell(source=fake.text(),
-            metadata=nbb.SLIDE_INCLUDE))
+            metadata=nbb.SLIDE_SHOW))
         nbformat.write(nb, os.path.join(path_to_notes, nb_filename))
 
 if __name__ == '__main__':
