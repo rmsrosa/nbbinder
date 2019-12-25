@@ -9,7 +9,7 @@ __copyright__ = """Original work Copyright (c) 2016 Jacob VanderPlas
 Modified work Copyright (c) 2019 Ricardo M S Rosa
 """
 __license__ = "MIT"
-__version__ = "0.7a3"
+__version__ = "0.8a1"
 
 import os
 import re
@@ -911,7 +911,8 @@ def prev_this_next(collection):
 
 def get_navigator_entries(path_to_notes: str='.', 
         core_navigators: list=[],
-        show_index_in_nav: bool=True):
+        show_index_in_nav: bool=True,
+        show_nb_title_in_nav: bool=True):
     """Iterable with the navigator info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and 
@@ -951,24 +952,30 @@ def get_navigator_entries(path_to_notes: str='.',
     for prev_nb, this_nb, next_nb in prev_this_next(indexed_notebooks(path_to_notes)):
         navbar = ""
         if prev_nb:
-            entry = get_notebook_entry(path_to_notes, prev_nb, 
+            if show_nb_title_in_nav:
+                entry = get_notebook_entry(path_to_notes, prev_nb, 
                                        show_index_in_nav)
-            navbar += PREV_TEMPLATE.format(title=entry, url=prev_nb)
+                navbar += PREV_TEMPLATE.format(title=entry, url=prev_nb)
+            else:
+                navbar += PREV_TEMPLATE.format(title='Previous', url=prev_nb)
 
         for center_nb in core_navigators:
             entry = get_notebook_entry(path_to_notes, center_nb, 
-                                       show_index_in_nav)
+                show_index_in_nav)
             navbar += CENTER_TEMPLATE.format(title=entry, url=center_nb)
 
         if next_nb:
-            entry = get_notebook_entry(path_to_notes, next_nb, 
-                                       show_index_in_nav)
-            navbar += NEXT_TEMPLATE.format(title=entry, url=next_nb)
-            
+            if show_nb_title_in_nav:
+                entry = get_notebook_entry(path_to_notes, next_nb, 
+                    show_index_in_nav)
+                navbar += NEXT_TEMPLATE.format(title=entry, url=next_nb)
+            else:
+                navbar += NEXT_TEMPLATE.format(title='Next', url=next_nb)
+
         yield os.path.join(path_to_notes, this_nb), navbar
 
 def add_navigators(path_to_notes: str='.', core_navigators: list=[],
-        show_index_in_nav: bool=True):
+        show_index_in_nav: bool=True, show_nb_title_in_nav: bool=True):
     """Adds navigators to each notebook in the collection.
 
     Adds top and bottom navigators to each notebook in the collection 
@@ -993,7 +1000,7 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         It defaults to True.
     """
     for nb_file, navbar in get_navigator_entries(path_to_notes,
-            core_navigators, show_index_in_nav):
+            core_navigators, show_index_in_nav, show_nb_title_in_nav):
         nb = nbformat.read(nb_file, as_version=4)
         nb_name = os.path.basename(nb_file)
 
@@ -1026,7 +1033,7 @@ def bind_from_arguments(path_to_notes: str='.',
         tighten: bool=False,
         toc_nb_name: str='', 
         toc_title: str='',
-        header: str='', 
+        header: str='',
         core_navigators: list=[],
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
@@ -1034,7 +1041,8 @@ def bind_from_arguments(path_to_notes: str='.',
         show_colab: bool=False, show_binder: bool=False, 
         show_custom_badge: bool=False,
         show_index_in_toc: bool=True,
-        show_index_in_nav: bool=True):
+        show_index_in_nav: bool=True,
+        show_nb_title_in_nav: bool=True):
     """Binds the collection of notebooks from the arguments provided.
 
     Parameters
@@ -1129,7 +1137,8 @@ def bind_from_arguments(path_to_notes: str='.',
 
     add_navigators(path_to_notes=path_to_notes, 
         core_navigators=core_navigators,
-        show_index_in_nav=show_index_in_nav)
+        show_index_in_nav=show_index_in_nav,
+        show_nb_title_in_nav=show_nb_title_in_nav)
 
 def bind_from_configfile(config_file: str):
     """Binds the collection of notebooks from a configuration file.

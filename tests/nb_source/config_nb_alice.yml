@@ -13,6 +13,7 @@ navigators:
   core_navigators: 
     - 00.00-Alice's_Adventures_in_Wonderland.ipynb
   show_index_in_nav: False
+  show_nb_title_in_nav: False
 
 badges:
   user: rmsrosa

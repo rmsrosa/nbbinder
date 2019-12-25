@@ -14,6 +14,7 @@ navigators:
     - 00.00-Water_Contents.ipynb
     - BA.00-References.ipynb
   show_index_in_nav: False
+  show_nb_title_in_nav: True
 
 badges:
   user: rmsrosa
