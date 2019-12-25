@@ -3,7 +3,7 @@ nbbversion: 0.7a
 path_to_notes: nb_builds/nb_water
 
 contents:
-  toc_nb_name: 00.00-Water.ipynb
+  toc_nb_name: 00.00-Water_Contents.ipynb
   toc_title: Table of Contents
   show_index_in_toc: True
 
@@ -11,7 +11,7 @@ header: "[*NBBinder test on a collection of notebooks about some thermodynamic p
 
 navigators:
   core_navigators: 
-    - 00.00-Water.ipynb
+    - 00.00-Water_Contents.ipynb
     - BA.00-References.ipynb
   show_index_in_nav: False
 
