@@ -62,7 +62,7 @@ badges:
       message: markdown
       color: blueviolet
     - name: nbviewer
-      title: View in NBViewer 
+      title: View in NBViewer
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice
       replace_links: False
       label: view in
@@ -170,7 +170,7 @@ During the alpha stage, development is being done in the `master` branch, which 
 
 ## Maintainer
 
-* [@rmsrosa](https://github.com/rmsrosa)
+[@rmsrosa](https://github.com/rmsrosa)
 
 ## License
 
