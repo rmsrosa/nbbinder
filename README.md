@@ -40,34 +40,19 @@ contents:
 header: "[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)"
 
 navigators:
-  core_navigators:
+  core_navigators: 
     - 00.00-Alice's_Adventures_in_Wonderland.ipynb
   show_index_in_nav: False
   show_nb_title_in_nav: False
 
 badges:
-  user: rmsrosa
-  repository: nbbinder
-  branch: master
-  github_nb_dir: tests/nb_builds/nb_alice
-  show_colab: True
-  show_binder: True
-  custom_badges:
-    - name: markdown
-      title: View Markdown
-      url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice_md
-      extension: .md
+    - name: pdf
+      title: View PDF
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice_pdf
+      extension: .pdf
       replace_links: True
       label: view
-      message: markdown
-      color: blueviolet
-    - name: nbviewer
-      title: View in NBViewer
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice
-      extension: .ipynb
-      replace_links: False
-      label: view in
-      message: nbviewer
+      message: PDF
       color: orange
     - name: slides
       title: View Slides
@@ -83,8 +68,10 @@ exports:
     exporter_name: slides
     exporter_args:
       reveal_scroll: True
-  - export_path: nb_builds/nb_alice_md
-    exporter_name: markdown
+  - export_path: nb_builds/nb_alice_pdf
+    exporter_name: pdf
+    exporter_args:
+      latex_countInt: 1
 ```
 
 Then, we import the module (in the same folder) and use the `bind()` function with this configuration file as argument:
@@ -118,7 +105,7 @@ Suppose we run the `nbb.bind('config_nb_alice.yml')`, with the above configurati
 12.00-Alice's_Evidence.ipynb
 ```
 
-Then, the following table of contents is inserted in the first notebook:
+Then, the following table of contents is inserted in the first notebook `00.00-Alice's_Adventures_in_Wonderland.ipynb`:
 
 ## [Table of Contents](#/)
 
@@ -148,7 +135,7 @@ Then, the following table of contents is inserted in the first notebook:
 
 ### [12. Alice's Evidence](#/)
 
-See [Markdown for 00.00-Alice's_Adventures_in_Wonderland](tests/nb_builds/nb_alice_md/00.00-Alice's_Adventures_in_Wonderland.md) for the markdown converted version of this notebook (experiment clicking on the badges with the mouse's right button to open the notebook in different renders and cloud computing platforms).
+See [00.00-Alice's_Adventures_in_Wonderland](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the bound version of the first notebook. Experiment clicking on the badges with the mouse's right button to open the slides and pdfs of notebook and on the navigators to move to the other notebooks.
 
 ## Installation
 

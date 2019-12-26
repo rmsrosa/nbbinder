@@ -627,7 +627,14 @@ def export_notebooks(path_to_notes: str='.',
         (body, resources) = exporter.from_notebook_node(nb)
         export_filename = os.path.join(export_path, 
             nb_name[:REG.match(nb_name).start(4)] + extension)
-        export_file = open(export_filename, 'w+')
+        if type(body) == str:
+            export_file = open(export_filename, 'w+')
+        else:
+            export_file = open(export_filename, 'wb+')
+#        if exporter_name == 'pdf':
+#            export_file = open(export_filename, 'wb+')
+#        else:
+#            export_file = open(export_filename, 'w+')
         export_file.write(body)
         export_file.close()
 

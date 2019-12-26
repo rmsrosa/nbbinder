@@ -16,28 +16,13 @@ navigators:
   show_nb_title_in_nav: False
 
 badges:
-  user: rmsrosa
-  repository: nbbinder
-  branch: master
-  github_nb_dir: nb_builds/tests/nb_alice
-  show_colab: True
-  show_binder: True
-  custom_badges:
-    - name: markdown
-      title: View Markdown
-      url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice_md
-      extension: .md
+    - name: pdf
+      title: View PDF
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice_pdf
+      extension: .pdf
       replace_links: True
       label: view
-      message: markdown
-      color: blueviolet
-    - name: nbviewer
-      title: View in NBViewer
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/nb_builds/tests/nb_alice
-      extension: .ipynb
-      replace_links: False
-      label: view in
-      message: nbviewer
+      message: PDF
       color: orange
     - name: slides
       title: View Slides
@@ -53,5 +38,7 @@ exports:
     exporter_name: slides
     exporter_args:
       reveal_scroll: True
-  - export_path: nb_builds/nb_alice_md
-    exporter_name: markdown
+  - export_path: nb_builds/nb_alice_pdf
+    exporter_name: pdf
+    exporter_args:
+      latex_countInt: 1
