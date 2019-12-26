@@ -810,8 +810,8 @@ def add_badges(path_to_notes: str='.', core_navigators: list=[],
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
         custom_badges: list=[],
-        show_colab: bool=False, show_binder: bool=False, 
-        show_custom_badge: bool=False):
+        show_colab: bool=False, 
+        show_binder: bool=False):
     """Adds badges to each notebook in the collection.
 
     Adds top and bottom badges to each notebook in the collection 
@@ -1038,8 +1038,8 @@ def bind_from_arguments(path_to_notes: str='.',
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
         custom_badges: list=[],
-        show_colab: bool=False, show_binder: bool=False, 
-        show_custom_badge: bool=False,
+        show_colab: bool=False, 
+        show_binder: bool=False,
         show_index_in_toc: bool=True,
         show_index_in_nav: bool=True,
         show_nb_title_in_nav: bool=True):
@@ -1106,10 +1106,6 @@ def bind_from_arguments(path_to_notes: str='.',
 
     show_binder : bool
         Whether to display the Binder badge or not. It defaults
-        to False.
-
-    show_custom_badge : bool
-        Whether to display an Extra badge or not. It defaults
         to False.
 
     show_index_in_toc : bool

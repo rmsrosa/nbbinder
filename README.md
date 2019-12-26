@@ -52,7 +52,6 @@ badges:
   github_nb_dir: tests/nb_builds/nb_alice
   show_colab: True
   show_binder: True
-  show_custom_badge: True
   custom_badges:
     - name: markdown
       title: View Markdown
