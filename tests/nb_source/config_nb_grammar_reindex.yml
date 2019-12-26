@@ -2,7 +2,7 @@ nbbversion: 0.7a
 
 path_to_notes: nb_builds/nb_grammar_bound
 
-reindexing: 
+reindexing:
   insert: True
   tighten: False
 
@@ -13,7 +13,7 @@ contents:
 header: "[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)"
 
 navigators:
-  core_navigators: 
+  core_navigators:
     - 00.00-Front_Page.ipynb
   show_index_in_nav: False
   show_nb_title_in_nav: True

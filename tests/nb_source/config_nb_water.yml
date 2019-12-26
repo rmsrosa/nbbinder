@@ -10,7 +10,7 @@ contents:
 header: "[*NBBinder test on a collection of notebooks about some thermodynamic properperties of water*](https://github.com/rmsrosa/nbbinder)"
 
 navigators:
-  core_navigators: 
+  core_navigators:
     - 00.00-Water_Contents.ipynb
     - BA.00-References.ipynb
   show_index_in_nav: False
@@ -26,7 +26,7 @@ badges:
   show_custom_badge: True
   custom_badges:
     - name: nbviewer
-      title: View in NBViewer 
+      title: View in NBViewer
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/nb_builds/tests/nb_water
       extension: .ipynb
       replace_links: False

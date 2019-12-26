@@ -33,7 +33,7 @@ badges:
       message: markdown
       color: blueviolet
     - name: nbviewer
-      title: View in NBViewer 
+      title: View in NBViewer
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/nb_builds/tests/nb_alice
       extension: .ipynb
       replace_links: False
