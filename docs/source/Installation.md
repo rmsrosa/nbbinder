@@ -31,5 +31,5 @@ If you do not wish to install the package, you can simply download it and import
   import nbbinder as nbb
   ```
 
-In case of downloading the package and using it or installing it locally, you just need the folder `nbbinder` inside the package folder named `nbbinder`.
+In case of downloading the package and using it or installing it locally, you just need the file `nbbinder.py` in the root directory`.
 
