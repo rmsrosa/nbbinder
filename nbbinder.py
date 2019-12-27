@@ -9,7 +9,7 @@ __copyright__ = """Original work Copyright (c) 2016 Jacob VanderPlas
 Modified work Copyright (c) 2019 Ricardo M S Rosa
 """
 __license__ = "MIT"
-__version__ = "0.7a4"
+__version__ = "0.7a5"
 
 import os
 import re
@@ -50,7 +50,7 @@ SLIDE_SKIP = {
     }
 }
 
-def indexed_notebooks(path_to_notes: str=''):
+def indexed_notebooks(path_to_notes: str='.') -> list:
     """Returns a sorted list with the filenames of the 'indexed notebooks'.
 
     The notebooks are expected to be in the folder indicated by the
@@ -63,7 +63,7 @@ def indexed_notebooks(path_to_notes: str=''):
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
 
     Returns
     -------
@@ -77,9 +77,19 @@ def indexed_notebooks(path_to_notes: str=''):
 def is_index(g: str) -> bool:
     """Checks whether a string is an index, returning True or False.
     
-    An index is a string of length two composed only of numeric or uppercase
-    characters, with only 'A' and 'B' allowed in the first position of the
-    string.
+    An index is a string of length two, composed either of two numeric 
+    characters or starting with the uppercase letters 'A' and 'B' 
+    and ending with either a numeric character or a uppercase letter.
+
+    Parameters
+    ----------
+    g : str
+        The two character long string with the index.
+
+    Returns
+    -------
+    : bool
+        True or False depending whether g is an index or not.
     """
 
     if type(g)==str and len(g)==2 and (g[0].isdecimal() or g[0] in ('A', 'B')) and (g[1].isdecimal() or g[1].isupper()):
@@ -107,22 +117,22 @@ def increase_index(g: str) -> str:
     Parameters
     ----------
     g : str
-        The index to be increased
+        The index to be increased by one unit.
 
     Returns
     -------
     : str
-        The index increased by one
+        The index increased by one unit.
     
     Raises
     ------
-    Exception if string is not an index
+    Exception if string is not an index.
 
-    Exception if numeric index increases beyond 99
+    Exception if numeric index increases beyond 99.
 
-    Exception if alphanumeric index increases beyond A9 or B9
+    Exception if alphanumeric index increases beyond A9 or B9.
 
-    Exception if alphanumeric index increases beyond AZ or BZ
+    Exception if alphanumeric index increases beyond AZ or BZ.
     """
     if not is_index(g):
         raise Exception('String is not an index')
@@ -145,7 +155,7 @@ def increase_index(g: str) -> str:
 
 def is_marker_cell(MARKER: str=None, 
         cell: nbformat.notebooknode.NotebookNode=None) -> bool:
-    """Checks where the given cell starts with the given MARKER.
+    """Checks whether the given cell starts with the given MARKER.
     
     Parameters
     ----------
@@ -158,34 +168,33 @@ def is_marker_cell(MARKER: str=None,
     Returns
     -------
     : bool
-        True or False, depending on whether the MARKER exists in the
-        cell or not.
+        True or False, depending on whether the cell starts with the
+        MARKER or not.
     """
     return cell.source.startswith(MARKER)
 
 def refresh_marker_cells(path_to_notes: str='.', MARKER: str=None, 
         mode: str='remove'):
-    """Removes or cleans any MARKER cell from the indexed notebooks 
-    in path_to_notes.
+    """Removes or cleans the contents of any MARKER cell from the 
+    indexed notebooks in path_to_notes.
     
     Parameters
     ----------
-    MARKER : str
-        The MARKER to be searched for.
-
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
+
+    MARKER : str
+        The MARKER to be searched for.
     
     mode : str
         A string indicating whether to clean (if mode == 'clean')
         or remove (if mode == 'remove') the cells marked with the
         provided MARKER. The mode 'clean' leaves the MAKER in the cell, 
         but no other content in the source. The useful thing about the
-        'clean' mode is to preserve any metadata (such as about the slide property), otherwise, if removed, any subsequent call to the function
-        to add a cell with this MARKER will set the metadata to be skipped
-        in the slides.
+        'clean' mode is to preserve any metadata that differs from the
+        default ones added by the binder (such as about the slide property).
     """
     if MARKER and mode in ('clean', 'remove'):
         for nb_name in indexed_notebooks(path_to_notes):
@@ -215,13 +224,13 @@ def get_notebook_title(path_to_notes: str='.', nb_name: str=None) -> str:
 
     Parameters
     ----------
-    nb_name : str
-        The name of the jupyter notebook file.
-
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
+
+    nb_name : str
+        The name of the jupyter notebook file.
     
     Returns
     -------
@@ -234,7 +243,8 @@ def get_notebook_title(path_to_notes: str='.', nb_name: str=None) -> str:
             return cell.source[1:].splitlines()[0].strip()
 
 
-def get_notebook_full_entry(path_to_notes: str='.', nb_name: str=None) -> list:
+def get_notebook_full_entry(path_to_notes: str='.', 
+        nb_name: str=None) -> list:
     """Returns the full entry of a notebook.
     
     This entry is to be used for the link to the notebook from the
@@ -242,13 +252,13 @@ def get_notebook_full_entry(path_to_notes: str='.', nb_name: str=None) -> list:
 
     Parameters
     ----------
-    nb_name : str
-        The name of the jupyter notebook file.
-
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
+
+    nb_name : str
+        The name of the jupyter notebook file.
 
     Returns
     -------
@@ -261,7 +271,7 @@ def get_notebook_full_entry(path_to_notes: str='.', nb_name: str=None) -> list:
         depending on the case, of the Chapter and Section numbers
         or letters.
     """
-    chapter, section, basename, extensino = REG.match(nb_name).groups()
+    chapter, section, basename, extension = REG.match(nb_name).groups()
 
     if chapter.isdecimal():
         chapter_clean = int(chapter)
@@ -282,7 +292,7 @@ def get_notebook_full_entry(path_to_notes: str='.', nb_name: str=None) -> list:
     return markdown_entry, num_entry, title
 
 def get_notebook_entry(path_to_notes: str='.', nb_name: str=None, 
-        show_index: bool = True) -> list:
+        show_index: bool = True) -> str:
     """Returns the entry of a notebook.
     
     This entry is to be used for the link to the notebook from the
@@ -294,13 +304,13 @@ def get_notebook_entry(path_to_notes: str='.', nb_name: str=None,
 
     Parameters
     ----------
-    nb_name : str
-        The name of the jupyter notebook file. 
-
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
+
+    nb_name : str
+        The name of the jupyter notebook file. 
 
     show_index : boolean
         Indicates whether to include the chapter and section numbers
@@ -308,11 +318,7 @@ def get_notebook_entry(path_to_notes: str='.', nb_name: str=None,
         the title (if False).
 
     Returns
-    -------
-    markdown_entry : str
-        The type of markdown header or identation for the entry in
-        Table of Contents
-    
+    -------    
     entry : str
         A string with the entry name.
     """
@@ -322,7 +328,8 @@ def get_notebook_entry(path_to_notes: str='.', nb_name: str=None,
         entry = get_notebook_title(path_to_notes, nb_name)
     return entry   
 
-def yield_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
+def yield_contents(path_to_notes: str='.', 
+        show_index_in_toc: bool=True) -> 'generator':
     """Generator function with entries for each of the indexed notebooks.
 
     It takes all the indexed notebooks and it creates a generator 
@@ -334,7 +341,7 @@ def yield_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
 
     show_index_in_toc : bool
         Whether to display the navigator with the chapter
@@ -342,7 +349,7 @@ def yield_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
 
     Yields
     ------
-    : str
+    : generator
         Next navigator entry in the iterator
     """
     for nb_name in indexed_notebooks(path_to_notes):
@@ -352,7 +359,7 @@ def yield_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
         else:
             yield '{}[{}]({})\n'.format(markdown_entry, title, nb_name)
 
-def get_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
+def get_contents(path_to_notes: str='.', show_index_in_toc: bool=True) -> str:
     """Returns the 'Table of Contents'.
 
     Returns a string with the 'Table of Contents' constructed 
@@ -364,7 +371,7 @@ def get_contents(path_to_notes: str='.', show_index_in_toc: bool=True):
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
 
     show_index_in_toc : bool
         Whether to display the table of contents with the chapter
@@ -395,7 +402,7 @@ def insert_notebooks(path_to_notes: str='.'):
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
     """
 
     nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes) if REG_INSERT.match(nb))
@@ -462,7 +469,7 @@ def tighten_notebooks(path_to_notes: str='.'):
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
     """
 
     nb_names = sorted(nb for nb in os.listdir(path_to_notes) if REG.match(nb))
@@ -582,7 +589,26 @@ def tighten_notebooks(path_to_notes: str='.'):
             os.rename(os.path.join(path_to_notes, str(count) + '-' + f_newest), os.path.join(path_to_notes, f_newest))
 
 def reindex(path_to_notes: str='.', insert: bool=True, tighten: bool=False):
+    """Reindex the collection of notebooks.
 
+    Reindex the notebooks by inserting (by calling `insert_notebooks`) 
+    and/or tightening (by calling `tighten_notebooks`) the collection
+    of notebooks, depending on whether the arguments `insert` and/or
+    `tighten` are True or False.
+
+    Parameters
+    ----------
+    path_to_notes : str
+        The path to the directory that contains the notebooks, 
+        either the absolute path or the path relative from 
+        where the code is being ran.
+
+    insert : bool
+        Whether to insert notebooks in the collection or not.
+
+    tighten : bool   
+        Whether to tighten the indices of notebooks or not. 
+    """
     if insert:
         insert_notebooks(path_to_notes)
     
@@ -631,10 +657,6 @@ def export_notebooks(path_to_notes: str='.',
             export_file = open(export_filename, 'w+')
         else:
             export_file = open(export_filename, 'wb+')
-#        if exporter_name == 'pdf':
-#            export_file = open(export_filename, 'wb+')
-#        else:
-#            export_file = open(export_filename, 'w+')
         export_file.write(body)
         export_file.close()
 
@@ -644,19 +666,26 @@ def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
 
     It adds the table of contents, generated from the collection of 
     notebooks in the directory `path_to_notes`, to the notebook 
-    `toc_nb_name`. The inclusion, or not, of the Chapter and Section 
-    numbers in the table of contents is indicaded by the argument `show_index_in_toc`.
+    `toc_nb_name`, with `toc_title` as the title of the Table 
+    of Contents. The inclusion, or not, of the Chapter and Section 
+    numbers in the table of contents is indicaded by the argument 
+    `show_index_in_toc`.
 
     Parameters
     ----------
+    path_to_notes : str
+        The path to the directory that contains the notebooks, 
+        either the absolute path or the path relative from 
+        where the code is being ran.
+
     toc_nb_name : str
         filename of the notebook in which the table of contents
         is to be inserted
 
-    path_to_notes : str
-        The path to the directory that contains the notebooks, 
-        either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+    toc_title : str
+        Text to be displayed as the title for the table of contents cell, 
+        e.g. 'Contents', 'Table of Contents', or in other languages, 
+        'Conteúdo', 'Table des Matières', and so on.
 
     show_index_in_toc : bool
         Whether to display the navigator with the chapter
@@ -705,13 +734,13 @@ def add_headers(path_to_notes: str='.', header: str=None):
 
     Parameters
     ----------
-    header : str
-        The string with the contents to be included in the header cell.
-
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
+
+    header : str
+        The string with the contents to be included in the header cell.
     """
     for nb_name in indexed_notebooks(path_to_notes):
         nb_file = os.path.join(path_to_notes, nb_name)
@@ -732,7 +761,7 @@ def get_badge_entries(path_to_notes: str='.',
         user: str='', repository: str='', 
         branch: str='master', 
         github_nb_dir: str='.', 
-        custom_badges: list=[]):
+        custom_badges: list=[]) -> 'generator':
     """Iterable with the bagdes info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and 
@@ -744,7 +773,7 @@ def get_badge_entries(path_to_notes: str='.',
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
 
     user : str
         The github username of the onwer of the repository in which 
@@ -763,10 +792,28 @@ def get_badge_entries(path_to_notes: str='.',
 
     github_nb_dir : str
         The path to the notebooks, from the root directory of the
-        repository mentioned in the description of the `user` argument.  
-        It defaults to '.'.
+        repository mentioned in the description of the `user` argument.
 
     custom_badges : list of dict
+        A list of dictionaries with the necessary information 
+        to add custom badges.
+        
+        Each dictionary in the list should have the following keys:
+        `name` (str), `title` (str), `url` (str), `replace_links` (bool),
+        `extension` (str), `label` (str), `message` (str), and
+        `color` (str). 
+        
+        The keys `name`, `title` and `url` are used for the building 
+        the `href` link in the badge, with `name` being the `alt` 
+        argument of `href`. 
+
+        The keys `replace_links` and `extension` are used to replace
+        the `.ipynb` extension of each notebook to the appropriate
+        extension, e.g `.md`, `.slides.html`, `.pdf`, `.py`, `.tex`,
+        and so on.
+
+        The keys `label`, `message`, and `color` are used to build
+        the badge via the `shields.io` constructor.
 
     Yields
     ------
@@ -813,7 +860,7 @@ def get_badge_entries(path_to_notes: str='.',
             
         yield os.path.join(path_to_notes, this_nb), this_nb_colab_link, this_nb_binder_link, this_nb_custom_badge_links
 
-def add_badges(path_to_notes: str='.', core_navigators: list=[], 
+def add_badges(path_to_notes: str='.', 
         user: str='', repository: str='', branch: str='master', 
         github_nb_dir: str='.', 
         custom_badges: list=[],
@@ -829,7 +876,7 @@ def add_badges(path_to_notes: str='.', core_navigators: list=[],
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
 
     user : str
         The github username of the onwer of the repository in which 
@@ -848,12 +895,11 @@ def add_badges(path_to_notes: str='.', core_navigators: list=[],
 
     github_nb_dir : str
         The path to the notebooks, from the root directory of the
-        repository mentioned in the description of the `user` argument.  
-        It defaults to '.'.
+        repository mentioned in the description of the `user` argument.
 
     custom_badges: list of dict
-        Info for building extra badges. Each dict should have two keys:
-        `export_path` and `export_class`.
+        Info for building extra badges. See the docstring
+        of `get_badge_entries()`
 
     show_colab : bool
         Whether to display the Google Colab badge or not. It defaults
@@ -918,8 +964,8 @@ def prev_this_next(collection):
 
 def get_navigator_entries(path_to_notes: str='.', 
         core_navigators: list=[],
-        show_index_in_nav: bool=True,
-        show_nb_title_in_nav: bool=True):
+        show_nb_title_in_nav: bool=True,
+        show_index_in_nav: bool=True) -> 'generator':
     """Iterable with the navigator info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and 
@@ -931,13 +977,17 @@ def get_navigator_entries(path_to_notes: str='.',
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
 
     core_navigators : list of str
         A lists of strings with the filenames of each notebook to be
         included in the navigators, in between the links to the
         "previous" and the "next" notebooks. It defaults to the empty
         list.
+
+    show_nb_title_in_nav : bool
+        Whether to diplay the title of the notebook in the previous
+        and next links or just display the words 'Previous' and 'Next'.
 
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
@@ -982,7 +1032,7 @@ def get_navigator_entries(path_to_notes: str='.',
         yield os.path.join(path_to_notes, this_nb), navbar
 
 def add_navigators(path_to_notes: str='.', core_navigators: list=[],
-        show_index_in_nav: bool=True, show_nb_title_in_nav: bool=True):
+        show_nb_title_in_nav: bool=True, show_index_in_nav: bool=True):
     """Adds navigators to each notebook in the collection.
 
     Adds top and bottom navigators to each notebook in the collection 
@@ -993,7 +1043,7 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
 
     core_navigators : list of str
         A lists of strings with the filenames of each notebook to be
@@ -1001,13 +1051,17 @@ def add_navigators(path_to_notes: str='.', core_navigators: list=[],
         "previous" and the "next" notebooks. It defaults to the empty
         list.
 
+    show_nb_title_in_nav : bool
+        Whether to diplay the title of the notebook in the previous
+        and next links or just display the words 'Previous' and 'Next'.
+
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
         It defaults to True.
     """
     for nb_file, navbar in get_navigator_entries(path_to_notes,
-            core_navigators, show_index_in_nav, show_nb_title_in_nav):
+            core_navigators, show_nb_title_in_nav, show_index_in_nav):
         nb = nbformat.read(nb_file, as_version=4)
         nb_name = os.path.basename(nb_file)
 
@@ -1048,8 +1102,8 @@ def bind_from_arguments(path_to_notes: str='.',
         show_colab: bool=False, 
         show_binder: bool=False,
         show_index_in_toc: bool=True,
-        show_index_in_nav: bool=True,
-        show_nb_title_in_nav: bool=True):
+        show_nb_title_in_nav: bool=True,
+        show_index_in_nav: bool=True):
     """Binds the collection of notebooks from the arguments provided.
 
     Parameters
@@ -1057,7 +1111,7 @@ def bind_from_arguments(path_to_notes: str='.',
     path_to_notes : str
         The path to the directory that contains the notebooks, 
         either the absolute path or the path relative from 
-        where the code is being ran. It defaults to '.'.
+        where the code is being ran.
 
     insert : bool
         Indicates whether to insert notebooks in the collection of
@@ -1074,7 +1128,7 @@ def bind_from_arguments(path_to_notes: str='.',
         is to be inserted
 
     toc_title : str
-        Text to be displayed as a title for the table of contents cell, 
+        Text to be displayed as the title for the table of contents cell, 
         e.g. 'Contents', 'Table of Contents', or in other languages, 
         'Conteúdo', 'Table des Matières', and so on.
 
@@ -1104,8 +1158,7 @@ def bind_from_arguments(path_to_notes: str='.',
 
     github_nb_dir : str
         The path to the notebooks, from the root directory of the
-        repository mentioned in the description of the `user` argument.  
-        It defaults to '.'.
+        repository mentioned in the description of the `user` argument.
 
     show_colab : bool
         Whether to display the Google Colab badge or not. It defaults
@@ -1118,6 +1171,10 @@ def bind_from_arguments(path_to_notes: str='.',
     show_index_in_toc : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
+
+    show_nb_title_in_nav : bool
+        Whether to diplay the title of the notebook in the previous
+        and next links or just display the words 'Previous' and 'Next'.
 
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
@@ -1140,8 +1197,8 @@ def bind_from_arguments(path_to_notes: str='.',
 
     add_navigators(path_to_notes=path_to_notes, 
         core_navigators=core_navigators,
-        show_index_in_nav=show_index_in_nav,
-        show_nb_title_in_nav=show_nb_title_in_nav)
+        show_nb_title_in_nav=show_nb_title_in_nav,
+        show_index_in_nav=show_index_in_nav)
 
 def bind_from_configfile(config_file: str):
     """Binds the collection of notebooks from a configuration file.
