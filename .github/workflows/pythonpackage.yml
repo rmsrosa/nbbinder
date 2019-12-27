@@ -14,9 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - uses: actions/setup-pandoc@v1
-      with:
-        pandoc-version: '2.2.3'
+    - uses: docker://pandoc/core:2.9
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
