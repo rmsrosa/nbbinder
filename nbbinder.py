@@ -329,7 +329,7 @@ def get_notebook_entry(path_to_notes: str='.', nb_name: str=None,
     return entry   
 
 def yield_contents(path_to_notes: str='.', 
-        show_index_in_toc: bool=True) -> 'generator':
+        show_index_in_toc: bool=True) -> Iterator[str]:
     """Generator function with entries for each of the indexed notebooks.
 
     It takes all the indexed notebooks and it creates a generator 
@@ -349,7 +349,7 @@ def yield_contents(path_to_notes: str='.',
 
     Yields
     ------
-    : generator
+    : Iterator[str]
         Next navigator entry in the iterator
     """
     for nb_name in indexed_notebooks(path_to_notes):
@@ -761,7 +761,7 @@ def get_badge_entries(path_to_notes: str='.',
         user: str='', repository: str='', 
         branch: str='master', 
         github_nb_dir: str='.', 
-        custom_badges: list=[]) -> 'generator':
+        custom_badges: list=[]) -> Iterator[tuple]:
     """Iterable with the bagdes info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and 
