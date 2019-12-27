@@ -14,9 +14,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - uses: docker://pandoc/core:2.9
+    - name: Setup pandoc
+      uses: r-lib/actions/setup-pandoc@v1
       with:
-        args: --help
+        pandoc-version: '2.7.3'
+      run: echo "# Test" | pandoc -t html
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
