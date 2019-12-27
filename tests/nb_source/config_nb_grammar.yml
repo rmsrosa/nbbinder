@@ -15,3 +15,26 @@ navigators:
     - BB.00-Bibliography.ipynb
   show_index_in_nav: False
   show_nb_title_in_nav: True
+
+badges:
+  custom_badges:
+    - name: nbviewer
+      title: View in NBViewer
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice
+      extension: .ipynb
+      replace_links: False
+      label: view in
+      message: nbviewer
+      color: orange
+    - name: markdown
+      title: View Markdown
+      url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_md
+      extension: .md
+      replace_links: True
+      label: view
+      message: markdown
+      color: blueviolet
+
+exports:
+  - export_path: nb_builds/nb_water_md
+    exporter_name: markdown            

@@ -32,14 +32,6 @@ badges:
       label: view in
       message: nbviewer
       color: orange
-    - name: markdown
-      title: View Markdown
-      url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_md
-      extension: .md
-      replace_links: True
-      label: view
-      message: markdown
-      color: blueviolet
     - name: slides
       title: View Slides
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_slides
@@ -50,8 +42,6 @@ badges:
       color: darkgreen
 
 exports:
-  - export_path: nb_builds/nb_water_md
-    exporter_name: markdown
   - export_path: nb_builds/nb_water_slides
     exporter_name: slides
     exporter_args:

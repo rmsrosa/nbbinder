@@ -14,14 +14,3 @@ navigators:
     - 00.00-Alice's_Adventures_in_Wonderland.ipynb
   show_index_in_nav: False
   show_nb_title_in_nav: False
-
-badges:
-  custom_badges:
-    - name: nbviewer
-      title: View in NBViewer
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice
-      extension: .ipynb
-      replace_links: False
-      label: view in
-      message: nbviewer
-      color: orange
