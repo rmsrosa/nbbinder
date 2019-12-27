@@ -17,6 +17,8 @@ import itertools
 import sys
 import logging
 
+from typing import Iterable
+
 import yaml
 
 import nbformat
@@ -329,8 +331,8 @@ def get_notebook_entry(path_to_notes: str='.', nb_name: str=None,
     return entry   
 
 def yield_contents(path_to_notes: str='.', 
-        show_index_in_toc: bool=True) -> Iterator[str]:
-    """Generator function with entries for each of the indexed notebooks.
+        show_index_in_toc: bool=True) -> Iterable[str]:
+    """Iterable with entries for each of the indexed notebooks.
 
     It takes all the indexed notebooks and it creates a generator 
     function to iterate from one notebook to the next, returning, 
@@ -349,7 +351,7 @@ def yield_contents(path_to_notes: str='.',
 
     Yields
     ------
-    : Iterator[str]
+    : Iterable[str]
         Next navigator entry in the iterator
     """
     for nb_name in indexed_notebooks(path_to_notes):
@@ -761,7 +763,7 @@ def get_badge_entries(path_to_notes: str='.',
         user: str='', repository: str='', 
         branch: str='master', 
         github_nb_dir: str='.', 
-        custom_badges: list=[]) -> Iterator[tuple]:
+        custom_badges: list=[]) -> Iterable[tuple]:
     """Iterable with the bagdes info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and 
@@ -965,7 +967,7 @@ def prev_this_next(collection):
 def get_navigator_entries(path_to_notes: str='.', 
         core_navigators: list=[],
         show_nb_title_in_nav: bool=True,
-        show_index_in_nav: bool=True) -> 'generator':
+        show_index_in_nav: bool=True) -> Iterable[str]:
     """Iterable with the navigator info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and 
