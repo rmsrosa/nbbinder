@@ -20,7 +20,7 @@ from context import nbbinder as nbb
 # Logging level
 logging.basicConfig(level=logging.WARNING)
 
-def source_dir(path):
+def get_source_dir(path):
     return os.path.join('nb_source', path)
 
 def create_build_dir():
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         show_index_in_nav=False)
 
     logging.info("\n# Binding 'nb_alice' notebooks with config file 'config_nb_alice.yml'")
-    nbb.bind(source_dir('config_nb_alice.yml'))
+    nbb.bind(get_source_dir('config_nb_alice.yml'))
 
     nb_grammar = [
         '00.00-Front_Page.ipynb',
@@ -138,13 +138,13 @@ if __name__ == '__main__':
     logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     create_notebooks(get_build_dir('nb_grammar_bound'), nb_grammar)
     logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar.yml'".format(os.path.join(os.path.dirname(__file__), get_build_dir('nb_grammar_bound'))))
-    nbb.bind(source_dir('config_nb_grammar.yml'))
+    nbb.bind(get_source_dir('config_nb_grammar.yml'))
 
     logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar_no_header.yml'".format(os.path.join(os.path.dirname(__file__), get_build_dir('nb_grammar_bound'))))
-    nbb.bind(source_dir('config_nb_grammar_no_header.yml'))
+    nbb.bind(get_source_dir('config_nb_grammar_no_header.yml'))
 
     logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar_reindex.yml'".format(os.path.join(os.path.dirname(__file__), get_build_dir('nb_grammar_bound'))))
-    nbb.bind(source_dir('config_nb_grammar_reindex.yml'))
+    nbb.bind(get_source_dir('config_nb_grammar_reindex.yml'))
 
     logging.info("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), get_build_dir('nb_grammar_bound'))))
     nbb.bind(path_to_notes=get_build_dir('nb_grammar_bound'),
@@ -218,8 +218,6 @@ if __name__ == '__main__':
     nbb.reindex(get_build_dir('nb_grammar_tighten'), tighten=True)
 
     logging.info("\n# Copying water source notebooks to build directory")
-    shutil.copytree(source_dir('nb_water'), get_build_dir('nb_water'))
+    shutil.copytree(get_source_dir('nb_water'), get_build_dir('nb_water'))
     logging.info("\n# Binding the notebooks in {} with 'config_nb_water.yml'".format(os.path.join(os.path.dirname(__file__), get_build_dir('nb_water'))))
-    nbb.bind(source_dir('config_nb_water.yml'))
-
-    
+    nbb.bind(get_source_dir('config_nb_water.yml'))
