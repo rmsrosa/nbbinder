@@ -16,6 +16,15 @@ navigators:
   show_nb_title_in_nav: False
 
 badges:
+  custom_badges:
+    - name: nbviewer
+      title: View in NBViewer
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice
+      extension: .ipynb
+      replace_links: False
+      label: view in
+      message: nbviewer
+      color: orange
     - name: pdf
       title: View PDF
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice_pdf
@@ -24,20 +33,8 @@ badges:
       label: view
       message: PDF
       color: orange
-    - name: slides
-      title: View Slides
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice_slides
-      extension: .slides.html
-      replace_links: True
-      label: view
-      message: slides
-      color: darkgreen
 
 exports:
-  - export_path: nb_builds/nb_alice_slides
-    exporter_name: slides
-    exporter_args:
-      reveal_scroll: True
   - export_path: nb_builds/nb_alice_pdf
     exporter_name: pdf
     exporter_args:

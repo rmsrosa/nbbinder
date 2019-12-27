@@ -25,7 +25,11 @@ The main function in this package is called `bind()`. It reads a collection of J
 
 ## Example
 
-The most convenient way to use the module, or script, is via a configuration file. The configuration files are written in the [YAML](https://en.wikipedia.org/wiki/YAML) format. For instance, consider the following `config_nb_alice.yml` in the tests folder:
+The most convenient way to use the module, or script, is via a configuration file. The configuration files are written in the [YAML](https://en.wikipedia.org/wiki/YAML) format.
+
+### Example configuration file
+
+For instance, consider the following `config_nb_alice.yml` in the tests folder:
 
 ```yaml
 nbbversion: 0.7a
@@ -46,6 +50,15 @@ navigators:
   show_nb_title_in_nav: False
 
 badges:
+  custom_badges:
+    - name: nbviewer
+      title: View in NBViewer
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice
+      extension: .ipynb
+      replace_links: False
+      label: view in
+      message: nbviewer
+      color: orange
     - name: pdf
       title: View PDF
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice_pdf
@@ -54,40 +67,17 @@ badges:
       label: view
       message: PDF
       color: orange
-    - name: slides
-      title: View Slides
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice_slides
-      extension: .slides.html
-      replace_links: True
-      label: view
-      message: slides
-      color: darkgreen
 
 exports:
-  - export_path: nb_builds/nb_alice_slides
-    exporter_name: slides
-    exporter_args:
-      reveal_scroll: True
   - export_path: nb_builds/nb_alice_pdf
     exporter_name: pdf
     exporter_args:
       latex_countInt: 1
 ```
 
-Then, we import the module (in the same folder) and use the `bind()` function with this configuration file as argument:
+### Notebook collection
 
-```python
-import nbbinder as nbb
-nbb.bind('config_nb_alice.yml')
-```
-
-Or we execute it as a script in the command line:
-
-```bash
-./nbbinder.py config_nb_alice.yml
-```
-
-Suppose we run the `nbb.bind('config_nb_alice.yml')`, with the above configuration file and with the following indexed notebooks in the subdirectory `nb_alice`:
+The following collection of indexed notebooks is included in the folder `nb_alice` in the `tests` directory:
 
 ```text
 00.00-Alice's_Adventures_in_Wonderland.ipynb
@@ -105,7 +95,26 @@ Suppose we run the `nbb.bind('config_nb_alice.yml')`, with the above configurati
 12.00-Alice's_Evidence.ipynb
 ```
 
-Then, the following table of contents is inserted in the first notebook `00.00-Alice's_Adventures_in_Wonderland.ipynb`:
+### Binding the collection
+
+One way to bind the collection of notebooks is to import the module and use the `bind()` function with this configuration file as argument:
+
+```python
+import nbbinder as nbb
+nbb.bind('config_nb_alice.yml')
+```
+
+Or we execute it as a script in the command line:
+
+```bash
+./nbbinder.py config_nb_alice.yml
+```
+
+In the `tests` directory, the configuration file is actually not in the same folder as the collection, but two folders up. That is way the argument `path_to_notes: nb_builds/nb_alice` is given in the configuration file.
+
+### Result
+
+After binding the notebooks in one of the two ways mentioned above, the following table of contents is inserted in the first notebook `00.00-Alice's_Adventures_in_Wonderland.ipynb`:
 
 ## [Table of Contents](#/)
 
@@ -135,7 +144,7 @@ Then, the following table of contents is inserted in the first notebook `00.00-A
 
 ### [12. Alice's Evidence](#/)
 
-See [00.00-Alice's_Adventures_in_Wonderland](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the bound version of the first notebook. Experiment clicking on the badges with the mouse's right button to open the slides and pdfs of notebook and on the navigators to move to the other notebooks.
+See [00.00-Alice's_Adventures_in_Wonderland](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the bound version of the first notebook. Experiment clicking on the badges with the mouse's right button to open the notebooks in [NBViewer](https://nbviewer.jupyter.org/) or to view the pdf of the notebooks. Experiment also the navigators to move to the other notebooks.
 
 ## Installation
 

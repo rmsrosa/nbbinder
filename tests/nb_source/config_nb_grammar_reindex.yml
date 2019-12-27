@@ -17,11 +17,3 @@ navigators:
     - 00.00-Front_Page.ipynb
   show_index_in_nav: False
   show_nb_title_in_nav: True
-
-badges:
-  user: rmsrosa
-  repository: nbbinder
-  branch: master
-  github_nb_dir: tests/nb_builds/nb_grammar_bound
-  show_colab: True
-  show_binder: True
