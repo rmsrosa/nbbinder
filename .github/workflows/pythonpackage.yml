@@ -18,6 +18,8 @@ jobs:
       uses: r-lib/actions/setup-pandoc@v1
       with:
         pandoc-version: '2.7.3'
+    - name: Setup latex
+        uses: xu-cheng/latex-action@master
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
