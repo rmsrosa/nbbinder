@@ -1290,13 +1290,13 @@ def bind(*args, **kargs):
     else:
         bind_from_arguments(args[0], **kargs)
 
-if __name__ == '__main__':
-    if len(sys.argv) == 1 or sys.argv[1] == '--help' or sys.argv[1] == '-h':
-        logging.info("\n Run the script with a configuration file as argument, e.g.")
-        logging.info("\n   ./nbbinder.py config.yml")
-        logging.info("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
-    else:
-        try:
-            bind_from_configfile(sys.argv[1])
-        except NotImplementedError:
-            logging.info('provided argument is not a yaml file or not a properly formated yaml configuration file.')
+#if __name__ == '__main__':
+#    if len(sys.argv) == 1 or sys.argv[1] == '--help' or sys.argv[1] == '-h':
+        #logging.info("\n Run the script with a configuration file as argument, e.g.")
+        #logging.info("\n   ./nbbinder.py config.yml")
+        #logging.info("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
+#    else:
+#        try:
+            #bind_from_configfile(sys.argv[1])
+#        except NotImplementedError:
+            #logging.info('provided argument is not a yaml file or not a properly formated yaml configuration file.')
