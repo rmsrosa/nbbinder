@@ -6,6 +6,10 @@
 Welcome to NBBinder's documentation!
 ====================================
 
+.. automodule:: nbbinder
+   :members:
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
