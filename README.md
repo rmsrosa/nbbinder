@@ -19,7 +19,7 @@
 The main function in this package is called `bind()`. It reads a collection of Jupyter notebooks from a given directory and, upon configuration,
 
 - adds a **Table of Contents** to a selected notebook file, with links to the other notebooks;
-- adds a **header** to each notebook, with custom information about the collection of notebooks;
+- adds a **header** cell to each notebook, with custom information about the collection of notebooks;
 - adds a **badge** cell to each notebook, with a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com), and other custom badges, useful for showing **slides** as exported with `nbconvert`, and so on.
 - adds **navigator links**, at the beggining and at the end of each notebook, with links to traverse to the previous and the next notebook, and to other selected notebooks, such as the Table of Contents and the References;
 
@@ -156,15 +156,17 @@ pip install nbbinder
 
 It can also be downloaded directly from github.com/rmsrosa/nbbinder.
 
-More information on the installation processes on the [Installation section of NBBinder on readthedocs.org](https://nbbinder.readthedocs.io/en/latest/Installation.html)
+More information about the installation processes on the [Installation section of NBBinder documentation](https://nbbinder.readthedocs.io/en/latest/Installation.html)
 
 ## Documentation
 
-More information on the [Documentation of NBBinder on readthedocs.org](https://nbbinder.readthedocs.io).
+The documentation of NBBinder is hosted on [nbbinder.readthedocs.io](https://nbbinder.readthedocs.io).
 
 ## Development
 
-During the alpha stage, development is being done in the `master` branch, which is currently the only branch. When the first `beta` version is released, the latest stable version will stay in the `master` branch and development will belong to a separate `development` branch.
+During the current alpha stage of the project, development is being done in the `master` branch, which is currently the only branch in the repository.
+
+ When the first `beta` version is released, the latest stable version will stay in the `master` branch and development will belong to a separate `development` branch.
 
 ## Maintainer
 
