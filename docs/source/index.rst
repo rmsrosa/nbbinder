@@ -6,20 +6,16 @@
 Welcome to NBBinder's documentation!
 ====================================
 
-.. automodule:: nbbinder
-   :members:
-
-
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
-   Overview
-   Installation
-   Usage
-   Requirements
-   Credits
-   License
+   overview
+   installation
+   usage
+   requirements
+   credits
+   license
 
 Indices and tables
 ==================
