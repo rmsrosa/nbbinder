@@ -44,7 +44,7 @@ contents:
 header: "[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)"
 
 navigators:
-  core_navigators: 
+  core_navigators:
     - 00.00-Alice's_Adventures_in_Wonderland.ipynb
   show_index_in_nav: False
   show_nb_title_in_nav: False

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Gives a navigable book-like structure to a collection of Jupyter notebooks.
+**NBBinder** generates a navigable book-like structure to a collection of Jupyter notebooks.
 """
 
 __author__ = "Ricardo M. S. Rosa <rmsrosa@gmail.com>"
@@ -664,7 +664,7 @@ def export_notebooks(path_to_notes: str='.',
 
 def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
         toc_title: str='', show_index_in_toc: bool=True):
-    """Adds the table of contentes to a selected notebook.
+    """Adds the table of contents to a selected notebook.
 
     It adds the table of contents, generated from the collection of 
     notebooks in the directory `path_to_notes`, to the notebook 

@@ -6,6 +6,9 @@
 Welcome to NBBinder's documentation!
 ====================================
 
+**NBBinder** generates a navigable book-like structure to a collection of
+Jupyter notebooks.
+
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
@@ -17,8 +20,8 @@ Welcome to NBBinder's documentation!
    credits
    license
 
-Indices and tables
-==================
+Indices:
+--------
 
 * :ref:`genindex`
 * :ref:`modindex`
