@@ -3,8 +3,8 @@
    were included directly in index.rst, then all the docstrings
    would be shown in the welcome page, which would be unpleasant.
 
-nbbinder automodule
-===================
+nbbinder
+========
 
 .. automodule:: nbbinder
    :members:
