@@ -1,5 +1,5 @@
-nbbinder module
-===============
+nbbinder automodule
+===================
 
 .. automodule:: nbbinder
    :members:
