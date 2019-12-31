@@ -20,6 +20,11 @@ Jupyter notebooks.
    credits
    license
 
+.. toctree::
+   :hidden:
+
+   nbbinder_automodule
+
 Indices:
 --------
 
