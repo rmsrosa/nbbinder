@@ -382,7 +382,7 @@ def get_contents(path_to_notes: str='.', show_index_in_toc: bool=True) -> str:
     Returns
     -------
     : str
-    The table of contents.
+        The table of contents.
     """
 
     contents = ""
