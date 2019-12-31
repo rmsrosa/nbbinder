@@ -9,6 +9,7 @@ The `nbbinder` module uses the standard libraries
 - [itertools](https:/docs.python.org/3/library/itertools.html)
 - [sys](https:/docs.python.org/3/library/sys.html)
 - [logging](https:/docs.python.org/3/library/logging.html)
+- [typing](https:/docs.python.org/3/library/typing.html)
 
 and the nonstandard libraries
 
@@ -16,7 +17,7 @@ and the nonstandard libraries
 - [nbconvert](https://pypi.org/project/nbconvert/)
 - [pyyaml](https://pypi.org/project/PyYAML/).
 
-The `nbformat` library is used to interact with the jupyter notebooks, the `nbconvert` library is used to export the notebooks to other formats (e.g. slides), and the `yaml` package is used, of course, to read the `*.yml` configuration files.
+The `nbformat` library is used to interact with the jupyter notebooks, the `nbconvert` library is used to export the notebooks to other formats (e.g. slides, markdown, pdf), and the `yaml` package is used, of course, to read the `*.yml` configuration files.
 
 ## Test module
 
