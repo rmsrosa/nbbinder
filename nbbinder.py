@@ -53,7 +53,7 @@ SLIDE_SKIP = {
 }
 
 def indexed_notebooks(path_to_notes: str='.') -> list:
-    """Returns a sorted list with the filenames of the 'indexed notebooks'.
+    """Returns a sorted list with the filenames of the "indexed notebooks".
 
     The notebooks are expected to be in the folder indicated by the
     argument `path_to_notes`. The "indexed notebooks" are those that
@@ -81,7 +81,7 @@ def is_index(g: str) -> bool:
     
     An index is a string of length two, composed either of two numeric 
     characters or starting with the uppercase letters 'A' and 'B' 
-    and ending with either a numeric character or a uppercase letter.
+    and ending with either a numeric character or an uppercase letter.
 
     Parameters
     ----------
@@ -176,7 +176,7 @@ def is_marker_cell(MARKER: str=None,
     return cell.source.startswith(MARKER)
 
 def refresh_marker_cells(path_to_notes: str='.', MARKER: str=None, 
-        mode: str='remove'):
+        mode: str='remove') -> None:
     """Removes or cleans the contents of any MARKER cell from the 
     indexed notebooks in path_to_notes.
     
@@ -392,7 +392,7 @@ def get_contents(path_to_notes: str='.', show_index_in_toc: bool=True) -> str:
     return contents
 
 
-def insert_notebooks(path_to_notes: str='.'):
+def insert_notebooks(path_to_notes: str='.') -> None:
     """Includes a notebook in the colllection.
 
     Checks whether there is any notebook that matches the regular expression
@@ -459,7 +459,7 @@ def insert_notebooks(path_to_notes: str='.'):
             count +=1
             os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new), os.path.join(path_to_notes, f_new))
 
-def tighten_notebooks(path_to_notes: str='.'):
+def tighten_notebooks(path_to_notes: str='.') -> None:
     """Tighten the indexes of the notebooks in the colllection.
 
     Checks whether there are gaps in the indices of the notebooks
@@ -590,7 +590,8 @@ def tighten_notebooks(path_to_notes: str='.'):
             count +=1
             os.rename(os.path.join(path_to_notes, str(count) + '-' + f_newest), os.path.join(path_to_notes, f_newest))
 
-def reindex(path_to_notes: str='.', insert: bool=True, tighten: bool=False):
+def reindex(path_to_notes: str='.', insert: bool=True, 
+        tighten: bool=False) -> None:
     """Reindex the collection of notebooks.
 
     Reindex the notebooks by inserting (by calling `insert_notebooks`) 
@@ -619,7 +620,7 @@ def reindex(path_to_notes: str='.', insert: bool=True, tighten: bool=False):
 
 def export_notebooks(path_to_notes: str='.', 
         export_path: str=None, exporter_name: str=None, 
-        exporter_args: dict={}):
+        exporter_args: dict={}) -> None:
     assert(type(export_path)==str
         ), "Argument `export_path` should be a string" 
     assert(exporter_name in exporters.get_export_names()
@@ -663,7 +664,7 @@ def export_notebooks(path_to_notes: str='.',
         export_file.close()
 
 def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
-        toc_title: str='', show_index_in_toc: bool=True):
+        toc_title: str='', show_index_in_toc: bool=True) -> None:
     """Adds the table of contents to a selected notebook.
 
     It adds the table of contents, generated from the collection of 
@@ -728,7 +729,7 @@ def add_contents(path_to_notes: str='.', toc_nb_name: str=None,
 
     nbformat.write(toc_nb, toc_nb_file)
 
-def add_headers(path_to_notes: str='.', header: str=None):
+def add_headers(path_to_notes: str='.', header: str=None) -> None:
     """Adds header to each notebook in the collection.
 
     It adds the provided `header`as the first cell of each notebook
@@ -867,7 +868,7 @@ def add_badges(path_to_notes: str='.',
         github_nb_dir: str='.', 
         custom_badges: list=[],
         show_colab: bool=False, 
-        show_binder: bool=False):
+        show_binder: bool=False) -> None:
     """Adds badges to each notebook in the collection.
 
     Adds top and bottom badges to each notebook in the collection 
@@ -940,7 +941,7 @@ def add_badges(path_to_notes: str='.',
 
         nbformat.write(nb, nb_filename)
 
-def prev_this_next(collection):
+def prev_this_next(collection: list=[]) -> None:
     """Iterable with previous, current, and next notebooks in `collection`.
 
     It reads a list of indexed notebooks and gives an iterable with the
@@ -1034,7 +1035,8 @@ def get_navigator_entries(path_to_notes: str='.',
         yield os.path.join(path_to_notes, this_nb), navbar
 
 def add_navigators(path_to_notes: str='.', core_navigators: list=[],
-        show_nb_title_in_nav: bool=True, show_index_in_nav: bool=True):
+        show_nb_title_in_nav: bool=True, 
+        show_index_in_nav: bool=True) -> None:
     """Adds navigators to each notebook in the collection.
 
     Adds top and bottom navigators to each notebook in the collection 
@@ -1105,7 +1107,7 @@ def bind_from_arguments(path_to_notes: str='.',
         show_binder: bool=False,
         show_index_in_toc: bool=True,
         show_nb_title_in_nav: bool=True,
-        show_index_in_nav: bool=True):
+        show_index_in_nav: bool=True) -> None:
     """Binds the collection of notebooks from the arguments provided.
 
     Parameters
@@ -1202,7 +1204,7 @@ def bind_from_arguments(path_to_notes: str='.',
         show_nb_title_in_nav=show_nb_title_in_nav,
         show_index_in_nav=show_index_in_nav)
 
-def bind_from_configfile(config_file: str):
+def bind_from_configfile(config_file: str) -> None:
     """Binds the collection of notebooks from a configuration file.
 
     It reads the given configuration file in YAML format and pass 
@@ -1256,7 +1258,7 @@ def bind_from_configfile(config_file: str):
         for export in config['exports']:
             export_notebooks(path_to_notes=path_to_notes, **export)
 
-def bind(*args, **kargs):
+def bind(*args, **kargs) -> None:
     """Binds the collection of notebooks.
 
     It expects either a configuration file or a list of arguments in
