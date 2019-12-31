@@ -621,6 +621,36 @@ def reindex(path_to_notes: str='.', insert: bool=True,
 def export_notebooks(path_to_notes: str='.', 
         export_path: str=None, exporter_name: str=None, 
         exporter_args: dict={}) -> None:
+    """
+    Export notebooks via nbconvert.
+
+    It reads all the notes in `path_to_notes` and export them to
+    the directory `export_path` using the exporter defined by
+    `exporter_name`, with the arguments in `exporter_args`.
+
+    The name of the exporter (`exporter_name`) must be one of the default
+    exporters listed in `nbconvert.exporters.get_export_names()`.
+
+    Parameters
+    ----------
+    path_to_notes : str
+        The path to the directory that contains the notebooks, 
+        either the absolute path or the path relative from 
+        where the code is being ran.
+
+    export_path : str
+        The path to the directory where the exported, or converted,
+        files should be saved in.
+    
+    exporter_name : str
+        The name of the exporter to be used in `nbconvert` via
+        `nbconvert.exporters.get_exporter(exporter_name)`. Possible
+        choices are 'markdown', 'pdf', 'slides', 'latex', etc.
+
+    exporter_args : dict
+        Arguments to be passed on to the exporter via
+        `nbconvert.exporters.get_exporter(exporter_name)(**exporter_args)`.
+    """
     assert(type(export_path)==str
         ), "Argument `export_path` should be a string" 
     assert(exporter_name in exporters.get_export_names()
