@@ -1,4 +1,4 @@
-name: NBBinder_Test
+name: Run Tests
 
 on: [push]
 
