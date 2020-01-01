@@ -1,6 +1,8 @@
 # NBBinder - Jupyter Notebook Binder
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rmsrosa/nbbinder/NBBinder_Test) ![readthedocs badge](https://readthedocs.org/projects/nbbinder/badge/) ![PyPI - Wheel](https://img.shields.io/pypi/wheel/nbbinder) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/nbbinder) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub repo size](https://img.shields.io/github/repo-size/rmsrosa/nbbinder)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rmsrosa/nbbinder/Run_Tests) ![Run Tests Workflow Status](https://github.com/rmsrosa/nbbinder/workflows/Run%20Tests/badge.svg)![readthedocs badge](https://readthedocs.org/projects/nbbinder/badge/)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/nbbinder) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/nbbinder)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub repo size](https://img.shields.io/github/repo-size/rmsrosa/nbbinder)
 
 **NBBinder** generates a navigable book-like structure to a collection of Jupyter notebooks.
 
