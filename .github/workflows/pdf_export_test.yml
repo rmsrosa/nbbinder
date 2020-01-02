@@ -19,10 +19,10 @@ jobs:
         pandoc-version: '2.7.3'
     - name: Install dependencies
       run: |
-        apt-get install texlive-xetex
+        sudo apt-get install texlive-xetex
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r requirements_test.txt
-    - name: Test with python
+    - name: Test
       run: |
         python tests/nbbinder_test.py
