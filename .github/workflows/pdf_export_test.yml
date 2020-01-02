@@ -1,0 +1,28 @@
+name: PDF Export Test
+
+on: [push]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Setup pandoc
+      uses: r-lib/actions/setup-pandoc@v1
+      with:
+        pandoc-version: '2.7.3'
+    - name: Install dependencies
+      run: |
+        sudp apt-get install texlive-xetex
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements_test.txt
+    - name: Test with python
+      run: |
+        python tests/nbbinder_test.py

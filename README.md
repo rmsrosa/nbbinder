@@ -1,6 +1,6 @@
 # NBBinder - Jupyter Notebook Binder
 
-![Run Tests Workflow Status](https://github.com/rmsrosa/nbbinder/workflows/Run%20Tests/badge.svg)![readthedocs badge](https://readthedocs.org/projects/nbbinder/badge/)
+![Main Tests Workflow Status](https://github.com/rmsrosa/nbbinder/workflows/Main%20Tests/badge.svg) ![Flake8 Lint Test Workflow Status](https://github.com/rmsrosa/nbbinder/workflows/Flake8%20Lint%20Test/badge.svg) ![PDF Export Test Workflow Status](https://github.com/rmsrosa/nbbinder/workflows/PDF%20Export%20Test/badge.svg) ![readthedocs badge](https://readthedocs.org/projects/nbbinder/badge/)
 
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/nbbinder) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/nbbinder)
 
