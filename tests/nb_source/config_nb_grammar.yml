@@ -28,7 +28,7 @@ badges:
       color: orange
     - name: markdown
       title: View Markdown
-      url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_md
+      url: https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_grammar_md
       extension: .md
       replace_links: True
       label: view
@@ -36,5 +36,5 @@ badges:
       color: blueviolet
 
 exports:
-  - export_path: nb_builds/nb_water_md
+  - export_path: nb_builds/nb_grammar_md
     exporter_name: markdown            
