@@ -25,4 +25,4 @@ jobs:
         pip install -r requirements_test.txt
     - name: Test
       run: |
-        python tests/nbbinder_test.py
+        python tests/nbbinder_pdf_export_test.py
