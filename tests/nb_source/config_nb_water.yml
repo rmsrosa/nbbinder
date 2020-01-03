@@ -32,17 +32,3 @@ badges:
       label: view in
       message: nbviewer
       color: orange
-    - name: slides
-      title: View Slides
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_slides
-      extension: .slides.html
-      replace_links: True
-      label: view
-      message: slides
-      color: darkgreen
-
-exports:
-  - export_path: nb_builds/nb_water_slides
-    exporter_name: slides
-    exporter_args:
-      reveal_scroll: True
