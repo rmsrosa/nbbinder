@@ -1,11 +1,10 @@
 #!/anaconda3/envs/nbbinder/bin/python
 # -*- coding: utf-8 -*-
 '''
-Notebook Binder test
+Main Binder test
 '''
 
 import os
-import re
 import logging
 
 import shutil
@@ -20,14 +19,20 @@ from context import nbbinder as nbb
 # Logging level
 logging.basicConfig(level=logging.WARNING)
 
+# Build dir
+BUILD_DIR = 'nb_builds'
+
 def get_source_path(path):
     return os.path.join('nb_source', path)
 
 def create_build_dir():
-    if os.path.isdir('nb_builds'):
-        shutil.rmtree('nb_builds')
-    os.mkdir('nb_builds')
-    logging.info("Build directory 'nb_builds' created.")
+    if os.path.isdir(BUILD_DIR):
+        shutil.rmtree(BUILD_DIR)
+    os.mkdir(BUILD_DIR)
+    logging.info("Build directory '{}' created.".format(BUILD_DIR))
+
+def get_build_path(path: str='.'):
+    return os.path.join(BUILD_DIR, path)
 
 def get_build_path(path: str='.'):
     return os.path.join('nb_builds', path)
@@ -59,9 +64,11 @@ def create_notebooks(path_to_notes, nb_filenames):
 
 if __name__ == '__main__':
 
-    logging.info("# Changing to directory {}".format(os.path.dirname(__file__)))
+    logging.info("# Changing to directory '{}'".format(
+        os.path.dirname(__file__)))
     os.chdir(os.path.dirname(__file__))
 
+    logging.info("# Creating build directory '{}'.".format(BUILD_DIR))
     create_build_dir()
 
     nb_alice = [

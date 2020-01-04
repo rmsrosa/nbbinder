@@ -1,6 +1,6 @@
 nbbversion: 0.7a
 
-path_to_notes: nb_builds/nb_water_export
+path_to_notes: nb_export_builds/nb_water_export
 
 contents:
   toc_nb_name: 00.00-Water_Contents.ipynb
@@ -20,23 +20,15 @@ badges:
   custom_badges:
     - name: mardown
       title: View Markdown
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_md
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_md
       extension: .md
       replace_links: True
       label: view
       message: markdown
       color: orange
-    - name: slides
-      title: View Slides
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_slides
-      extension: .slides.html
-      replace_links: True
-      label: view
-      message: slides
-      color: darkgreen
     - name: pdf
       title: View PDF
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_pdf
+      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_pdf
       extension: .pdf
       replace_links: True
       label: view
@@ -44,13 +36,9 @@ badges:
       color: blueviolet
 
 exports:
-  - export_path: nb_builds/nb_water_md
+  - export_path: nb_export_builds/nb_water_md
     exporter_name: markdown
-  - export_path: nb_builds/nb_water_slides
-    exporter_name: slides
-    exporter_args:
-      reveal_scroll: True
-  - export_path: nb_builds/nb_water_pdf
+  - export_path: nb_export_builds/nb_water_pdf
     exporter_name: pdf
     exporter_args:
       latex_count: 1
