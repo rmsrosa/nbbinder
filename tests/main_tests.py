@@ -14,53 +14,16 @@ from faker import Faker
 import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 
+from basetest import *
+
 from context import nbbinder as nbb
 
 # Logging level
 logging.basicConfig(level=logging.WARNING)
 
-# Build dir
+# Directories
 BUILD_DIR = 'nb_builds'
-
-def get_source_path(path):
-    return os.path.join('nb_source', path)
-
-def create_build_dir():
-    if os.path.isdir(BUILD_DIR):
-        shutil.rmtree(BUILD_DIR)
-    os.mkdir(BUILD_DIR)
-    logging.info("Build directory '{}' created.".format(BUILD_DIR))
-
-def get_build_path(path: str='.'):
-    return os.path.join(BUILD_DIR, path)
-
-def get_build_path(path: str='.'):
-    return os.path.join('nb_builds', path)
-
-def create_notebooks(path_to_notes, nb_filenames):
-
-    assert(type(path_to_notes)==str), "Argument `path_to_notes` should be a string"
-
-    if os.path.isdir(path_to_notes):
-        for f in os.listdir(path_to_notes):
-            os.remove(os.path.join(path_to_notes,f))
-    else:
-        os.mkdir(path_to_notes)
-
-    fake = Faker()
-    fake.seed_instance(1234)
-
-    for nb_filename in nb_filenames:
-        nb = nbformat.v4.new_notebook()
-        nb_reg = nbb.REG_INSERT.match(nb_filename)
-        nb.cells.insert(0, new_markdown_cell('# ' + nb_reg.group(5).replace('_', ' ').replace('+u003f','?')))
-        nb.cells.insert(1, new_markdown_cell(source=fake.text(), 
-            metadata=nbb.SLIDE_SHOW))
-        nb.cells.insert(2, new_markdown_cell(source=fake.text(),
-            metadata=nbb.SLIDE_SHOW))
-        nb.cells.insert(3, new_markdown_cell(source=fake.text(),
-            metadata=nbb.SLIDE_SHOW))
-        nbformat.write(nb, os.path.join(path_to_notes, nb_filename))
+SOURCE_DIR = 'nb_source'
 
 if __name__ == '__main__':
 
@@ -68,8 +31,7 @@ if __name__ == '__main__':
         os.path.dirname(__file__)))
     os.chdir(os.path.dirname(__file__))
 
-    logging.info("# Creating build directory '{}'.".format(BUILD_DIR))
-    create_build_dir()
+    create_build_dir(BUILD_DIR)
 
     nb_alice = [
         "00.00-Alice's_Adventures_in_Wonderland.ipynb",
@@ -88,13 +50,13 @@ if __name__ == '__main__':
     ]
 
     logging.info("# Creating notebooks in {} ...".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
-    create_notebooks(get_build_path('nb_alice'), nb_alice)
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_alice'), nb_alice)
     logging.info('... notebooks created')
     logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
-    nbb.reindex(get_build_path('nb_alice'))
+    nbb.reindex(os.path.join(BUILD_DIR, 'nb_alice'))
 
     logging.info("\n# Binding 'nb_alice' notebooks with parameters")
-    nbb.bind(path_to_notes=get_build_path('nb_alice'),
+    nbb.bind(path_to_notes=os.path.join(BUILD_DIR, 'nb_alice'),
         toc_nb_name="00.00-Alice's_Adventures_in_Wonderland.ipynb",
         show_index_in_toc=True,
         header="[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)",
@@ -104,13 +66,13 @@ if __name__ == '__main__':
         user='rmsrosa',
         repository='nbbinder',
         branch='master',
-        github_nb_dir=os.path.join('tests', get_build_path('nb_alice')),
+        github_nb_dir=os.path.join('tests', os.path.join(BUILD_DIR, 'nb_alice')),
         show_colab=True,
         show_binder=True,
         show_index_in_nav=False)
 
     logging.info("\n# Binding 'nb_alice' notebooks with config file 'config_nb_alice.yml'")
-    nbb.bind(get_source_path('config_nb_alice.yml'))
+    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_alice.yml'))
 
     nb_grammar = [
         '00.00-Front_Page.ipynb',
@@ -138,23 +100,23 @@ if __name__ == '__main__':
     ]
 
     logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar')))
-    create_notebooks(get_build_path('nb_grammar'), nb_grammar)
-    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_grammar'))))
-    nbb.reindex(get_build_path('nb_grammar'))
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar'), nb_grammar)
+    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar'))))
+    nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar'))
 
     logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
-    create_notebooks(get_build_path('nb_grammar_bound'), nb_grammar)
-    logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar.yml'".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_grammar_bound'))))
-    nbb.bind(get_source_path('config_nb_grammar.yml'))
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_bound'), nb_grammar)
+    logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar.yml'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_bound'))))
+    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_grammar.yml'))
 
-    logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar_no_header.yml'".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_grammar_bound'))))
-    nbb.bind(get_source_path('config_nb_grammar_no_header.yml'))
+    logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar_no_header.yml'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_bound'))))
+    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_grammar_no_header.yml'))
 
-    logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar_reindex.yml'".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_grammar_bound'))))
-    nbb.bind(get_source_path('config_nb_grammar_reindex.yml'))
+    logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar_reindex.yml'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_bound'))))
+    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_grammar_reindex.yml'))
 
-    logging.info("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_grammar_bound'))))
-    nbb.bind(path_to_notes=get_build_path('nb_grammar_bound'),
+    logging.info("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_bound'))))
+    nbb.bind(path_to_notes=os.path.join(BUILD_DIR, 'nb_grammar_bound'),
         insert=True, tighten=True,
         toc_nb_name='00.00-Front_Page.ipynb',
         toc_title='Table of Contents',
@@ -189,10 +151,10 @@ if __name__ == '__main__':
         'BB.00-Index.ipynb'
     ]
 
-    logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_grammar_insert'))))
-    create_notebooks(get_build_path('nb_grammar_insert'), nb_grammar_insert)
-    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_grammar_insert'))))
-    nbb.reindex(get_build_path('nb_grammar_insert'), insert=True)
+    logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_insert'))))
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_insert'), nb_grammar_insert)
+    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_insert'))))
+    nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_insert'), insert=True)
 
     nb_grammar_tighten = [
         '00.00-Front_Page.ipynb',
@@ -219,12 +181,13 @@ if __name__ == '__main__':
         'BC.04-Index.ipynb'
     ]
 
-    logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_grammar_tighten'))))
-    create_notebooks(get_build_path('nb_grammar_tighten'), nb_grammar_tighten)
-    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_grammar_tighten'))))
-    nbb.reindex(get_build_path('nb_grammar_tighten'), tighten=True)
+    logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_tighten'))))
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_tighten'), nb_grammar_tighten)
+    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_tighten'))))
+    nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_tighten'), tighten=True)
 
     logging.info("\n# Copying water source notebooks to build directory")
-    shutil.copytree(get_source_path('nb_water'), get_build_path('nb_water'))
-    logging.info("\n# Binding the notebooks in {} with 'config_nb_water.yml'".format(os.path.join(os.path.dirname(__file__), get_build_path('nb_water'))))
-    nbb.bind(get_source_path('config_nb_water.yml'))
+    shutil.copytree(os.path.join(SOURCE_DIR, 'nb_water'), 
+        os.path.join(BUILD_DIR, 'nb_water'))
+    logging.info("\n# Binding the notebooks in {} with 'config_nb_water.yml'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_water'))))
+    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_water.yml'))

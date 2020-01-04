@@ -23,14 +23,14 @@ logging.basicConfig(level=logging.WARNING)
 def get_source_path(path):
     return os.path.join('nb_source', path)
 
-def create_build_dir():
-    if os.path.isdir(BUILD_DIR):
-        shutil.rmtree(BUILD_DIR)
-    os.mkdir(BUILD_DIR)
-    logging.info("Build directory {} created.".format(BUILD_DIR))
+def create_build_dir(build_dir):
+    if os.path.isdir(build_dir):
+        shutil.rmtree(build_dir)
+    os.mkdir(build_dir)
+    logging.info("Build directory '{}' created.".format(build_dir))
 
-def get_build_path(path: str='.'):
-    return os.path.join(BUILD_DIR, path)
+def get_build_path(build_dir, path: str='.'):
+    return os.path.join(build_dir, path)
 
 def bind_test(source_path, build_path, config_file):
 
