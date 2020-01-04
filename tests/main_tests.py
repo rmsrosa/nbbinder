@@ -27,11 +27,11 @@ SOURCE_DIR = 'nb_source'
 
 if __name__ == '__main__':
 
-    logging.info("# Changing to directory '{}'".format(
-        os.path.dirname(__file__)))
-    os.chdir(os.path.dirname(__file__))
+    change_to_file_dir()
 
     create_build_dir(BUILD_DIR)
+
+# Tests with nb_alice
 
     nb_alice = [
         "00.00-Alice's_Adventures_in_Wonderland.ipynb",
@@ -71,8 +71,11 @@ if __name__ == '__main__':
         show_binder=True,
         show_index_in_nav=False)
 
-    logging.info("\n# Binding 'nb_alice' notebooks with config file 'config_nb_alice.yml'")
-    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_alice.yml'))
+    bind_test(os.path.join(BUILD_DIR, 'nb_alice'), 
+        os.path.join(BUILD_DIR, 'nb_alice'),
+        os.path.join(SOURCE_DIR, 'config_nb_alice.yml'))
+
+# Tests with nb_grammar
 
     nb_grammar = [
         '00.00-Front_Page.ipynb',
@@ -104,16 +107,19 @@ if __name__ == '__main__':
     logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar'))))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar'))
 
-    logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar_bound')))
     create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_bound'), nb_grammar)
-    logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar.yml'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_bound'))))
-    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_grammar.yml'))
 
-    logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar_no_header.yml'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_bound'))))
-    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_grammar_no_header.yml'))
+    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
+        os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
+        os.path.join(SOURCE_DIR, 'config_nb_grammar.yml'))
 
-    logging.info("\n# Binding the notebooks in {} with 'config_nb_grammar_reindex.yml'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_bound'))))
-    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_grammar_reindex.yml'))
+    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
+        os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
+        os.path.join(SOURCE_DIR, 'config_nb_grammar_no_header.yml'))   
+
+    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
+        os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
+        os.path.join(SOURCE_DIR, 'config_nb_grammar_reindex.yml')) 
 
     logging.info("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_bound'))))
     nbb.bind(path_to_notes=os.path.join(BUILD_DIR, 'nb_grammar_bound'),
@@ -125,6 +131,8 @@ if __name__ == '__main__':
         core_navigators=['00.00-Front_Page.ipynb', 
         'BB.00-Bibliography.ipynb'],
         show_index_in_nav=False)
+
+# Tests with nb_grammar_insert
 
     nb_grammar_insert = [
         '00.00-Front_Page.ipynb',
@@ -156,6 +164,8 @@ if __name__ == '__main__':
     logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_insert'))))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_insert'), insert=True)
 
+# Tests with nb_grammar_tighten
+
     nb_grammar_tighten = [
         '00.00-Front_Page.ipynb',
         '02.00-Introduction.ipynb',
@@ -186,8 +196,8 @@ if __name__ == '__main__':
     logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_tighten'))))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_tighten'), tighten=True)
 
-    logging.info("\n# Copying water source notebooks to build directory")
-    shutil.copytree(os.path.join(SOURCE_DIR, 'nb_water'), 
-        os.path.join(BUILD_DIR, 'nb_water'))
-    logging.info("\n# Binding the notebooks in {} with 'config_nb_water.yml'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_water'))))
-    nbb.bind(os.path.join(SOURCE_DIR, 'config_nb_water.yml'))
+# Tests with nb_water
+
+    bind_test(os.path.join(SOURCE_DIR, 'nb_water'), 
+        os.path.join(BUILD_DIR, 'nb_water'),
+        os.path.join(SOURCE_DIR, 'config_nb_water.yml'))

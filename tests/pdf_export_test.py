@@ -20,9 +20,7 @@ SOURCE_DIR = 'nb_source'
 
 if __name__ == '__main__':
 
-    logging.info("# Changing to directory '{}'".format(
-        os.path.dirname(__file__)))
-    os.chdir(os.path.dirname(__file__))
+    change_to_file_dir()
 
     create_build_dir(BUILD_DIR)
 

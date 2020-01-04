@@ -20,6 +20,11 @@ from context import nbbinder as nbb
 # Logging level
 logging.basicConfig(level=logging.WARNING)
 
+def change_to_file_dir():
+    os.chdir(os.path.dirname(__file__))
+    logging.info("# Directory changed to '{}'".format(
+        os.path.dirname(__file__)))
+
 def get_source_path(path):
     return os.path.join('nb_source', path)
 
@@ -68,3 +73,5 @@ def create_notebooks(path_to_notes, nb_filenames):
         nb.cells.insert(3, new_markdown_cell(source=fake.text(),
             metadata=nbb.SLIDE_SHOW))
         nbformat.write(nb, os.path.join(path_to_notes, nb_filename))
+    
+    logging.info("\n# Notebooks created in {}".format(path_to_notes))
