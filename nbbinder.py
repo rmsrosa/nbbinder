@@ -1290,6 +1290,11 @@ def bind_from_arguments(path_to_notes: str='.',
 
     add_headers(path_to_notes=path_to_notes, header=header)
 
+    add_navigators(path_to_notes=path_to_notes,
+                   core_navigators=core_navigators,
+                   show_nb_title_in_nav=show_nb_title_in_nav,
+                   show_index_in_nav=show_index_in_nav)
+
     add_badges(path_to_notes=path_to_notes,
                 user=user, 
                 repository=repository, 
@@ -1298,11 +1303,6 @@ def bind_from_arguments(path_to_notes: str='.',
                 custom_badges=custom_badges,
                 show_colab=show_colab,
                 show_binder=show_binder)
-
-    add_navigators(path_to_notes=path_to_notes,
-                   core_navigators=core_navigators,
-                   show_nb_title_in_nav=show_nb_title_in_nav,
-                   show_index_in_nav=show_index_in_nav)
 
 
 def bind_from_configfile(config_file: str) -> None:
