@@ -1290,7 +1290,14 @@ def bind_from_arguments(path_to_notes: str='.',
 
     add_headers(path_to_notes=path_to_notes, header=header)
 
-
+    add_badges(path_to_notes=path_to_notes,
+                user=user, 
+                repository=repository, 
+                branch=branch,
+                github_nb_dir=github_nb_dir,
+                custom_badges=custom_badges,
+                show_colab=show_colab,
+                show_binder=show_binder)
 
     add_navigators(path_to_notes=path_to_notes,
                    core_navigators=core_navigators,
