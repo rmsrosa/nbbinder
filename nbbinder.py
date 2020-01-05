@@ -98,7 +98,7 @@ def is_index(g: str) -> bool:
     """
 
     if type(g)==str and len(g)==2:
-        if ((g[0].isdecimal() or g[0] in ('A', 'B')) 
+        if ((g[0].isdecimal() or g[0] in ('A', 'B'))
             and (g[1].isdecimal() or g[1].isupper())):
             return True
     
@@ -303,7 +303,7 @@ def get_nb_full_entry(path_to_notes: str='.',
     return markdown_entry, num_entry, title
 
 
-def get_nb_entry(path_to_notes: str='.', 
+def get_nb_entry(path_to_notes: str='.',
                  nb_name: str=None,
                  show_index: bool = True) -> str:
     """Returns the entry of a notebook.
@@ -370,14 +370,14 @@ def yield_contents(path_to_notes: str='.',
         markdown_entry, num_entry, title \
             = get_nb_full_entry(path_to_notes, nb_name)
         if show_index_in_toc:
-            yield '{}[{}]({})\n'.format(markdown_entry, 
-                                        num_entry + title, 
+            yield '{}[{}]({})\n'.format(markdown_entry,
+                                        num_entry + title,
                                         nb_name)
         else:
             yield '{}[{}]({})\n'.format(markdown_entry, title, nb_name)
 
 
-def get_contents(path_to_notes: str='.', 
+def get_contents(path_to_notes: str='.',
                  show_index_in_toc: bool=True) -> str:
     """Returns the 'Table of Contents'.
 
@@ -609,7 +609,7 @@ def tighten_notebooks(path_to_notes: str='.') -> None:
             os.rename(os.path.join(path_to_notes, str(count) + '-' + f_newest), os.path.join(path_to_notes, f_newest))
 
 
-def reindex(path_to_notes: str='.', 
+def reindex(path_to_notes: str='.',
             insert: bool=True,
             tighten: bool=False) -> None:
     """Reindex the collection of notebooks.
@@ -640,7 +640,7 @@ def reindex(path_to_notes: str='.',
 
 
 def export_notebooks(path_to_notes: str='.',
-                     export_path: str=None, 
+                     export_path: str=None,
                      exporter_name: str=None,
                      exporter_args: dict={}) -> None:
     """
@@ -718,9 +718,9 @@ def export_notebooks(path_to_notes: str='.',
         export_file.close()
 
 
-def add_contents(path_to_notes: str='.', 
+def add_contents(path_to_notes: str='.',
                  toc_nb_name: str=None,
-                 toc_title: str='', 
+                 toc_title: str='',
                  show_index_in_toc: bool=True) -> None:
     """Adds the table of contents to a selected notebook.
 
@@ -820,7 +820,7 @@ def add_headers(path_to_notes: str='.', header: str=None) -> None:
 
 
 def get_badge_entries(path_to_notes: str='.',
-                      user: str='', 
+                      user: str='',
                       repository: str='',
                       branch: str='master',
                       github_nb_dir: str='.',
@@ -901,7 +901,7 @@ def get_badge_entries(path_to_notes: str='.',
         this_nb_colab_link \
             = COLAB_LINK.format(user=user,
                                 repository=repository,
-                                branch=branch, 
+                                branch=branch,
                                 github_nb_dir=github_nb_dir,
                                 notebook_filename=\
                                 os.path.basename(this_nb))
@@ -909,7 +909,7 @@ def get_badge_entries(path_to_notes: str='.',
         this_nb_binder_link \
             = BINDER_LINK.format(user=user,
                                  repository=repository,
-                                 branch=branch, 
+                                 branch=branch,
                                  github_nb_dir=github_nb_dir,
                                  notebook_filename = \
                                  os.path.basename(this_nb))
@@ -933,8 +933,8 @@ def get_badge_entries(path_to_notes: str='.',
 
 
 def add_badges(path_to_notes: str='.',
-               user: str='', 
-               repository: str='', 
+               user: str='',
+               repository: str='',
                branch: str='master',
                github_nb_dir: str='.',
                custom_badges: list=[],
@@ -988,8 +988,8 @@ def add_badges(path_to_notes: str='.',
         this_nb_binder_link, \
         this_nb_custom_badge_links \
             in get_badge_entries(path_to_notes,
-                                 user, 
-                                 repository, 
+                                 user,
+                                 repository,
                                  branch,
                                  github_nb_dir,
                                  custom_badges):
@@ -1115,7 +1115,7 @@ def get_navigator_entries(path_to_notes: str='.',
         yield os.path.join(path_to_notes, this_nb), navbar
 
 
-def add_navigators(path_to_notes: str='.', 
+def add_navigators(path_to_notes: str='.',
                    core_navigators: list=[],
                    show_nb_title_in_nav: bool=True,
                    show_index_in_nav: bool=True) -> None:
@@ -1148,8 +1148,8 @@ def add_navigators(path_to_notes: str='.',
     """
     for nb_file, navbar \
         in get_navigator_entries(path_to_notes,
-                                 core_navigators, 
-                                 show_nb_title_in_nav, 
+                                 core_navigators,
+                                 show_nb_title_in_nav,
                                  show_index_in_nav):
         nb = nbformat.read(nb_file, as_version=4)
         nb_name = os.path.basename(nb_file)
@@ -1157,12 +1157,12 @@ def add_navigators(path_to_notes: str='.',
         navbar_top = NAVIGATOR_MARKER + "\n" + navbar + "\n\n---\n"
         navbar_bottom = NAVIGATOR_MARKER + "\n\n---\n" + navbar
 
-        if len(nb.cells)>=1 and is_marker_cell(NAVIGATOR_MARKER, 
+        if len(nb.cells)>=1 and is_marker_cell(NAVIGATOR_MARKER,
                                                nb.cells[1]):
             logging.info("- updating navbar for {0}".format(nb_name))
             nb.cells[1].source = navbar_top
             nb.cells[1].metadata = SLIDE_SKIP
-        elif len(nb.cells)>=2 and is_marker_cell(NAVIGATOR_MARKER, 
+        elif len(nb.cells)>=2 and is_marker_cell(NAVIGATOR_MARKER,
                                                  nb.cells[2]):
             logging.info("- updating navbar for {0}".format(nb_name))
             nb.cells[2].source = navbar_top
@@ -1172,7 +1172,7 @@ def add_navigators(path_to_notes: str='.',
             nb.cells.insert(1, new_markdown_cell(source=navbar_top,
                             metadata=SLIDE_SKIP))
 
-        if len(nb.cells)>2 and is_marker_cell(NAVIGATOR_MARKER, 
+        if len(nb.cells)>2 and is_marker_cell(NAVIGATOR_MARKER,
                                               nb.cells[-1]):
             nb.cells[-1].source = navbar_bottom
             nb.cells[-1].metadata = SLIDE_SHOW
@@ -1189,8 +1189,8 @@ def bind_from_arguments(path_to_notes: str='.',
                         toc_title: str='',
                         header: str='',
                         core_navigators: list=[],
-                        user: str='', 
-                        repository: str='', 
+                        user: str='',
+                        repository: str='',
                         branch: str='master',
                         github_nb_dir: str='.',
                         custom_badges: list=[],
@@ -1296,8 +1296,8 @@ def bind_from_arguments(path_to_notes: str='.',
                    show_index_in_nav=show_index_in_nav)
 
     add_badges(path_to_notes=path_to_notes,
-               user=user, 
-               repository=repository, 
+               user=user,
+               repository=repository,
                branch=branch,
                github_nb_dir=github_nb_dir,
                custom_badges=custom_badges,
