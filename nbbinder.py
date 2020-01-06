@@ -881,16 +881,15 @@ def get_badge_entries(path_to_notes: str = '.',
         The github username of the onwer of the repository in which
         the notebooks reside, in case one wants to add a badge to
         open up the notebooks in one of the configured cloud
-        computing platforms (google colab and binder). It defaults to
-        the empty string.
+        computing platforms (google colab and binder).
 
     repository : str
         The name of the github repository mentioned in the description
-        of the `user` argument. It defaults to the empty string.
+        of the `user` argument.
 
     branch : str
         The name of the branch of the github repository mentioned in
-        the description of the `user` argument. It defaults to 'master'.
+        the description of the `user` argument.
 
     github_nb_dir : str
         The path to the notebooks, from the root directory of the
@@ -988,16 +987,15 @@ def add_badges(path_to_notes: str = '.',
         The github username of the onwer of the repository in which
         the notebooks reside, in case one wants to add a badge to
         open up the notebooks in one of the configured cloud
-        computing platforms (google colab and binder). It defaults to
-        the empty string.
+        computing platforms (google colab and binder).
 
     repository : str
         The name of the github repository mentioned in the description
-        of the `user` argument. It defaults to the empty string.
+        of the `user` argument.
 
     branch : str
         The name of the branch of the github repository mentioned in
-        the description of the `user` argument. It defaults to 'master'.
+        the description of the `user` argument.
 
     github_nb_dir : str
         The path to the notebooks, from the root directory of the
@@ -1008,12 +1006,10 @@ def add_badges(path_to_notes: str = '.',
         of `get_badge_entries()`
 
     show_colab : bool
-        Whether to display the Google Colab badge or not. It defaults
-        to False.
+        Whether to display the Google Colab badge or not.
 
     show_binder : bool
-        Whether to display the Binder badge or not. It defaults
-        to False.
+        Whether to display the Binder badge or not.
     """
     for nb_filename, \
         this_nb_colab_link, \
@@ -1096,8 +1092,7 @@ def get_navigator_entries(path_to_notes: str = '.',
     core_navigators : list of str
         A lists of strings with the filenames of each notebook to be
         included in the navigators, in between the links to the
-        "previous" and the "next" notebooks. It defaults to the empty
-        list.
+        "previous" and the "next" notebooks.
 
     show_nb_title_in_nav : bool
         Whether to diplay the title of the notebook in the previous
@@ -1106,7 +1101,6 @@ def get_navigator_entries(path_to_notes: str = '.',
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
-        It defaults to True.
 
     Yields
     ------
@@ -1162,8 +1156,7 @@ def add_navigators(path_to_notes: str = '.',
     core_navigators : list of str
         A lists of strings with the filenames of each notebook to be
         included in the navigators, in between the links to the
-        "previous" and the "next" notebooks. It defaults to the empty
-        list.
+        "previous" and the "next" notebooks.
 
     show_nb_title_in_nav : bool
         Whether to diplay the title of the notebook in the previous
@@ -1172,7 +1165,6 @@ def add_navigators(path_to_notes: str = '.',
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
-        It defaults to True.
     """
     for nb_file, navbar \
         in get_navigator_entries(path_to_notes,
@@ -1238,13 +1230,13 @@ def bind_from_arguments(path_to_notes: str = '.',
 
     insert : bool
         Indicates whether to insert notebooks in the collection of
-        indexed notebooks or not. It defaults to False.
+        indexed notebooks or not.
 
     tighten : bool
         Indicates whether to tighten the indices of the notebooks,
         i.e. whether there are gaps in the indices of the notebooks
         and, if so, rename the affected notebooks in the
-        appropriate order. It defaults to False.
+        appropriate order.
 
     toc_nb_name : str
         Filename of the notebook in which the table of contents
@@ -1261,35 +1253,31 @@ def bind_from_arguments(path_to_notes: str = '.',
     core_navigators : list of str
         A lists of strings with the filenames of each notebook to be
         included in the navigators, in between the links to the
-        "previous" and the "next" notebooks. It defaults to the empty
-        list.
+        "previous" and the "next" notebooks.
 
     user : str
         The github username of the onwer of the repository in which
         the notebooks reside, in case one wants to add a badge to
         open up the notebooks in one of the configured cloud
-        computing platforms (google colab and binder). It defaults to
-        the empty string.
+        computing platforms (google colab and binder).
 
     repository : str
         The name of the github repository mentioned in the description
-        of the `user` argument. It defaults to the empty string.
+        of the `user` argument.
 
     branch : str
         The name of the branch of the github repository mentioned in
-        the description of the `user` argument. It defaults to 'master'.
+        the description of the `user` argument.
 
     github_nb_dir : str
         The path to the notebooks, from the root directory of the
         repository mentioned in the description of the `user` argument.
 
     show_colab : bool
-        Whether to display the Google Colab badge or not. It defaults
-        to False.
+        Whether to display the Google Colab badge or not.
 
     show_binder : bool
-        Whether to display the Binder badge or not. It defaults
-        to False.
+        Whether to display the Binder badge or not.
 
     show_index_in_toc : bool
         Whether to display the navigator with the chapter
@@ -1302,7 +1290,6 @@ def bind_from_arguments(path_to_notes: str = '.',
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
-        It defaults to True.
     """
 
     if insert or tighten:
