@@ -227,14 +227,12 @@ def refresh_marker_cells(path_to_notes: str = '.', marker: str = None,
                     new_cells.append(cell)
                 elif mode == 'clean':
                     logging.info("- cleaning '{arg1}' cell from {arg2}",
-                                 arg1 = marker,
-                                 arg2 = nb_name)
+                                 arg1=marker, arg2=nb_name)
                     new_cells.append(cell)
                     new_cells[-1].source = marker
                 elif mode == 'remove':
                     logging.info("- cleaning '{arg1}' cell from {arg2}",
-                                 arg1 = marker,
-                                 arg2 = nb_name)
+                                 arg1=marker, arg2=nb_name)
 
             nb.cells = new_cells
             nbformat.write(nb, nb_file)
@@ -486,7 +484,7 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
             count += 1
             if f != f_new:
                 logging.info('- replacing {arg1} with {arg2}',
-                             arg1 = f, arg2 = f_new)
+                             arg1=f, arg2=f_new)
             os.rename(os.path.join(path_to_notes, f),
                       os.path.join(path_to_notes, str(count) + '-' + f_new))
         count = 0
@@ -619,7 +617,7 @@ def tighten_notebooks(path_to_notes: str = '.') -> None:
             count += 1
             if f != f_newest:
                 logging.info('- replacing {arg1} with {arg2}',
-                             arg1 = f, arg2 = f_newest)
+                             arg1=f, arg2=f_newest)
             os.rename(os.path.join(path_to_notes, f),
                       os.path.join(path_to_notes, str(count) + '-' + f_newest))
         count = 0
@@ -724,7 +722,7 @@ def export_notebooks(path_to_notes: str = '.',
                     source_new += cell.source[i:]
                     cell.source = source_new
 
-        logging.info("Adjusting links for {arg}", arg = export_path)
+        logging.info("Adjusting links for {arg}", arg=export_path)
         (body, resources) = exporter.from_notebook_node(nb)
         export_filename = \
             os.path.join(export_path,
@@ -796,12 +794,12 @@ def add_contents(path_to_notes: str = '.',
 
     if toc_cell_found:
         nbformat.write(toc_nb, toc_nb_file)
-        logging.info('- Table of contents updated in {arg}', arg = toc_nb_name)
+        logging.info('- Table of contents updated in {arg}', arg=toc_nb_name)
     else:
         logging.info('* No markdown cell starting with {arg1} found in {arg2}',
-                     arg1 = TOC_MARKER, arg2 = toc_nb_name)
+                     arg1=TOC_MARKER, arg2=toc_nb_name)
         logging.info("- inserting table of contents in {arg}",
-                     arg = toc_nb_name)
+                     arg=toc_nb_name)
         if toc_nb.cells and is_marker_cell(NAVIGATOR_MARKER, toc_nb.cells[-1]):
             toc_nb.cells.insert(-1, new_markdown_cell(source=contents,
                                                       metadata=SLIDE_SHOW))
@@ -833,11 +831,11 @@ def add_headers(path_to_notes: str = '.', header: str = None) -> None:
         nb = nbformat.read(nb_file, as_version=4)
 
         if nb.cells and is_marker_cell(HEADER_MARKER, nb.cells[0]):
-            logging.info('- updating header for {arg}', arg = nb_name)
+            logging.info('- updating header for {arg}', arg=nb_name)
             nb.cells[0].source = HEADER_MARKER + '\n' + header
             nb.cells[0].metadata = SLIDE_SKIP
         else:
-            logging.info('- inserting header for {arg}', arg = nb_name)
+            logging.info('- inserting header for {arg}', arg=nb_name)
             nb.cells.insert(0, new_markdown_cell(
                 source=HEADER_MARKER + '\n' + header,
                 metadata=SLIDE_SKIP))
@@ -1031,11 +1029,11 @@ def add_badges(path_to_notes: str = '.',
             badges_top += this_nb_custom_badge_link + "&nbsp;"
 
         if len(nb.cells) > 1 and is_marker_cell(BADGES_MARKER, nb.cells[1]):
-            logging.info("- updating badges for {arg}", arg = nb_name)
+            logging.info("- updating badges for {arg}", arg=nb_name)
             nb.cells[1].source = badges_top
             nb.cells[1].metadata = SLIDE_SKIP
         else:
-            logging.info("- inserting badges for {arg}", arg = nb_name)
+            logging.info("- inserting badges for {arg}", arg=nb_name)
             nb.cells.insert(1, new_markdown_cell(source=badges_top,
                                                  metadata=SLIDE_SKIP))
 
@@ -1182,16 +1180,16 @@ def add_navigators(path_to_notes: str = '.',
 
         if len(nb.cells) >= 1 and is_marker_cell(NAVIGATOR_MARKER,
                                                  nb.cells[1]):
-            logging.info("- updating navbar for {arg}", arg = nb_name)
+            logging.info("- updating navbar for {arg}", arg=nb_name)
             nb.cells[1].source = navbar_top
             nb.cells[1].metadata = SLIDE_SKIP
         elif len(nb.cells) >= 2 and is_marker_cell(NAVIGATOR_MARKER,
                                                    nb.cells[2]):
-            logging.info("- updating navbar for {arg}", arg = nb_name)
+            logging.info("- updating navbar for {arg}", arg=nb_name)
             nb.cells[2].source = navbar_top
             nb.cells[2].metadata = SLIDE_SKIP
         else:
-            logging.info("- inserting navbar for {arg}", arg = nb_name)
+            logging.info("- inserting navbar for {arg}", arg=nb_name)
             nb.cells.insert(1, new_markdown_cell(source=navbar_top,
                                                  metadata=SLIDE_SKIP))
 
