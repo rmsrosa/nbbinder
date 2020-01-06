@@ -274,11 +274,10 @@ def get_nb_title(path_to_notes: str = '.', nb_name: str = None) -> str:
         The desired title of the notebook or "" if not found.
     """
     nb = nbformat.read(os.path.join(path_to_notes, nb_name), as_version=4)
-    title = ""
     for cell in nb.cells:
         if cell.source.startswith('#'):
-            title = cell.source[1:].splitlines()[0].strip()
-    return title
+            return cell.source[1:].splitlines()[0].strip()
+    return ""
 
 
 def get_nb_full_entry(path_to_notes: str = '.',
@@ -405,6 +404,7 @@ def yield_contents(path_to_notes: str = '.',
 
 
 def get_contents(path_to_notes: str = '.',
+                 toc_title: str = '',
                  show_index_in_toc: bool = True) -> str:
     """Returns the 'Table of Contents'.
 
@@ -419,6 +419,11 @@ def get_contents(path_to_notes: str = '.',
         either the absolute path or the path relative from
         where the code is being ran.
 
+    toc_title : str
+        Text to be displayed as the title for the table of contents cell,
+        e.g. 'Contents', 'Table of Contents', or in other languages,
+        'Conteúdo', 'Table des Matières', and so on.
+
     show_index_in_toc : bool
         Whether to display the table of contents with the chapter
         and section number of each notebook or just their title.
@@ -429,7 +434,7 @@ def get_contents(path_to_notes: str = '.',
         The table of contents.
     """
 
-    contents = ""
+    contents = TOC_MARKER + "\n## [" + toc_title + "](#)\n\n"
     for item in yield_contents(path_to_notes, show_index_in_toc):
         contents += item + "\n"
 
@@ -454,9 +459,6 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
     nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes)
                           if REG_INSERT.match(nb))
     nb_names_new = nb_names_ins.copy()
-#    additions = [1 if REG_INSERT.match(nb).group(2)
-#                 or REG_INSERT.match(nb).group(4)
-#                 else 0 for nb in nb_names_ins]
 
     for j in range(len(nb_names_ins)):
         nbj_reg = REG_INSERT.match(nb_names_new[j])
@@ -793,9 +795,7 @@ def add_contents(path_to_notes: str = '.',
     assert(isinstance(toc_title, str)), "Argument `toc_title` \
         should be a string"
 
-    contents = TOC_MARKER + "\n## [" + toc_title + "](#)\n\n"
-    for item in yield_contents(path_to_notes, show_index_in_toc):
-        contents += item + "\n"
+    contents = get_contents(path_to_notes, toc_title, show_index_in_toc)
 
     toc_nb_file = os.path.join(path_to_notes, toc_nb_name)
 
