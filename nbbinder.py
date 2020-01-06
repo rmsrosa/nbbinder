@@ -260,12 +260,14 @@ def get_nb_title(path_to_notes: str = '.', nb_name: str = None) -> str:
     Returns
     -------
     : str
-        The desired title of the notebook or None if not found.
+        The desired title of the notebook or "" if not found.
     """
     nb = nbformat.read(os.path.join(path_to_notes, nb_name), as_version=4)
+    title = ""
     for cell in nb.cells:
         if cell.source.startswith('#'):
-            return cell.source[1:].splitlines()[0].strip()
+            title = cell.source[1:].splitlines()[0].strip()
+    return title
 
 
 def get_nb_full_entry(path_to_notes: str = '.',
@@ -660,7 +662,7 @@ def reindex(path_to_notes: str = '.',
 def export_notebooks(path_to_notes: str = '.',
                      export_path: str = None,
                      exporter_name: str = None,
-                     exporter_args: dict = {}) -> None:
+                     exporter_args: dict = None) -> None:
     """
     Export notebooks via nbconvert.
 
@@ -847,7 +849,7 @@ def get_badge_entries(path_to_notes: str = '.',
                       repository: str = '',
                       branch: str = 'master',
                       github_nb_dir: str = '.',
-                      custom_badges: list = []) -> Iterable[tuple]:
+                      custom_badges: list = None) -> Iterable[tuple]:
     """Iterable with the bagdes info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and
@@ -958,7 +960,7 @@ def add_badges(path_to_notes: str = '.',
                repository: str = '',
                branch: str = 'master',
                github_nb_dir: str = '.',
-               custom_badges: list = [],
+               custom_badges: list = None,
                show_colab: bool = False,
                show_binder: bool = False) -> None:
     """Adds badges to each notebook in the collection.
@@ -1040,7 +1042,7 @@ def add_badges(path_to_notes: str = '.',
         nbformat.write(nb, nb_filename)
 
 
-def prev_this_next(collection: list = []) -> None:
+def prev_this_next(collection: list = None) -> None:
     """Iterable with previous, current, and next notebooks in `collection`.
 
     It reads a list of indexed notebooks and gives an iterable with the
@@ -1066,7 +1068,7 @@ def prev_this_next(collection: list = []) -> None:
 
 
 def get_navigator_entries(path_to_notes: str = '.',
-                          core_navigators: list = [],
+                          core_navigators: list = None,
                           show_nb_title_in_nav: bool = True,
                           show_index_in_nav: bool = True) -> Iterable[str]:
     """Iterable with the navigator info for each notebook.
@@ -1137,7 +1139,7 @@ def get_navigator_entries(path_to_notes: str = '.',
 
 
 def add_navigators(path_to_notes: str = '.',
-                   core_navigators: list = [],
+                   core_navigators: list = None,
                    show_nb_title_in_nav: bool = True,
                    show_index_in_nav: bool = True) -> None:
     """Adds navigators to each notebook in the collection.
@@ -1209,12 +1211,12 @@ def bind_from_arguments(path_to_notes: str = '.',
                         toc_nb_name: str = '',
                         toc_title: str = '',
                         header: str = '',
-                        core_navigators: list = [],
+                        core_navigators: list = None,
                         user: str = '',
                         repository: str = '',
                         branch: str = 'master',
                         github_nb_dir: str = '.',
-                        custom_badges: list = [],
+                        custom_badges: list = None,
                         show_colab: bool = False,
                         show_binder: bool = False,
                         show_index_in_toc: bool = True,
@@ -1338,8 +1340,8 @@ def bind_from_configfile(config_file: str) -> None:
     config_file : str
         The filename of the configuration file.
     """
-    with open(config_file, 'r') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
+    with open(config_file, 'r') as cf:
+        config = yaml.load(cf, Loader=yaml.FullLoader)
 
     if 'path_to_notes' in config:
         path_to_notes = config['path_to_notes']
