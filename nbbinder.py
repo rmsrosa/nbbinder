@@ -296,7 +296,7 @@ def get_nb_full_entry(path_to_notes: str = '.',
         depending on the case, of the Chapter and Section numbers
         or letters.
     """
-    chapter, section, basename, extension = REG.match(nb_name).groups()
+    chapter, section = REG.match(nb_name).group(1,2)
 
     if chapter.isdecimal():
         chapter_clean = int(chapter)
@@ -704,7 +704,10 @@ def export_notebooks(path_to_notes: str = '.',
     else:
         os.mkdir(export_path)
 
-    exporter = exporters.get_exporter(exporter_name)(**exporter_args)
+    if exporter_args:
+        exporter = exporters.get_exporter(exporter_name)(**exporter_args)
+    else:
+        exporter = exporters.get_exporter(exporter_name)()
     extension = exporter.file_extension
 
     for nb_name in indexed_notebooks(path_to_notes):
@@ -937,16 +940,17 @@ def get_badge_entries(path_to_notes: str = '.',
 
         this_nb_custom_badge_links = []
 
-        for badge in custom_badges:
-            this_nb_custom_badge_links.append(custom_badge_LINK.format(
-                badge_url=badge['url'],
-                badge_filename=this_nb[:REG.match(this_nb).start(4)]
-                + badge['extension'],
-                badge_label=badge['label'],
-                badge_message=badge['message'],
-                badge_color=badge['color'],
-                badge_alt=badge['name'],
-                badge_title=badge['title']))
+        if custom_badges:
+            for badge in custom_badges:
+                this_nb_custom_badge_links.append(custom_badge_LINK.format(
+                    badge_url=badge['url'],
+                    badge_filename=this_nb[:REG.match(this_nb).start(4)]
+                    + badge['extension'],
+                    badge_label=badge['label'],
+                    badge_message=badge['message'],
+                    badge_color=badge['color'],
+                    badge_alt=badge['name'],
+                    badge_title=badge['title']))
 
         yield os.path.join(path_to_notes, this_nb), \
             this_nb_colab_link, this_nb_binder_link, \
