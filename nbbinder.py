@@ -277,7 +277,7 @@ def get_nb_title(path_to_notes: str = '.', nb_name: str = None) -> str:
     for cell in nb.cells:
         if cell.source.startswith('#'):
             return cell.source[1:].splitlines()[0].strip()
-    return ""
+    return None
 
 
 def get_nb_full_entry(path_to_notes: str = '.',
