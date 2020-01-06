@@ -53,6 +53,19 @@ HEADER_MARKER = "<!--HEADER-->"
 BADGES_MARKER = "<!--BADGES-->"
 NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 
+# Navigator templates
+PREV_TEMPLATE = "[<- {title}]({url}) "
+CENTER_TEMPLATE = "| [{title}]({url}) "
+NEXT_TEMPLATE = "| [{title} ->]({url})"
+
+# Link templates for the badges
+COLAB_LINK = """<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{github_nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Google Colab" title="Open in Google Colab"></a>
+"""
+BINDER_LINK = """<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Binder" title="Open in binder"></a>
+"""
+CUSTOM_BADGE_LINK = """<a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
+"""
+
 # Metadata to flag cells for the slides
 SLIDE_SHOW = {
         "slideshow": {
@@ -296,7 +309,7 @@ def get_nb_full_entry(path_to_notes: str = '.',
         depending on the case, of the Chapter and Section numbers
         or letters.
     """
-    chapter, section = REG.match(nb_name).group(1,2)
+    chapter, section = REG.match(nb_name).group(1, 2)
 
     if chapter.isdecimal():
         chapter_clean = int(chapter)
@@ -441,9 +454,9 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
     nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes)
                           if REG_INSERT.match(nb))
     nb_names_new = nb_names_ins.copy()
-    additions = [1 if REG_INSERT.match(nb).group(2)
-                 or REG_INSERT.match(nb).group(4)
-                 else 0 for nb in nb_names_ins]
+#    additions = [1 if REG_INSERT.match(nb).group(2)
+#                 or REG_INSERT.match(nb).group(4)
+#                 else 0 for nb in nb_names_ins]
 
     for j in range(len(nb_names_ins)):
         nbj_reg = REG_INSERT.match(nb_names_new[j])
@@ -713,7 +726,7 @@ def export_notebooks(path_to_notes: str = '.',
     for nb_name in indexed_notebooks(path_to_notes):
         nb_file = os.path.join(path_to_notes, nb_name)
         nb = nbformat.read(nb_file, as_version=4)
-        (body, resources) = exporter.from_notebook_node(nb)
+        body = exporter.from_notebook_node(nb)[0]
         for cell in nb.cells:
             for marker in (NAVIGATOR_MARKER, TOC_MARKER):
                 if is_marker_cell(marker, cell):
@@ -726,7 +739,7 @@ def export_notebooks(path_to_notes: str = '.',
                     cell.source = source_new
 
         logging.info("Adjusting links for {arg}", arg=export_path)
-        (body, resources) = exporter.from_notebook_node(nb)
+        body = exporter.from_notebook_node(nb)[0]
         export_filename = \
             os.path.join(export_path,
                          nb_name[:REG.match(nb_name).start(4)]
@@ -916,12 +929,6 @@ def get_badge_entries(path_to_notes: str = '.',
         The list of extra badge links for the current notebook
         in the iterator.
     """
-    COLAB_LINK = """<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{github_nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Google Colab" title="Open in Google Colab"></a>
-"""
-    BINDER_LINK = """<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Binder" title="Open in binder"></a>
-"""
-    custom_badge_LINK = """<a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
-"""
 
     for this_nb in indexed_notebooks(path_to_notes):
         this_nb_colab_link \
@@ -942,7 +949,7 @@ def get_badge_entries(path_to_notes: str = '.',
 
         if custom_badges:
             for badge in custom_badges:
-                this_nb_custom_badge_links.append(custom_badge_LINK.format(
+                this_nb_custom_badge_links.append(CUSTOM_BADGE_LINK.format(
                     badge_url=badge['url'],
                     badge_filename=this_nb[:REG.match(this_nb).start(4)]
                     + badge['extension'],
@@ -1109,10 +1116,6 @@ def get_navigator_entries(path_to_notes: str = '.',
         Contents of the navigation bar for the current notebook in the
         iterator.
     """
-    PREV_TEMPLATE = "[<- {title}]({url}) "
-    CENTER_TEMPLATE = "| [{title}]({url}) "
-    NEXT_TEMPLATE = "| [{title} ->]({url})"
-
     for prev_nb, this_nb, next_nb \
             in prev_this_next(indexed_notebooks(path_to_notes)):
         navbar = ""
