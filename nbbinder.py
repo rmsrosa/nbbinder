@@ -30,9 +30,22 @@ from nbconvert import exporters
 # Regular expression for indexing the notebooks
 # First tested in https://regexr.com/ (which is not the same as in python)
 # then testeed with `re` library
-REG = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-([^\)]*|[^\)]*\([^\)]*\)[^\)]*)(\.ipynb\b)')
-REG_INSERT = re.compile(r'(\b\d{2}|\b[A][A-Z]|\b[B][A-Z])([a-z]|)\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)([a-z]|)-([^\)]*|[^\)]*\([^\)]*\)[^\)]*)(\.ipynb\b)')
-REG_LINK = re.compile(r'(\]\()(\d{2}|\b[A][A-Z]|\b[B][A-Z])\.(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)-([^\)]*|[^\)]*\([^\)]*\)[^\)]*)(\.ipynb)\)')
+
+IDX_GRP1 = r'(\d{2}|\b[A][A-Z]|\b[B][A-Z])'
+IDX_GRP2 = r'(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)'
+MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'
+EXT_GRP = r'(\.ipynb\b)'
+INS_GRP = r'([a-z]|)'
+MD_HTML_GRP = r'(\]\()'
+
+REG = re.compile(r'\b' + IDX_GRP1 + r'\.' + IDX_GRP2 + r'-'
+                 + MAIN_GRP + EXT_GRP)
+REG_INSERT = re.compile(r'\b' + IDX_GRP1 + INS_GRP + r'\.'
+                        + IDX_GRP2 + INS_GRP + r'-'
+                        + MAIN_GRP + EXT_GRP)
+REG_LINK = re.compile(MD_HTML_GRP + IDX_GRP1 + r'\.'
+                      + IDX_GRP2 + r'-'
+                      + MAIN_GRP + EXT_GRP)
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"
@@ -43,18 +56,18 @@ NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 # Metadata to flag cells for the slides
 SLIDE_SHOW = {
         "slideshow": {
-        "slide_type": "slide"
+            "slide_type": "slide"
         }
     }
 
 SLIDE_SKIP = {
     "slideshow": {
-    "slide_type": "skip"
+        "slide_type": "skip"
     }
 }
 
 
-def indexed_notebooks(path_to_notes: str='.') -> list:
+def indexed_notebooks(path_to_notes: str = '.') -> list:
     """Returns a sorted list with the filenames of the "indexed notebooks".
 
     The notebooks are expected to be in the folder indicated by the
@@ -79,7 +92,7 @@ def indexed_notebooks(path_to_notes: str='.') -> list:
     return sorted(nb for nb in os.listdir(path_to_notes) if REG.match(nb))
 
 
-def is_index(g: str) -> bool:
+def is_index(idx: str) -> bool:
     """Checks whether a string is an index, returning True or False.
 
     An index is a string of length two, composed either of two numeric
@@ -88,7 +101,7 @@ def is_index(g: str) -> bool:
 
     Parameters
     ----------
-    g : str
+    idx : str
         The two character long string with the index.
 
     Returns
@@ -97,15 +110,15 @@ def is_index(g: str) -> bool:
         True or False depending whether g is an index or not.
     """
 
-    if type(g)==str and len(g)==2:
-        if ((g[0].isdecimal() or g[0] in ('A', 'B'))
-            and (g[1].isdecimal() or g[1].isupper())):
+    if isinstance(idx, str) and len(idx) == 2:
+        if ((idx[0].isdecimal() or idx[0] in ('A', 'B'))
+                and (idx[1].isdecimal() or idx[1].isupper())):
             return True
-    
+
     return False
 
 
-def increase_index(g: str) -> str:
+def increase_index(idx: str) -> str:
     """Increases an index by one.
 
     If the index is numeric, in the range '00' to '98', it returns
@@ -124,7 +137,7 @@ def increase_index(g: str) -> str:
 
     Parameters
     ----------
-    g : str
+    idx : str
         The index to be increased by one unit.
 
     Returns
@@ -142,34 +155,31 @@ def increase_index(g: str) -> str:
 
     Exception if alphanumeric index increases beyond AZ or BZ.
     """
-    if not is_index(g):
+    if not is_index(idx):
         raise Exception('String is not an index')
 
-    if g.isdecimal():
-        n = int(g) + 1
-        if n>99:
+    if idx.isdecimal():
+        n = int(idx) + 1
+        if n > 99:
             raise Exception('Increasing numeric index beyond 99')
-        if n>=10:
-            g = str(n)
-        else:
-            g = '0'+str(n)
-    elif g[1].isalnum():
-        if g[1]==9:
+        idx_plus_one = str(n).zfill(2)
+    else:
+        if idx[1] == 9:
             raise Exception('Increasing alphanumeric index beyond A9 or B9')
-        elif g[1]=='Z':
+        if idx[1] == 'Z':
             raise Exception('Increasing alphanumeric index beyond AZ or BZ')
-        g = g[0] + chr(ord(g[1])+1)
-    return g
+        idx_plus_one = idx[0] + chr(ord(idx[1])+1)
+    return idx_plus_one
 
 
-def is_marker_cell(MARKER: str=None,
-                   cell: nbformat.notebooknode.NotebookNode=None) -> bool:
-    """Checks whether the given cell starts with the given MARKER.
+def is_marker_cell(marker: str = None,
+                   cell: nbformat.notebooknode.NotebookNode = None) -> bool:
+    """Checks whether the given `cell` starts with the given `marker`.
 
     Parameters
     ----------
-    MARKER : str
-        The MARKER to be searched for.
+    marker : str
+        The marker to be searched for.
 
     cell : nbformat.notebooknode.NotebookNode
         The cell to be checked.
@@ -178,15 +188,15 @@ def is_marker_cell(MARKER: str=None,
     -------
     : bool
         True or False, depending on whether the cell starts with the
-        MARKER or not.
+        marker or not.
     """
-    return cell.source.startswith(MARKER)
+    return cell.source.startswith(marker)
 
 
-def refresh_marker_cells(path_to_notes: str='.', MARKER: str=None,
-                         mode: str='remove') -> None:
-    """Removes or cleans the contents of any MARKER cell from the
-    indexed notebooks in path_to_notes.
+def refresh_marker_cells(path_to_notes: str = '.', marker: str = None,
+                         mode: str = 'remove') -> None:
+    """Removes or cleans the contents of any cell with the given `marker`
+    from the indexed notebooks in path_to_notes.
 
     Parameters
     ----------
@@ -195,38 +205,40 @@ def refresh_marker_cells(path_to_notes: str='.', MARKER: str=None,
         either the absolute path or the path relative from
         where the code is being ran.
 
-    MARKER : str
-        The MARKER to be searched for.
+    marker : str
+        The marker to be searched for.
 
     mode : str
         A string indicating whether to clean (if mode == 'clean')
         or remove (if mode == 'remove') the cells marked with the
-        provided MARKER. The mode 'clean' leaves the MAKER in the cell,
+        provided `marker`. The mode 'clean' leaves the MAKER in the cell,
         but no other content in the source. The useful thing about the
         'clean' mode is to preserve any metadata that differs from the
         default ones added by the binder (such as about the slide property).
     """
-    if MARKER and mode in ('clean', 'remove'):
+    if marker and mode in ('clean', 'remove'):
         for nb_name in indexed_notebooks(path_to_notes):
             nb_file = os.path.join(path_to_notes, nb_name)
             nb = nbformat.read(nb_file, as_version=4)
 
             new_cells = []
             for cell in nb.cells:
-                if not is_marker_cell(MARKER, cell):
+                if not is_marker_cell(marker, cell):
                     new_cells.append(cell)
                 elif mode == 'clean':
-                    logging.info("- cleaning '{}' cell from {}".format(MARKER, nb_name))
+                    logging.info("- cleaning '{}' cell from \
+                                 {}".format(marker, nb_name))
                     new_cells.append(cell)
-                    new_cells[-1].source = MARKER
+                    new_cells[-1].source = marker
                 elif mode == 'remove':
-                    logging.info("- removing '{}' cell from {}".format(MARKER, nb_name))
+                    logging.info("- removing '{}' cell from \
+                                 {}".format(marker, nb_name))
 
             nb.cells = new_cells
             nbformat.write(nb, nb_file)
 
 
-def get_nb_title(path_to_notes: str='.', nb_name: str=None) -> str:
+def get_nb_title(path_to_notes: str = '.', nb_name: str = None) -> str:
     """Returns the title of a juyter notebook.
 
     It looks for the first cell, in the notebook, that starts with
@@ -254,8 +266,8 @@ def get_nb_title(path_to_notes: str='.', nb_name: str=None) -> str:
             return cell.source[1:].splitlines()[0].strip()
 
 
-def get_nb_full_entry(path_to_notes: str='.',
-                      nb_name: str=None) -> list:
+def get_nb_full_entry(path_to_notes: str = '.',
+                      nb_name: str = None) -> list:
     """Returns the full entry of a notebook.
 
     This entry is to be used for the link to the notebook from the
@@ -290,10 +302,10 @@ def get_nb_full_entry(path_to_notes: str='.',
         chapter_clean = chapter[1]
     title = get_nb_title(path_to_notes, nb_name)
 
-    if chapter=='00' or chapter[0]=='B' or section=='':
+    if chapter == '00' or chapter[0] == 'B' or section == '':
         markdown_entry = '### '
         num_entry = ''
-    elif section=='00':
+    elif section == '00':
         markdown_entry = '### '
         num_entry = '{}. '.format(chapter_clean)
     else:
@@ -303,8 +315,8 @@ def get_nb_full_entry(path_to_notes: str='.',
     return markdown_entry, num_entry, title
 
 
-def get_nb_entry(path_to_notes: str='.',
-                 nb_name: str=None,
+def get_nb_entry(path_to_notes: str = '.',
+                 nb_name: str = None,
                  show_index: bool = True) -> str:
     """Returns the entry of a notebook.
 
@@ -342,8 +354,8 @@ def get_nb_entry(path_to_notes: str='.',
     return entry
 
 
-def yield_contents(path_to_notes: str='.',
-                   show_index_in_toc: bool=True) -> Iterable[str]:
+def yield_contents(path_to_notes: str = '.',
+                   show_index_in_toc: bool = True) -> Iterable[str]:
     """Iterable with entries for each of the indexed notebooks.
 
     It takes all the indexed notebooks and it creates a generator
@@ -377,8 +389,8 @@ def yield_contents(path_to_notes: str='.',
             yield '{}[{}]({})\n'.format(markdown_entry, title, nb_name)
 
 
-def get_contents(path_to_notes: str='.',
-                 show_index_in_toc: bool=True) -> str:
+def get_contents(path_to_notes: str = '.',
+                 show_index_in_toc: bool = True) -> str:
     """Returns the 'Table of Contents'.
 
     Returns a string with the 'Table of Contents' constructed
@@ -409,7 +421,7 @@ def get_contents(path_to_notes: str='.',
     return contents
 
 
-def insert_notebooks(path_to_notes: str='.') -> None:
+def insert_notebooks(path_to_notes: str = '.') -> None:
     """Includes a notebook in the colllection.
 
     Checks whether there is any notebook that matches the regular expression
@@ -424,11 +436,12 @@ def insert_notebooks(path_to_notes: str='.') -> None:
         where the code is being ran.
     """
 
-    nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes) if REG_INSERT.match(nb))
+    nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes)
+                          if REG_INSERT.match(nb))
     nb_names_new = nb_names_ins.copy()
     additions = [1 if REG_INSERT.match(nb).group(2)
-                   or REG_INSERT.match(nb).group(4)
-                   else 0 for nb in nb_names_ins]
+                 or REG_INSERT.match(nb).group(4)
+                 else 0 for nb in nb_names_ins]
 
     for j in range(len(nb_names_ins)):
         nbj_reg = REG_INSERT.match(nb_names_new[j])
@@ -447,7 +460,8 @@ def insert_notebooks(path_to_notes: str='.') -> None:
                         + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) \
                         + nbk_reg.group(6)
         if nbj_reg.group(2):
-            nb_names_new[j] = nb_names_new[j][:nbj_reg.start(2)] + nb_names_new[j][nbj_reg.end(2):]
+            nb_names_new[j] = nb_names_new[j][:nbj_reg.start(2)] \
+                + nb_names_new[j][nbj_reg.end(2):]
             for k in range(j, len(nb_names_ins)):
                 nbk_reg = REG_INSERT.match(nb_names_new[k])
                 if nbk_reg.group(1)[0] == nbj_reg.group(1)[0]:
@@ -466,18 +480,20 @@ def insert_notebooks(path_to_notes: str='.') -> None:
     else:
         count = 0
         for f, f_new in zip(nb_names_ins, nb_names_new):
-            count +=1
+            count += 1
             if f != f_new:
                 logging.info('- replacing {0} with {1}'.format(f, f_new))
                 logging.info('- replacing {0} with {1}'.format(f, f_new))
-            os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_new))
+            os.rename(os.path.join(path_to_notes, f),
+                      os.path.join(path_to_notes, str(count) + '-' + f_new))
         count = 0
         for f_new in nb_names_new:
-            count +=1
-            os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new), os.path.join(path_to_notes, f_new))
+            count += 1
+            os.rename(os.path.join(path_to_notes, str(count) + '-' + f_new),
+                      os.path.join(path_to_notes, f_new))
 
 
-def tighten_notebooks(path_to_notes: str='.') -> None:
+def tighten_notebooks(path_to_notes: str = '.') -> None:
     """Tighten the indexes of the notebooks in the colllection.
 
     Checks whether there are gaps in the indices of the notebooks
@@ -499,42 +515,42 @@ def tighten_notebooks(path_to_notes: str='.') -> None:
     nb_new_reg = nb_reg.copy()
 
     for j in range(len(nb_names)):
-        if j==0:
+        if j == 0:
             if (nb_reg[j].group(1).isdecimal()
-                    and nb_reg[j].group(1)>='02'):
+                    and nb_reg[j].group(1) >= '02'):
                 nb_names_new[j] = '01.' + nb_reg[j].group(2) \
                     + '-' + ''.join(nb_reg[j].group(3, 4))
             elif (nb_reg[j].group(1).isalpha()
-                    and nb_reg[j].group(1)[1]>='B'):
+                  and nb_reg[j].group(1)[1] >= 'B'):
                 nb_names_new[j] = nb_reg[j].group(1)[0] \
                     + 'A.' + nb_reg[j].group(2) \
                     + '-' + ''.join(nb_reg[j].group(3, 4))
             elif (nb_reg[j].group(1).isalnum()
-                    and nb_reg[j].group(1)[1]>='2'):
+                  and nb_reg[j].group(1)[1] >= '2'):
                 nb_names_new[j] = nb_reg[j].group(1)[0] \
                     + '1.' + nb_reg[j].group(2) \
                     + '-' + ''.join(nb_reg[j].group(3, 4))
         else:
             if (nb_reg[j].group(1).isdecimal()
-                    and nb_reg[j].group(1)>='02'):
+                    and nb_reg[j].group(1) >= '02'):
                 if nb_reg[j].group(1) == nb_reg[j-1].group(1):
                     nb_names_new[j] = nb_new_reg[j-1].group(1) \
                         + '.' + nb_reg[j].group(2) \
                         + '-' + ''.join(nb_reg[j].group(3, 4))
                 elif (nb_reg[j].group(1)
-                        >increase_index(nb_new_reg[j-1].group(1))):
+                      > increase_index(nb_new_reg[j-1].group(1))):
                     nb_names_new[j] = \
                         increase_index(nb_new_reg[j-1].group(1)) \
                         + '.' + nb_reg[j].group(2) \
                         + '-' + ''.join(nb_reg[j].group(3, 4))
             elif (nb_reg[j].group(1)[0] in ('A', 'B')
-                    and nb_reg[j].group(1)[1]>='B'):
-                if (nb_reg[j].group(1)[0]=='A'
+                  and nb_reg[j].group(1)[1] >= 'B'):
+                if (nb_reg[j].group(1)[0] == 'A'
                         and nb_new_reg[j-1].group(1).isdecimal()):
                     nb_names_new[j] = 'AA.' + nb_reg[j].group(2) \
                         + '-' + ''.join(nb_reg[j].group(3, 4))
-                elif (nb_reg[j].group(1)[0]=='B'
-                        and nb_new_reg[j-1].group(1)[0]=='A'):
+                elif (nb_reg[j].group(1)[0] == 'B'
+                      and nb_new_reg[j-1].group(1)[0] == 'A'):
                     nb_names_new[j] = 'BA.' + nb_reg[j].group(2) \
                         + '-' + ''.join(nb_reg[j].group(3, 4))
                 elif nb_reg[j].group(1) == nb_reg[j-1].group(1):
@@ -542,7 +558,7 @@ def tighten_notebooks(path_to_notes: str='.') -> None:
                         + '.' + nb_reg[j].group(2) \
                         + '-' + ''.join(nb_reg[j].group(3, 4))
                 elif (nb_reg[j].group(1)
-                        >increase_index(nb_new_reg[j-1].group(1))):
+                      > increase_index(nb_new_reg[j-1].group(1))):
                     nb_names_new[j] = \
                         increase_index(nb_new_reg[j-1].group(1)) \
                         + '.' + nb_reg[j].group(2) \
@@ -555,38 +571,38 @@ def tighten_notebooks(path_to_notes: str='.') -> None:
     nb_newest_reg = nb_new_reg.copy()
 
     for j in range(len(nb_names_new)):
-        if j==0 or nb_new_reg[j].group(1)!=nb_new_reg[j-1].group(1):
+        if j == 0 or nb_new_reg[j].group(1) != nb_new_reg[j-1].group(1):
             if (nb_new_reg[j].group(2).isdecimal()
-                    and nb_new_reg[j].group(2)>='02'):
+                    and nb_new_reg[j].group(2) >= '02'):
                 nb_names_newest[j] = nb_new_reg[j].group(1) \
                     + '.01-' + ''.join(nb_new_reg[j].group(3, 4))
-            elif (nb_new_reg[j].group(2)[0]=='A'
-                    and nb_new_reg[j].group(2)[1]>='B'):
+            elif (nb_new_reg[j].group(2)[0] == 'A'
+                  and nb_new_reg[j].group(2)[1] >= 'B'):
                 nb_names_newest[j] = nb_new_reg[j].group(1) \
                     + '.AA-' + ''.join(nb_new_reg[j].group(3, 4))
-            elif (nb_new_reg[j].group(2)=='B'
-                    and nb_new_reg[j].group(2)[1]>='B'):
+            elif (nb_new_reg[j].group(2) == 'B'
+                  and nb_new_reg[j].group(2)[1] >= 'B'):
                 nb_names_newest[j] = nb_new_reg[j].group(1) \
                     + '.BA-' + ''.join(nb_new_reg[j].group(3, 4))
         else:
             if (nb_new_reg[j].group(2).isdecimal()
-                and nb_new_reg[j].group(2)
-                    >increase_index(nb_newest_reg[j-1].group(2))):
+                    and nb_new_reg[j].group(2)
+                    > increase_index(nb_newest_reg[j-1].group(2))):
                 nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
                     + increase_index(nb_newest_reg[j-1].group(2)) \
                     + '-' + ''.join(nb_new_reg[j].group(3, 4))
             elif (nb_new_reg[j].group(2)[0] in ('A', 'B')
-                and nb_new_reg[j].group(2)[1]>='B'):
-                if (nb_new_reg[j].group(2)[0]=='A'
-                    and nb_newest_reg[j-1].group(2).isdecimal()):
+                  and nb_new_reg[j].group(2)[1] >= 'B'):
+                if (nb_new_reg[j].group(2)[0] == 'A'
+                        and nb_newest_reg[j-1].group(2).isdecimal()):
                     nb_names_newest[j] = nb_new_reg[j].group(1) \
                         + '.AA-' + ''.join(nb_new_reg[j].group(3, 4))
-                elif (nb_new_reg[j].group(2)[0]=='B'
-                    and nb_newest_reg[j-1].group(1)[0]!='B'):
+                elif (nb_new_reg[j].group(2)[0] == 'B'
+                      and nb_newest_reg[j-1].group(1)[0] != 'B'):
                     nb_names_newest[j] = nb_new_reg[j].group(1) \
                         + '.BA-' + ''.join(nb_new_reg[j].group(3, 4))
                 elif (nb_new_reg[j].group(2)
-                        >increase_index(nb_newest_reg[j-1].group(2))):
+                      > increase_index(nb_newest_reg[j-1].group(2))):
                     nb_names_newest[j] = nb_new_reg[j].group(1) + '.' \
                         + increase_index(nb_newest_reg[j-1].group(2)) \
                         + '-' + ''.join(nb_new_reg[j].group(3, 4))
@@ -598,20 +614,22 @@ def tighten_notebooks(path_to_notes: str='.') -> None:
     else:
         count = 0
         for f, f_newest in zip(nb_names, nb_names_newest):
-            count +=1
+            count += 1
             if f != f_newest:
                 logging.info('- replacing {0} with {1}'.format(f, f_newest))
                 logging.info('- replacing {0} with {1}'.format(f, f_newest))
-            os.rename(os.path.join(path_to_notes, f), os.path.join(path_to_notes, str(count) + '-' + f_newest))
+            os.rename(os.path.join(path_to_notes, f),
+                      os.path.join(path_to_notes, str(count) + '-' + f_newest))
         count = 0
         for f_newest in nb_names_newest:
-            count +=1
-            os.rename(os.path.join(path_to_notes, str(count) + '-' + f_newest), os.path.join(path_to_notes, f_newest))
+            count += 1
+            os.rename(os.path.join(path_to_notes, str(count) + '-' + f_newest),
+                      os.path.join(path_to_notes, f_newest))
 
 
-def reindex(path_to_notes: str='.',
-            insert: bool=True,
-            tighten: bool=False) -> None:
+def reindex(path_to_notes: str = '.',
+            insert: bool = True,
+            tighten: bool = False) -> None:
     """Reindex the collection of notebooks.
 
     Reindex the notebooks by inserting (by calling `insert_notebooks`)
@@ -639,10 +657,10 @@ def reindex(path_to_notes: str='.',
         tighten_notebooks(path_to_notes)
 
 
-def export_notebooks(path_to_notes: str='.',
-                     export_path: str=None,
-                     exporter_name: str=None,
-                     exporter_args: dict={}) -> None:
+def export_notebooks(path_to_notes: str = '.',
+                     export_path: str = None,
+                     exporter_name: str = None,
+                     exporter_args: dict = {}) -> None:
     """
     Export notebooks via nbconvert.
 
@@ -673,12 +691,12 @@ def export_notebooks(path_to_notes: str='.',
         Arguments to be passed on to the exporter via
         `nbconvert.exporters.get_exporter(exporter_name)(**exporter_args)`.
     """
-    assert(type(export_path)==str
-        ), "Argument `export_path` should be a string"
-    assert(exporter_name in exporters.get_export_names()
-        ), "The `exporter_name` argument with value {} is not in the \
-            list of available exporters listed in \
-            `nbconvert.exporters.get_export_names()`".format(exporter_name)
+    assert(isinstance(export_path, str)), "Argument `export_path` should \
+        be a string"
+    assert(exporter_name in exporters.get_export_names()), "The \
+        `exporter_name` argument with value {} is not in the \
+        list of available exporters listed in \
+        `nbconvert.exporters.get_export_names()`".format(exporter_name)
 
     if os.path.isdir(export_path):
         for f in os.listdir(export_path):
@@ -694,8 +712,8 @@ def export_notebooks(path_to_notes: str='.',
         nb = nbformat.read(nb_file, as_version=4)
         (body, resources) = exporter.from_notebook_node(nb)
         for cell in nb.cells:
-            for MARKER in (NAVIGATOR_MARKER, TOC_MARKER):
-                if is_marker_cell(MARKER, cell):
+            for marker in (NAVIGATOR_MARKER, TOC_MARKER):
+                if is_marker_cell(marker, cell):
                     source_new = ''
                     i = 0
                     for m in REG_LINK.finditer(cell.source):
@@ -708,9 +726,9 @@ def export_notebooks(path_to_notes: str='.',
         (body, resources) = exporter.from_notebook_node(nb)
         export_filename = \
             os.path.join(export_path,
-                         nb_name[:REG.match(nb_name).start(4)] \
+                         nb_name[:REG.match(nb_name).start(4)]
                          + extension)
-        if type(body) == str:
+        if isinstance(body, str):
             export_file = open(export_filename, 'w+')
         else:
             export_file = open(export_filename, 'wb+')
@@ -718,10 +736,10 @@ def export_notebooks(path_to_notes: str='.',
         export_file.close()
 
 
-def add_contents(path_to_notes: str='.',
-                 toc_nb_name: str=None,
-                 toc_title: str='',
-                 show_index_in_toc: bool=True) -> None:
+def add_contents(path_to_notes: str = '.',
+                 toc_nb_name: str = None,
+                 toc_title: str = '',
+                 show_index_in_toc: bool = True) -> None:
     """Adds the table of contents to a selected notebook.
 
     It adds the table of contents, generated from the collection of
@@ -752,9 +770,12 @@ def add_contents(path_to_notes: str='.',
         and section number of each notebook or just their title.
     """
     # error handling
-    assert(type(path_to_notes)==str), "Argument `path_to_notes` should be a string"
-    assert(type(toc_nb_name)==str), "Argument `toc_nb_name` should be a string"
-    assert(type(toc_title)==str), "Argument `toc_title` should be a string"
+    assert(isinstance(path_to_notes, str)), "Argument `path_to_notes` \
+        should be a string"
+    assert(isinstance(toc_nb_name, str)), "Argument `toc_nb_name` \
+        should be a string"
+    assert(isinstance(toc_title, str)), "Argument `toc_title` \
+        should be a string"
 
     contents = TOC_MARKER + "\n## [" + toc_title + "](#)\n\n"
     for item in yield_contents(path_to_notes, show_index_in_toc):
@@ -775,8 +796,10 @@ def add_contents(path_to_notes: str='.',
         nbformat.write(toc_nb, toc_nb_file)
         logging.info('- Table of contents updated in {}'.format(toc_nb_name))
     else:
-        logging.info('* No markdown cell starting with {} found in {}'.format(TOC_MARKER, toc_nb_name))
-        logging.info("- inserting table of contents in {0}".format(toc_nb_name))
+        logging.info('* No markdown cell starting with {} \
+            found in {}'.format(TOC_MARKER, toc_nb_name))
+        logging.info("- inserting table of contents \
+            in {0}".format(toc_nb_name))
         if toc_nb.cells and is_marker_cell(NAVIGATOR_MARKER, toc_nb.cells[-1]):
             toc_nb.cells.insert(-1, new_markdown_cell(source=contents,
                                                       metadata=SLIDE_SHOW))
@@ -787,7 +810,7 @@ def add_contents(path_to_notes: str='.',
     nbformat.write(toc_nb, toc_nb_file)
 
 
-def add_headers(path_to_notes: str='.', header: str=None) -> None:
+def add_headers(path_to_notes: str = '.', header: str = None) -> None:
     """Adds header to each notebook in the collection.
 
     It adds the provided `header`as the first cell of each notebook
@@ -819,12 +842,12 @@ def add_headers(path_to_notes: str='.', header: str=None) -> None:
         nbformat.write(nb, nb_file)
 
 
-def get_badge_entries(path_to_notes: str='.',
-                      user: str='',
-                      repository: str='',
-                      branch: str='master',
-                      github_nb_dir: str='.',
-                      custom_badges: list=[]) -> Iterable[tuple]:
+def get_badge_entries(path_to_notes: str = '.',
+                      user: str = '',
+                      repository: str = '',
+                      branch: str = 'master',
+                      github_nb_dir: str = '.',
+                      custom_badges: list = []) -> Iterable[tuple]:
     """Iterable with the bagdes info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and
@@ -903,24 +926,22 @@ def get_badge_entries(path_to_notes: str='.',
                                 repository=repository,
                                 branch=branch,
                                 github_nb_dir=github_nb_dir,
-                                notebook_filename=\
-                                os.path.basename(this_nb))
+                                notebook_filename=os.path.basename(this_nb))
 
         this_nb_binder_link \
             = BINDER_LINK.format(user=user,
                                  repository=repository,
                                  branch=branch,
                                  github_nb_dir=github_nb_dir,
-                                 notebook_filename = \
-                                 os.path.basename(this_nb))
+                                 notebook_filename=os.path.basename(this_nb))
 
         this_nb_custom_badge_links = []
 
         for badge in custom_badges:
             this_nb_custom_badge_links.append(custom_badge_LINK.format(
                 badge_url=badge['url'],
-                badge_filename=this_nb[:REG.match(this_nb).start(4)] \
-                    + badge['extension'],
+                badge_filename=this_nb[:REG.match(this_nb).start(4)]
+                + badge['extension'],
                 badge_label=badge['label'],
                 badge_message=badge['message'],
                 badge_color=badge['color'],
@@ -932,14 +953,14 @@ def get_badge_entries(path_to_notes: str='.',
             this_nb_custom_badge_links
 
 
-def add_badges(path_to_notes: str='.',
-               user: str='',
-               repository: str='',
-               branch: str='master',
-               github_nb_dir: str='.',
-               custom_badges: list=[],
-               show_colab: bool=False,
-               show_binder: bool=False) -> None:
+def add_badges(path_to_notes: str = '.',
+               user: str = '',
+               repository: str = '',
+               branch: str = 'master',
+               github_nb_dir: str = '.',
+               custom_badges: list = [],
+               show_colab: bool = False,
+               show_binder: bool = False) -> None:
     """Adds badges to each notebook in the collection.
 
     Adds top and bottom badges to each notebook in the collection
@@ -1019,7 +1040,7 @@ def add_badges(path_to_notes: str='.',
         nbformat.write(nb, nb_filename)
 
 
-def prev_this_next(collection: list=[]) -> None:
+def prev_this_next(collection: list = []) -> None:
     """Iterable with previous, current, and next notebooks in `collection`.
 
     It reads a list of indexed notebooks and gives an iterable with the
@@ -1044,10 +1065,10 @@ def prev_this_next(collection: list=[]) -> None:
     return zip(itertools.chain([None], a), b, itertools.chain(c, [None]))
 
 
-def get_navigator_entries(path_to_notes: str='.',
-                          core_navigators: list=[],
-                          show_nb_title_in_nav: bool=True,
-                          show_index_in_nav: bool=True) -> Iterable[str]:
+def get_navigator_entries(path_to_notes: str = '.',
+                          core_navigators: list = [],
+                          show_nb_title_in_nav: bool = True,
+                          show_index_in_nav: bool = True) -> Iterable[str]:
     """Iterable with the navigator info for each notebook.
 
     It reads the indexed notebooks in the folder `path_to_notes` and
@@ -1089,7 +1110,7 @@ def get_navigator_entries(path_to_notes: str='.',
     NEXT_TEMPLATE = "| [{title} ->]({url})"
 
     for prev_nb, this_nb, next_nb \
-        in prev_this_next(indexed_notebooks(path_to_notes)):
+            in prev_this_next(indexed_notebooks(path_to_notes)):
         navbar = ""
         if prev_nb:
             if show_nb_title_in_nav:
@@ -1115,10 +1136,10 @@ def get_navigator_entries(path_to_notes: str='.',
         yield os.path.join(path_to_notes, this_nb), navbar
 
 
-def add_navigators(path_to_notes: str='.',
-                   core_navigators: list=[],
-                   show_nb_title_in_nav: bool=True,
-                   show_index_in_nav: bool=True) -> None:
+def add_navigators(path_to_notes: str = '.',
+                   core_navigators: list = [],
+                   show_nb_title_in_nav: bool = True,
+                   show_index_in_nav: bool = True) -> None:
     """Adds navigators to each notebook in the collection.
 
     Adds top and bottom navigators to each notebook in the collection
@@ -1157,48 +1178,48 @@ def add_navigators(path_to_notes: str='.',
         navbar_top = NAVIGATOR_MARKER + "\n" + navbar + "\n\n---\n"
         navbar_bottom = NAVIGATOR_MARKER + "\n\n---\n" + navbar
 
-        if len(nb.cells)>=1 and is_marker_cell(NAVIGATOR_MARKER,
-                                               nb.cells[1]):
+        if len(nb.cells) >= 1 and is_marker_cell(NAVIGATOR_MARKER,
+                                                 nb.cells[1]):
             logging.info("- updating navbar for {0}".format(nb_name))
             nb.cells[1].source = navbar_top
             nb.cells[1].metadata = SLIDE_SKIP
-        elif len(nb.cells)>=2 and is_marker_cell(NAVIGATOR_MARKER,
-                                                 nb.cells[2]):
+        elif len(nb.cells) >= 2 and is_marker_cell(NAVIGATOR_MARKER,
+                                                   nb.cells[2]):
             logging.info("- updating navbar for {0}".format(nb_name))
             nb.cells[2].source = navbar_top
             nb.cells[2].metadata = SLIDE_SKIP
         else:
             logging.info("- inserting navbar for {0}".format(nb_name))
             nb.cells.insert(1, new_markdown_cell(source=navbar_top,
-                            metadata=SLIDE_SKIP))
+                                                 metadata=SLIDE_SKIP))
 
-        if len(nb.cells)>2 and is_marker_cell(NAVIGATOR_MARKER,
-                                              nb.cells[-1]):
+        if len(nb.cells) > 2 and is_marker_cell(NAVIGATOR_MARKER,
+                                                nb.cells[-1]):
             nb.cells[-1].source = navbar_bottom
             nb.cells[-1].metadata = SLIDE_SHOW
         else:
             nb.cells.append(new_markdown_cell(source=navbar_bottom,
-                            metadata=SLIDE_SHOW))
+                                              metadata=SLIDE_SHOW))
         nbformat.write(nb, nb_file)
 
 
-def bind_from_arguments(path_to_notes: str='.',
-                        insert: bool=False,
-                        tighten: bool=False,
-                        toc_nb_name: str='',
-                        toc_title: str='',
-                        header: str='',
-                        core_navigators: list=[],
-                        user: str='',
-                        repository: str='',
-                        branch: str='master',
-                        github_nb_dir: str='.',
-                        custom_badges: list=[],
-                        show_colab: bool=False,
-                        show_binder: bool=False,
-                        show_index_in_toc: bool=True,
-                        show_nb_title_in_nav: bool=True,
-                        show_index_in_nav: bool=True) -> None:
+def bind_from_arguments(path_to_notes: str = '.',
+                        insert: bool = False,
+                        tighten: bool = False,
+                        toc_nb_name: str = '',
+                        toc_title: str = '',
+                        header: str = '',
+                        core_navigators: list = [],
+                        user: str = '',
+                        repository: str = '',
+                        branch: str = 'master',
+                        github_nb_dir: str = '.',
+                        custom_badges: list = [],
+                        show_colab: bool = False,
+                        show_binder: bool = False,
+                        show_index_in_toc: bool = True,
+                        show_nb_title_in_nav: bool = True,
+                        show_index_in_nav: bool = True) -> None:
     """Binds the collection of notebooks from the arguments provided.
 
     Parameters
