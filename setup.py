@@ -6,28 +6,9 @@
 """
 Setup for NBBinder module
 """
-#import os
-#import re
 import setuptools
 
 import nbbinder as nbb
-
-
-#def get_version(script: str) -> str:
-#    """
-#    Get the version number directly from the given script file
-#    """
-#    # Regular expression to capture version number
-#    # Tested in https://regexr.com/
-#    reg_version = re.compile(
-#        r'\b(__version__\s*=\s*[\'"])([0-9]+[.][0-9]+(a|b|)[0-9]*)(["\'])')
-#
-#    basedir = os.path.dirname(__file__)
-#    with open(os.path.join(basedir, script)) as f:
-#        for line in f:
-#            if reg_version.match(line):
-#                return reg_version.match(line).group(2)
-#    raise RuntimeError('No version info found.')
 
 
 setuptools.setup(
