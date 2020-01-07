@@ -17,10 +17,11 @@ navigators:
   show_nb_title_in_nav: True
 
 badges:
-  user: rmsrosa
-  repository: nbbinder
-  branch: master
-  github_nb_dir: nb_builds/tests/nb_alice
+  github_info:
+    user: rmsrosa
+    repository: nbbinder
+    branch: master
+    nb_dir: nb_builds/tests/nb_alice
   show_colab: True
   show_binder: True
   custom_badges:

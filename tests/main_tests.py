@@ -60,11 +60,13 @@ if __name__ == '__main__':
              header="NBBinder test with 'Alice's Adventures in Wonderland'",
              core_navigators=[
                  "00.00-Alice's_Adventures_in_Wonderland.ipynb"
-                 ],
-             user='rmsrosa',
-             repository='nbbinder',
-             branch='master',
-             github_nb_dir=os.path.join('tests', BUILD_DIR, 'nb_alice'),
+             ],
+             github_info={
+                 'user': 'rmsrosa',
+                 'repository': 'nbbinder',
+                 'branch': 'master',
+                 'nb_dir': os.path.join('tests', BUILD_DIR, 'nb_alice')
+             },
              show_colab=True,
              show_binder=True,
              show_index_in_nav=False)
@@ -166,7 +168,8 @@ if __name__ == '__main__':
     logging.info("\n# Creating notebooks in {arg}",
                  arg=os.path.join(os.path.dirname(__file__),
                                   BUILD_DIR, 'nb_grammar_insert'))
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_insert'), NB_GRAMMAR_INSERT)
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_insert'),
+                     NB_GRAMMAR_INSERT)
     logging.info("\n# Reindexing the notebooks in {arg}",
                  arg=os.path.join(os.path.dirname(__file__),
                                   BUILD_DIR, 'nb_grammar_insert'))

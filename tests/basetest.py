@@ -1,4 +1,3 @@
-
 #!/anaconda3/envs/nbbinder/bin/python
 # -*- coding: utf-8 -*-
 '''
@@ -18,6 +17,8 @@ from context import nbbinder as nbb
 
 # Logging level
 logging.basicConfig(level=logging.WARNING)
+
+# pylint: disable=E1101
 
 
 def change_to_file_dir():

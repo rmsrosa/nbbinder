@@ -7,9 +7,7 @@ PDF Export Binder test
 import os
 import logging
 
-from basetest import *
-
-from context import nbbinder as nbb
+from basetest import change_to_file_dir, create_build_dir, bind_test
 
 # Logging level
 logging.basicConfig(level=logging.WARNING)
@@ -24,6 +22,6 @@ if __name__ == '__main__':
 
     create_build_dir(BUILD_DIR)
 
-    bind_test(os.path.join(SOURCE_DIR, 'nb_water'), 
-        os.path.join(BUILD_DIR, 'nb_water_export'),
-        os.path.join(SOURCE_DIR, 'config_nb_water_export.yml'))
+    bind_test(os.path.join(SOURCE_DIR, 'nb_water'),
+              os.path.join(BUILD_DIR, 'nb_water_export'),
+              os.path.join(SOURCE_DIR, 'config_nb_water_export.yml'))

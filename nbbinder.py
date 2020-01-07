@@ -10,7 +10,7 @@ __copyright__ = """Modified work Copyright (c) 2019 Ricardo M S Rosa
 Original work Copyright (c) 2016 Jacob VanderPlas
 """
 __license__ = "MIT"
-__version__ = "0.7a5"
+__version__ = "0.8a1"
 
 import os
 import re
@@ -59,9 +59,9 @@ CENTER_TEMPLATE = "| [{title}]({url}) "
 NEXT_TEMPLATE = "| [{title} ->]({url})"
 
 # Link templates for the badges
-COLAB_LINK = """<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{github_nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Google Colab" title="Open in Google Colab"></a>
+COLAB_LINK = """<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Google Colab" title="Open in Google Colab"></a>
 """
-BINDER_LINK = """<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={github_nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Binder" title="Open in binder"></a>
+BINDER_LINK = """<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Binder" title="Open in binder"></a>
 """
 CUSTOM_BADGE_LINK = """<a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
 """
@@ -495,12 +495,12 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
         logging.info('- no files need renaming, no reindexing needed')
     else:
         count = 0
-        for f, f_new in zip(nb_names_ins, nb_names_new):
+        for f_ins, f_new in zip(nb_names_ins, nb_names_new):
             count += 1
-            if f != f_new:
+            if f_ins != f_new:
                 logging.info('- replacing {arg1} with {arg2}',
-                             arg1=f, arg2=f_new)
-            os.rename(os.path.join(path_to_notes, f),
+                             arg1=f_ins, arg2=f_new)
+            os.rename(os.path.join(path_to_notes, f_ins),
                       os.path.join(path_to_notes, str(count) + '-' + f_new))
         count = 0
         for f_new in nb_names_new:
@@ -628,12 +628,12 @@ def tighten_notebooks(path_to_notes: str = '.') -> None:
         logging.info('- no files need renaming, no reindexing needed')
     else:
         count = 0
-        for f, f_newest in zip(nb_names, nb_names_newest):
+        for f_cur, f_newest in zip(nb_names, nb_names_newest):
             count += 1
-            if f != f_newest:
+            if f_cur != f_newest:
                 logging.info('- replacing {arg1} with {arg2}',
-                             arg1=f, arg2=f_newest)
-            os.rename(os.path.join(path_to_notes, f),
+                             arg1=f_cur, arg2=f_newest)
+            os.rename(os.path.join(path_to_notes, f_cur),
                       os.path.join(path_to_notes, str(count) + '-' + f_newest))
         count = 0
         for f_newest in nb_names_newest:
@@ -859,10 +859,7 @@ def add_headers(path_to_notes: str = '.', header: str = None) -> None:
 
 
 def get_badge_entries(path_to_notes: str = '.',
-                      user: str = '',
-                      repository: str = '',
-                      branch: str = 'master',
-                      github_nb_dir: str = '.',
+                      github_info: dict = None,
                       custom_badges: list = None) -> Iterable[tuple]:
     """Iterable with the bagdes info for each notebook.
 
@@ -877,23 +874,27 @@ def get_badge_entries(path_to_notes: str = '.',
         either the absolute path or the path relative from
         where the code is being ran.
 
-    user : str
-        The github username of the onwer of the repository in which
-        the notebooks reside, in case one wants to add a badge to
-        open up the notebooks in one of the configured cloud
-        computing platforms (google colab and binder).
+   github_info : dict
+        Dictionary with github info used for the colab and binder
+        badges. It should have the following keys:
 
-    repository : str
-        The name of the github repository mentioned in the description
-        of the `user` argument.
+        user : str
+            The github username of the onwer of the repository in which
+            the notebooks reside, in case one wants to add a badge to
+            open up the notebooks in one of the configured cloud
+            computing platforms (google colab and binder).
 
-    branch : str
-        The name of the branch of the github repository mentioned in
-        the description of the `user` argument.
+        repository : str
+            The name of the github repository mentioned in the description
+            of the `user` argument.
 
-    github_nb_dir : str
-        The path to the notebooks, from the root directory of the
-        repository mentioned in the description of the `user` argument.
+        branch : str
+            The name of the branch of the github repository mentioned in
+            the description of the `user` argument.
+
+        nb_dir : str
+            The path to the notebooks, from the root directory of the
+            repository mentioned in the description of the `user` argument.
 
     custom_badges : list of dict
         A list of dictionaries with the necessary information
@@ -930,21 +931,29 @@ def get_badge_entries(path_to_notes: str = '.',
     """
 
     for this_nb in indexed_notebooks(path_to_notes):
-        this_nb_colab_link \
-            = COLAB_LINK.format(user=user,
-                                repository=repository,
-                                branch=branch,
-                                github_nb_dir=github_nb_dir,
-                                notebook_filename=os.path.basename(this_nb))
+        if github_info:
+            this_nb_colab_link \
+                = COLAB_LINK.format(
+                    user=github_info['user'],
+                    repository=github_info['repository'],
+                    branch=github_info['branch'],
+                    nb_dir=github_info['nb_dir'],
+                    notebook_filename=os.path.basename(this_nb)
+                    )
 
-        this_nb_binder_link \
-            = BINDER_LINK.format(user=user,
-                                 repository=repository,
-                                 branch=branch,
-                                 github_nb_dir=github_nb_dir,
-                                 notebook_filename=os.path.basename(this_nb))
+            this_nb_binder_link \
+                = BINDER_LINK.format(
+                    user=github_info['user'],
+                    repository=github_info['repository'],
+                    branch=github_info['branch'],
+                    nb_dir=github_info['nb_dir'],
+                    notebook_filename=os.path.basename(this_nb)
+                    )
+        else:
+            this_nb_colab_link = ""
+            this_nb_binder_link = ""
 
-        this_nb_custom_badge_links = []
+        this_nb_custom_badge_links = list()
 
         if custom_badges:
             for badge in custom_badges:
@@ -964,10 +973,7 @@ def get_badge_entries(path_to_notes: str = '.',
 
 
 def add_badges(path_to_notes: str = '.',
-               user: str = '',
-               repository: str = '',
-               branch: str = 'master',
-               github_nb_dir: str = '.',
+               github_info: dict = None,
                custom_badges: list = None,
                show_colab: bool = False,
                show_binder: bool = False) -> None:
@@ -983,23 +989,9 @@ def add_badges(path_to_notes: str = '.',
         either the absolute path or the path relative from
         where the code is being ran.
 
-    user : str
-        The github username of the onwer of the repository in which
-        the notebooks reside, in case one wants to add a badge to
-        open up the notebooks in one of the configured cloud
-        computing platforms (google colab and binder).
-
-    repository : str
-        The name of the github repository mentioned in the description
-        of the `user` argument.
-
-    branch : str
-        The name of the branch of the github repository mentioned in
-        the description of the `user` argument.
-
-    github_nb_dir : str
-        The path to the notebooks, from the root directory of the
-        repository mentioned in the description of the `user` argument.
+    github_info : dict
+        Dictionary with github info used for the colab and binder
+        badges. See the docstring of `get_badge_entries()`.
 
     custom_badges: list of dict
         Info for building extra badges. See the docstring
@@ -1016,10 +1008,7 @@ def add_badges(path_to_notes: str = '.',
         this_nb_binder_link, \
         this_nb_custom_badge_links \
             in get_badge_entries(path_to_notes,
-                                 user,
-                                 repository,
-                                 branch,
-                                 github_nb_dir,
+                                 github_info,
                                  custom_badges):
         nb = nbformat.read(nb_filename, as_version=4)
         nb_name = os.path.basename(nb_filename)
@@ -1209,10 +1198,7 @@ def bind_from_arguments(path_to_notes: str = '.',
                         toc_title: str = '',
                         header: str = '',
                         core_navigators: list = None,
-                        user: str = '',
-                        repository: str = '',
-                        branch: str = 'master',
-                        github_nb_dir: str = '.',
+                        github_info: dict = None,
                         custom_badges: list = None,
                         show_colab: bool = False,
                         show_binder: bool = False,
@@ -1255,23 +1241,9 @@ def bind_from_arguments(path_to_notes: str = '.',
         included in the navigators, in between the links to the
         "previous" and the "next" notebooks.
 
-    user : str
-        The github username of the onwer of the repository in which
-        the notebooks reside, in case one wants to add a badge to
-        open up the notebooks in one of the configured cloud
-        computing platforms (google colab and binder).
-
-    repository : str
-        The name of the github repository mentioned in the description
-        of the `user` argument.
-
-    branch : str
-        The name of the branch of the github repository mentioned in
-        the description of the `user` argument.
-
-    github_nb_dir : str
-        The path to the notebooks, from the root directory of the
-        repository mentioned in the description of the `user` argument.
+    github_info : dict
+        Dictionary with github info used for the colab and binder
+        badges. See the docstring of `get_badge_entries()`.
 
     show_colab : bool
         Whether to display the Google Colab badge or not.
@@ -1311,10 +1283,7 @@ def bind_from_arguments(path_to_notes: str = '.',
                    show_index_in_nav=show_index_in_nav)
 
     add_badges(path_to_notes=path_to_notes,
-               user=user,
-               repository=repository,
-               branch=branch,
-               github_nb_dir=github_nb_dir,
+               github_info=github_info,
                custom_badges=custom_badges,
                show_colab=show_colab,
                show_binder=show_binder)
@@ -1332,8 +1301,8 @@ def bind_from_configfile(config_file: str) -> None:
     config_file : str
         The filename of the configuration file.
     """
-    with open(config_file, 'r') as cf:
-        config = yaml.load(cf, Loader=yaml.FullLoader)
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
 
     if 'path_to_notes' in config:
         path_to_notes = config['path_to_notes']
