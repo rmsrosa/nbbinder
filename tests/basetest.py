@@ -20,7 +20,6 @@ logging.basicConfig(level=logging.WARNING)
 
 # pylint: disable=E1101
 
-
 def change_to_file_dir():
     """
     Change current directory to that where this file resides.
@@ -28,13 +27,6 @@ def change_to_file_dir():
     os.chdir(os.path.dirname(__file__))
     logging.info("# Directory changed to '{arg}'",
                  arg=os.path.dirname(__file__))
-
-
-def get_source_path(path):
-    """
-    Returns the path preprended with the source directory `nb_source`.
-    """
-    return os.path.join('nb_source', path)
 
 
 def create_build_dir(build_dir):
@@ -45,13 +37,6 @@ def create_build_dir(build_dir):
         shutil.rmtree(build_dir)
     os.mkdir(build_dir)
     logging.info("Build directory '{arg}' created.", arg=build_dir)
-
-
-def get_build_path(build_dir, path: str = '.'):
-    """
-    Returns the path preprended with the given build directory.
-    """
-    return os.path.join(build_dir, path)
 
 
 def create_notebooks(path_to_notes, nb_filenames):
