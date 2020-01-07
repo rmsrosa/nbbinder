@@ -6,8 +6,8 @@ to a collection of Jupyter notebooks.
 
 __author__ = "Ricardo M. S. Rosa <rmsrosa@gmail.com>"
 __homepage__ = "http://github.com/rmsrosa/nbbinder"
-__copyright__ = """Original work Copyright (c) 2016 Jacob VanderPlas
-Modified work Copyright (c) 2019 Ricardo M S Rosa
+__copyright__ = """Modified work Copyright (c) 2019 Ricardo M S Rosa
+Original work Copyright (c) 2016 Jacob VanderPlas
 """
 __license__ = "MIT"
 __version__ = "0.7a5"
@@ -68,10 +68,10 @@ CUSTOM_BADGE_LINK = """<a href="{badge_url}/{badge_filename}"><img align="left" 
 
 # Metadata to flag cells for the slides
 SLIDE_SHOW = {
-        "slideshow": {
-            "slide_type": "slide"
-        }
+    "slideshow": {
+        "slide_type": "slide"
     }
+}
 
 SLIDE_SKIP = {
     "slideshow": {

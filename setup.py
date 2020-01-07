@@ -3,7 +3,9 @@
 
 # Based on *Packaging Python Projects*
 # at https://packaging.python.org/tutorials/packaging-projects/
-
+"""
+Setup for NBBinder module
+"""
 import os
 import re
 import setuptools
@@ -11,18 +13,21 @@ import setuptools
 import nbbinder as nbb
 
 
-def get_version():
-    # Regular expression to capture version number
-    # Tested in https://regexr.com/
-    REG_VERSION = re.compile(
-        r'\b(__version__\s*=\s*[\'"])([0-9]+[.][0-9]+(a|b|)[0-9]*)(["\'])')
-
-    basedir = os.path.dirname(__file__)
-    with open(os.path.join(basedir, 'nbbinder.py')) as f:
-        for line in f:
-            if REG_VERSION.match(line):
-                return REG_VERSION.match(line).group(2)
-    raise RuntimeError('No version info found.')
+#def get_version(script: str) -> str:
+#    """
+#    Get the version number directly from the given script file
+#    """
+#    # Regular expression to capture version number
+#    # Tested in https://regexr.com/
+#    reg_version = re.compile(
+#        r'\b(__version__\s*=\s*[\'"])([0-9]+[.][0-9]+(a|b|)[0-9]*)(["\'])')
+#
+#    basedir = os.path.dirname(__file__)
+#    with open(os.path.join(basedir, script)) as f:
+#        for line in f:
+#            if reg_version.match(line):
+#                return reg_version.match(line).group(2)
+#    raise RuntimeError('No version info found.')
 
 
 setuptools.setup(

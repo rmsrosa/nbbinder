@@ -6,13 +6,7 @@ Main Binder test
 
 import os
 import logging
-
 import shutil
-
-from faker import Faker
-
-import nbformat
-from nbformat.v4.nbbase import new_markdown_cell
 
 from basetest import *
 
@@ -31,9 +25,9 @@ if __name__ == '__main__':
 
     create_build_dir(BUILD_DIR)
 
-# Tests with nb_alice
+    # Tests with nb_alice
 
-    nb_alice = [
+    NB_ALICE = [
         "00.00-Alice's_Adventures_in_Wonderland.ipynb",
         "01.00-Down_the_Rabbit-Hole.ipynb",
         "02.00-The_Pool_of_Tears.ipynb",
@@ -49,35 +43,39 @@ if __name__ == '__main__':
         "12.00-Alice's_Evidence.ipynb"
     ]
 
-    logging.info("# Creating notebooks in {} ...".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_alice'), nb_alice)
+    logging.info("# Creating notebooks in {arg} ...",
+                 arg=os.path.join(os.path.dirname(__file__),
+                                  BUILD_DIR, 'nb_alice'))
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_alice'), NB_ALICE)
     logging.info('... notebooks created')
-    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_alice')))
+    logging.info("\n# Reindexing the notebooks in {arg}",
+                 arg=os.path.join(os.path.dirname(__file__),
+                                  BUILD_DIR, 'nb_alice'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_alice'))
 
     logging.info("\n# Binding 'nb_alice' notebooks with parameters")
     nbb.bind(path_to_notes=os.path.join(BUILD_DIR, 'nb_alice'),
-        toc_nb_name="00.00-Alice's_Adventures_in_Wonderland.ipynb",
-        show_index_in_toc=True,
-        header="[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)",
-        core_navigators=[
-            "00.00-Alice's_Adventures_in_Wonderland.ipynb"
-            ],
-        user='rmsrosa',
-        repository='nbbinder',
-        branch='master',
-        github_nb_dir=os.path.join('tests', os.path.join(BUILD_DIR, 'nb_alice')),
-        show_colab=True,
-        show_binder=True,
-        show_index_in_nav=False)
+             toc_nb_name="00.00-Alice's_Adventures_in_Wonderland.ipynb",
+             show_index_in_toc=True,
+             header="NBBinder test with 'Alice's Adventures in Wonderland'",
+             core_navigators=[
+                 "00.00-Alice's_Adventures_in_Wonderland.ipynb"
+                 ],
+             user='rmsrosa',
+             repository='nbbinder',
+             branch='master',
+             github_nb_dir=os.path.join('tests', BUILD_DIR, 'nb_alice'),
+             show_colab=True,
+             show_binder=True,
+             show_index_in_nav=False)
 
-    bind_test(os.path.join(BUILD_DIR, 'nb_alice'), 
-        os.path.join(BUILD_DIR, 'nb_alice'),
-        os.path.join(SOURCE_DIR, 'config_nb_alice.yml'))
+    bind_test(os.path.join(BUILD_DIR, 'nb_alice'),
+              os.path.join(BUILD_DIR, 'nb_alice'),
+              os.path.join(SOURCE_DIR, 'config_nb_alice.yml'))
 
-# Tests with nb_grammar
+    # Tests with nb_grammar
 
-    nb_grammar = [
+    NB_GRAMMAR = [
         '00.00-Front_Page.ipynb',
         '01.00-Introduction.ipynb',
         '02.00-Project_Requirements.ipynb',
@@ -102,39 +100,45 @@ if __name__ == '__main__':
         'BC.00-Index.ipynb'
     ]
 
-    logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), 'nb_grammar')))
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar'), nb_grammar)
-    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar'))))
+    logging.info("\n# Creating notebooks in {arg}",
+                 arg=os.path.join(os.path.dirname(__file__),
+                                  BUILD_DIR, 'nb_grammar'))
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar'), NB_GRAMMAR)
+    logging.info("\n# Reindexing the notebooks in {arg}",
+                 arg=os.path.join(os.path.dirname(__file__),
+                                  BUILD_DIR, 'nb_grammar'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar'))
 
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_bound'), nb_grammar)
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_bound'), NB_GRAMMAR)
 
-    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
-        os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
-        os.path.join(SOURCE_DIR, 'config_nb_grammar.yml'))
+    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+              os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+              os.path.join(SOURCE_DIR, 'config_nb_grammar.yml'))
 
-    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
-        os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
-        os.path.join(SOURCE_DIR, 'config_nb_grammar_no_header.yml'))   
+    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+              os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+              os.path.join(SOURCE_DIR, 'config_nb_grammar_no_header.yml'))
 
-    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
-        os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
-        os.path.join(SOURCE_DIR, 'config_nb_grammar_reindex.yml')) 
+    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+              os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+              os.path.join(SOURCE_DIR, 'config_nb_grammar_reindex.yml'))
 
-    logging.info("\n# Binding the notebooks in {} with 'nbb.bind()'".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_bound'))))
+    logging.info("\n# Binding the notebooks in {arg} with 'nbb.bind()'",
+                 arg=os.path.join(os.path.dirname(__file__),
+                                  BUILD_DIR, 'nb_grammar_bound'))
     nbb.bind(path_to_notes=os.path.join(BUILD_DIR, 'nb_grammar_bound'),
-        insert=True, tighten=True,
-        toc_nb_name='00.00-Front_Page.ipynb',
-        toc_title='Table of Contents',
-        show_index_in_toc=True,
-        header="[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)",
-        core_navigators=['00.00-Front_Page.ipynb', 
-        'BB.00-Bibliography.ipynb'],
-        show_index_in_nav=False)
+             insert=True, tighten=True,
+             toc_nb_name='00.00-Front_Page.ipynb',
+             toc_title='Table of Contents',
+             show_index_in_toc=True,
+             header="NB Grammar Test for the NBBinder module",
+             core_navigators=['00.00-Front_Page.ipynb',
+                              'BB.00-Bibliography.ipynb'],
+             show_index_in_nav=False)
 
-# Tests with nb_grammar_insert
+    # Tests with nb_grammar_insert
 
-    nb_grammar_insert = [
+    NB_GRAMMAR_INSERT = [
         '00.00-Front_Page.ipynb',
         '01.00-Introduction.ipynb',
         '01a.00-Project_Requirements.ipynb',
@@ -159,12 +163,16 @@ if __name__ == '__main__':
         'BB.00-Index.ipynb'
     ]
 
-    logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_insert'))))
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_insert'), nb_grammar_insert)
-    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_insert'))))
+    logging.info("\n# Creating notebooks in {arg}",
+                 arg=os.path.join(os.path.dirname(__file__),
+                                  BUILD_DIR, 'nb_grammar_insert'))
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_insert'), NB_GRAMMAR_INSERT)
+    logging.info("\n# Reindexing the notebooks in {arg}",
+                 arg=os.path.join(os.path.dirname(__file__),
+                                  BUILD_DIR, 'nb_grammar_insert'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_insert'), insert=True)
 
-# Tests with nb_grammar_tighten
+    # Tests with nb_grammar_tighten
 
     nb_grammar_tighten = [
         '00.00-Front_Page.ipynb',
@@ -191,13 +199,18 @@ if __name__ == '__main__':
         'BC.04-Index.ipynb'
     ]
 
-    logging.info("\n# Creating notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_tighten'))))
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_tighten'), nb_grammar_tighten)
-    logging.info("\n# Reindexing the notebooks in {}".format(os.path.join(os.path.dirname(__file__), os.path.join(BUILD_DIR, 'nb_grammar_tighten'))))
+    logging.info("\n# Creating notebooks in {arg}",
+                 arg=os.path.join(os.path.dirname(__file__),
+                                  BUILD_DIR, 'nb_grammar_tighten'))
+    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_tighten'),
+                     nb_grammar_tighten)
+    logging.info("\n# Reindexing the notebooks in {arg}",
+                 arg=os.path.join(os.path.dirname(__file__),
+                                  BUILD_DIR, 'nb_grammar_tighten'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_tighten'), tighten=True)
 
-# Tests with nb_water
+    # Tests with nb_water
 
-    bind_test(os.path.join(SOURCE_DIR, 'nb_water'), 
-        os.path.join(BUILD_DIR, 'nb_water'),
-        os.path.join(SOURCE_DIR, 'config_nb_water.yml'))
+    bind_test(os.path.join(SOURCE_DIR, 'nb_water'),
+              os.path.join(BUILD_DIR, 'nb_water'),
+              os.path.join(SOURCE_DIR, 'config_nb_water.yml'))
