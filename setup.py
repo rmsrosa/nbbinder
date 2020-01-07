@@ -6,8 +6,8 @@
 """
 Setup for NBBinder module
 """
-import os
-import re
+#import os
+#import re
 import setuptools
 
 import nbbinder as nbb

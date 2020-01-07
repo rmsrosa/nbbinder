@@ -6,9 +6,9 @@ Main Binder test
 
 import os
 import logging
-import shutil
 
-from basetest import *
+from basetest import change_to_file_dir, create_build_dir
+from basetest import create_notebooks, bind_test
 
 from context import nbbinder as nbb
 
@@ -174,7 +174,7 @@ if __name__ == '__main__':
 
     # Tests with nb_grammar_tighten
 
-    nb_grammar_tighten = [
+    NB_GRAMMAR_TIGHTEN = [
         '00.00-Front_Page.ipynb',
         '02.00-Introduction.ipynb',
         '04.00-Project_Requirements.ipynb',
@@ -203,7 +203,7 @@ if __name__ == '__main__':
                  arg=os.path.join(os.path.dirname(__file__),
                                   BUILD_DIR, 'nb_grammar_tighten'))
     create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_tighten'),
-                     nb_grammar_tighten)
+                     NB_GRAMMAR_TIGHTEN)
     logging.info("\n# Reindexing the notebooks in {arg}",
                  arg=os.path.join(os.path.dirname(__file__),
                                   BUILD_DIR, 'nb_grammar_tighten'))
