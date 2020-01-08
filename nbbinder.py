@@ -460,11 +460,11 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
                           if REG_INSERT.match(nb))
     nb_names_new = nb_names_ins.copy()
 
-    for j in range(len(nb_names_ins)):
-        nbj_reg = REG_INSERT.match(nb_names_new[j])
+    for j, nb_name_newj in enumerate(nb_names_new):
+        nbj_reg = REG_INSERT.match(nb_name_newj)
         if nbj_reg.group(4):
-            for k in range(j, len(nb_names_ins)):
-                nbk_reg = REG_INSERT.match(nb_names_new[k])
+            for k, nb_name_newk in enumerate(nb_names_new[j:], j):
+                nbk_reg = REG_INSERT.match(nb_name_newk)
                 if nbk_reg.group(1, 2) == nbj_reg.group(1, 2):
                     gk3 = nbk_reg.group(3)
                     if nbk_reg.group(1, 2, 3, 4) == nbj_reg.group(1, 2, 3, 4):
@@ -477,10 +477,10 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
                         + '.' + gk3_new + gk4_new + '-' + nbk_reg.group(5) \
                         + nbk_reg.group(6)
         if nbj_reg.group(2):
-            nb_names_new[j] = nb_names_new[j][:nbj_reg.start(2)] \
-                + nb_names_new[j][nbj_reg.end(2):]
-            for k in range(j, len(nb_names_ins)):
-                nbk_reg = REG_INSERT.match(nb_names_new[k])
+            nb_names_new[j] = nb_name_newj[:nbj_reg.start(2)] \
+                + nb_name_newj[nbj_reg.end(2):]
+            for k, nb_name_newk in enumerate(nb_names_new[j:], j):
+                nbk_reg = REG_INSERT.match(nb_name_newk)
                 if nbk_reg.group(1)[0] == nbj_reg.group(1)[0]:
                     gk1_new = increase_index(nbk_reg.group(1))
                     if nbk_reg.group(1, 2) == nbj_reg.group(1, 2):
