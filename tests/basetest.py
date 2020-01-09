@@ -57,9 +57,9 @@ def create_notebooks(path_to_notes, nb_filenames):
 
     for nb_filename in nb_filenames:
         notebook = nbformat.v4.new_notebook()
-        nb_reg = nbb.REG_INSERT.match(nb_filename)
+        nb_reg = nbb.REG_INS.match(nb_filename)
         title_md = '# ' + \
-            nb_reg.group(5).replace('_', ' ').replace('+u003f', '?')
+            nb_reg.group(6).replace('_', ' ').replace('+u003f', '?')
         notebook.cells.insert(0, new_markdown_cell(title_md))
         notebook.cells.insert(1, new_markdown_cell(source=fake.text(),
                                                    metadata=nbb.SLIDE_SHOW))
