@@ -33,19 +33,20 @@ from nbconvert import exporters
 
 IDX_GRP1 = r'(\d{2}|\b[A][A-Z]|\b[B][A-Z])'
 IDX_GRP2 = r'(\d{2}|\b[A][A-Z]|\b[B][A-Z]|)'
+NUM_GRP = r'(\*|)'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'
-EXT_GRP = r'(\.ipynb\b)'
-INS_GRP = r'([a-z]|)'
+EXT_GRP = r'(\.ipynb)'
+INS_GRP = '([a-z]|)'
 MD_HTML_GRP = r'(\]\()'
 
-REG = re.compile(r'\b' + IDX_GRP1 + r'\.' + IDX_GRP2 + r'-'
-                 + MAIN_GRP + EXT_GRP)
+REG = re.compile(r'\b' + IDX_GRP1 + r'\.' + IDX_GRP2 + '-'
+                 + MAIN_GRP + EXT_GRP + r'\b')
 REG_INSERT = re.compile(r'\b' + IDX_GRP1 + INS_GRP + r'\.'
-                        + IDX_GRP2 + INS_GRP + r'-'
-                        + MAIN_GRP + EXT_GRP)
+                        + IDX_GRP2 + INS_GRP + '-'
+                        + MAIN_GRP + EXT_GRP + r'\b')
 REG_LINK = re.compile(MD_HTML_GRP + IDX_GRP1 + r'\.'
-                      + IDX_GRP2 + r'-'
-                      + MAIN_GRP + EXT_GRP)
+                      + IDX_GRP2 + '-'
+                      + MAIN_GRP + EXT_GRP + r'\b')
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"
