@@ -1,7 +1,7 @@
 #!/anaconda3/envs/nbbinder/bin/python
 # -*- coding: utf-8 -*-
 '''
-Main Binder test
+Main NBBinder test
 '''
 
 import os
@@ -143,25 +143,25 @@ if __name__ == '__main__':
     NB_GRAMMAR_INSERT = [
         '00.00-Front_Page.ipynb',
         '01.00-Introduction.ipynb',
-        '01a.00-Project_Requirements.ipynb',
-        '01b.00-The_History_of_Grammar.ipynb',
+        '02&a.00-Project_Requirements.ipynb',
+        '02&b.00-The_History_of_Grammar.ipynb',
         '02.00-Parts_of_Speech.ipynb',
-        '04.01-Nouns.ipynb',
-        '04.01i-Verbs.ipynb',
+        '04.01&-Nouns.ipynb',
+        '04.01-Verbs.ipynb',
         '04.02-Adjectives.ipynb',
         '04.03-Adverbs.ipynb',
         '05.00-Sentences.ipynb',
-        '05.00i-Complex_Sentences.ipynb',
+        '05.01&-Complex_Sentences.ipynb',
         '05.01-Compound_Sentences.ipynb',
         '06.00-Paragraphs.ipynb',
         '06.01-Descriptive.ipynb',
-        '06.01i-Expository.ipynb',
-        '06.01j-Narrative.ipynb',
+        '06.02&a-Expository.ipynb',
+        '06.02&b-Narrative.ipynb',
         '06.02-Persuasive.ipynb',
         '07.00-Conclusion.ipynb',
         'AA.00-Appendix.ipynb',
         'BA.00-Glossary.ipynb',
-        'BAi.00-Bibliography.ipynb',
+        'BB&.00-Bibliography.ipynb',
         'BB.00-Index.ipynb'
     ]
 

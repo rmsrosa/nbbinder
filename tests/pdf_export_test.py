@@ -1,7 +1,7 @@
 #!/anaconda3/envs/nbbinder/bin/python
 # -*- coding: utf-8 -*-
 '''
-PDF Export Binder test
+PDF Export NBBinder test
 '''
 
 import os

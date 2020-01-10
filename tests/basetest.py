@@ -1,7 +1,7 @@
 #!/anaconda3/envs/nbbinder/bin/python
 # -*- coding: utf-8 -*-
 '''
-Basic Module for the test files
+Basic Module for the NBBinder test files
 '''
 
 import os

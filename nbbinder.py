@@ -32,10 +32,10 @@ from nbconvert import exporters
 # then testeed with `re` library
 
 IDX_GRP = r'(\d{2}|\b[A][A-Z]|\b[B][A-Z])'
-NUM_GRP = r'(\*[\d*]|)'
+NUM_GRP = r'(\*[a-z|]|)'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'
 EXT_GRP = r'(\.ipynb)'
-INS_GRP = '([a-z]|)'
+INS_GRP = r'(\&[a-z|]*|)'
 MD_HTML_GRP = r'(\]\()'
 
 REG = re.compile(r'\b' + IDX_GRP + r'\.' + IDX_GRP + NUM_GRP + '-'
@@ -460,11 +460,15 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
                           if REG_INS.match(nb))
     nb_names_new = nb_names_ins.copy()
 
-    for j, nb_name_newj in enumerate(nb_names_new):
-        nbj_reg = REG_INS.match(nb_name_newj)
+    for j in range(len(nb_names_new)):
+        nbj_reg = REG_INS.match(nb_names_new[j])
         if nbj_reg.group(4):
-            for k, nb_name_newk in enumerate(nb_names_new[j:], j):
-                nbk_reg = REG_INS.match(nb_name_newk)
+            nb_names_new[j] = nbj_reg.group(1) + nbj_reg.group(2) \
+                        + '.' + nbj_reg.group(3) \
+                        + nbj_reg.group(5) + '-' + nbj_reg.group(6) \
+                        + nbj_reg.group(7)
+            for k in range(j+1, len(nb_names_new)):
+                nbk_reg = REG_INS.match(nb_names_new[k])
                 if nbk_reg.group(1, 2) == nbj_reg.group(1, 2):
                     gk3 = nbk_reg.group(3)
                     if nbk_reg.group(1, 2, 3, 4) == nbj_reg.group(1, 2, 3, 4):
@@ -474,22 +478,29 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
                         gk3_new = increase_index(gk3)
                         gk4_new = nbk_reg.group(4)
                     nb_names_new[k] = nbk_reg.group(1) + nbk_reg.group(2) \
-                        + '.' + gk3_new + gk4_new + nbk_reg.group(5) + '-' + nbk_reg.group(6) \
-                        + nbk_reg.group(7)
+                        + '.' + gk3_new + gk4_new + nbk_reg.group(5) + '-' \
+                        + nbk_reg.group(6) + nbk_reg.group(7)
+            nb_names_new[j] = nbj_reg.group(1) + nbj_reg.group(2) \
+                        + '.' + nbj_reg.group(3) \
+                        + nbj_reg.group(5) + '-' + nbj_reg.group(6) \
+                        + nbj_reg.group(7)
         if nbj_reg.group(2):
-            nb_names_new[j] = nb_name_newj[:nbj_reg.start(2)] \
-                + nb_name_newj[nbj_reg.end(2):]
-            for k, nb_name_newk in enumerate(nb_names_new[j:], j):
-                nbk_reg = REG_INS.match(nb_name_newk)
-                if nbk_reg.group(1)[0] == nbj_reg.group(1)[0]:
-                    gk1_new = increase_index(nbk_reg.group(1))
+            for k in range(j+1, len(nb_names_new)):
+                nbk_reg = REG_INS.match(nb_names_new[k])
+                if nbk_reg.group(1).isdecimal() \
+                        == nbj_reg.group(1).isdecimal():
                     if nbk_reg.group(1, 2) == nbj_reg.group(1, 2):
+                        gk1_new = nbk_reg.group(1)
                         gk2_new = ''
                     else:
+                        gk1_new = increase_index(nbk_reg.group(1))
                         gk2_new = nbk_reg.group(2)
                     nb_names_new[k] = gk1_new + gk2_new + '.' \
-                        + nbk_reg.group(3) + nbk_reg.group(4) + nbk_reg.group(5)+ '-' \
+                        + nbk_reg.group(3) + nbk_reg.group(4) \
+                        + nbk_reg.group(5)+ '-' \
                         + nbk_reg.group(6) + nbk_reg.group(7)
+            nb_names_new[j] = nb_names_new[j][:nbj_reg.start(2)] \
+                + nb_names_new[j][nbj_reg.end(2):]
 
     if nb_names_new == nb_names_ins:
         logging.info('- no files need renaming, no reindexing needed')
@@ -498,8 +509,9 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
         for f_ins, f_new in zip(nb_names_ins, nb_names_new):
             count += 1
             if f_ins != f_new:
-                logging.info('- replacing {arg1} with {arg2}',
-                             arg1=f_ins, arg2=f_new)
+                logging.info('- replacing %s with %s', f_ins, f_new)
+            else:
+                logging.info('- keeping %s', f_ins)
             os.rename(os.path.join(path_to_notes, f_ins),
                       os.path.join(path_to_notes, str(count) + '-' + f_new))
         count = 0
