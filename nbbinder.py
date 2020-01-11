@@ -32,10 +32,10 @@ from nbconvert import exporters
 # then testeed with `re` library
 
 IDX_GRP = r'(\d{2}|\b[A][A-Z]|\b[B][A-Z])'
-NUM_GRP = r'(\*[a-z|]|)'
+NUM_GRP = r'(\*[a-z]?|)'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'
 EXT_GRP = r'(\.ipynb)'
-INS_GRP = r'(\&[a-z|]*|)'
+INS_GRP = r'(\&[a-z]?|)'
 MD_HTML_GRP = r'(\]\()'
 
 REG_IDX = re.compile(r'\b' + IDX_GRP + r'\b')
