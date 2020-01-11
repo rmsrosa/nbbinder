@@ -38,6 +38,7 @@ EXT_GRP = r'(\.ipynb)'
 INS_GRP = r'(\&[a-z|]*|)'
 MD_HTML_GRP = r'(\]\()'
 
+REG_IDX = re.compile(r'\b' + IDX_GRP + r'\b')
 REG = re.compile(r'\b' + IDX_GRP + r'\.' + IDX_GRP + NUM_GRP + '-'
                  + MAIN_GRP + EXT_GRP + r'\b')
 REG_INS = re.compile(r'\b' + IDX_GRP + INS_GRP + r'\.'
@@ -104,49 +105,27 @@ def indexed_notebooks(path_to_notes: str = '.') -> list:
     """
     return sorted(nb for nb in os.listdir(path_to_notes) if REG.match(nb))
 
-
-def is_index(idx: str) -> bool:
-    """Checks whether a string is an index, returning True or False.
-
-    An index is a string of length two, composed either of two numeric
-    characters or starting with the uppercase letters 'A' and 'B'
-    and ending with either a numeric character or an uppercase letter.
-
-    Parameters
-    ----------
-    idx : str
-        The two character long string with the index.
-
-    Returns
-    -------
-    : bool
-        True or False depending whether g is an index or not.
-    """
-
-    if isinstance(idx, str) and len(idx) == 2:
-        if ((idx[0].isdecimal() or idx[0] in ('A', 'B'))
-                and (idx[1].isdecimal() or idx[1].isupper())):
-            return True
-
-    return False
-
-
 def increase_index(idx: str) -> str:
     """Increases an index by one.
 
-    If the index is numeric, in the range '00' to '98', it returns
-    an index in the range '01' to '99'.
+    If the index is numeric, in the range '00' to '98', it adds one
+    to the index and returns an index in the range '01' to '99'.
+    If the index is already '99', there is an Exception error.
 
-    If the index is alphanumeric, in the range 'A0' to 'A8',
-    or 'B0' to 'B8', it returns an index in the range 'A1' to 'A9',
-    or 'B1' to B9', respectively.
+    If the index is alphanumeric, with the first character being a
+    letter and the second character being a digit in the range '0' to
+    '8', the digit is increased by one, and the function returns an
+    index with the same letter and with the digit in the range '1'
+    to '9'. If the digit is already '9', there is an Exception error.
 
-    If the index is alphanumeric, in the range 'AA' to 'AY',
-    or 'BA' to 'BY', it returns an index in the range 'AB' to 'AZ',
-    or 'BB' to 'BZ, respectively.
+    If the index is purely alphabetical or if it is alphanumeric with
+    the second character being a letter from 'A' to 'Y', then the
+    ordinal number of the letter is increased, with the function
+    returning an index with the same first character and with the
+    second character in the range 'B' to 'Z'. If the second character
+    is already 'Z', there is an Exception error.
 
-    It raises exceptions if it is not an index or the index is increased
-    beyond the allowed ranges.
+    It also raises an exception if the given argument is not an index.
 
     Parameters
     ----------
@@ -162,26 +141,21 @@ def increase_index(idx: str) -> str:
     ------
     Exception if string is not an index.
 
-    Exception if numeric index increases beyond 99.
-
-    Exception if alphanumeric index increases beyond A9 or B9.
-
-    Exception if alphanumeric index increases beyond AZ or BZ.
+    Exception if index is increasead beyond allowed range.
     """
-    if not is_index(idx):
+    if not REG_IDX.match(idx):
         raise Exception('String is not an index')
 
     if idx.isdecimal():
         n = int(idx) + 1
         if n > 99:
-            raise Exception('Increasing numeric index beyond 99')
+            raise Exception('Numeric index cannot be increased beyond 99')
         idx_plus_one = str(n).zfill(2)
     else:
-        if idx[1] == 9:
-            raise Exception('Increasing alphanumeric index beyond A9 or B9')
-        if idx[1] == 'Z':
-            raise Exception('Increasing alphanumeric index beyond AZ or BZ')
+        if idx[1] == '9' or idx[1] == 'Z':
+            raise Exception('Index cannot be increased beyond allowed range')
         idx_plus_one = idx[0] + chr(ord(idx[1])+1)
+    
     return idx_plus_one
 
 
@@ -236,7 +210,7 @@ def refresh_marker_cells(path_to_notes: str = '.', marker: str = None,
 
             new_cells = []
             for cell in nb.cells:
-                if not is_marker_cell(marker, cell):
+                if not cell.source.startswith(marker):
                     new_cells.append(cell)
                 elif mode == 'clean':
                     logging.info("- cleaning '{arg1}' cell from {arg2}",
@@ -743,7 +717,7 @@ def export_notebooks(path_to_notes: str = '.',
         body = exporter.from_notebook_node(nb)[0]
         for cell in nb.cells:
             for marker in (NAVIGATOR_MARKER, TOC_MARKER):
-                if is_marker_cell(marker, cell):
+                if cell.source.startswith(marker):
                     source_new = ''
                     i = 0
                     for m in REG_LINK.finditer(cell.source):
@@ -815,7 +789,7 @@ def add_contents(path_to_notes: str = '.',
 
     toc_cell_found = False
     for cell in toc_nb.cells:
-        if is_marker_cell(TOC_MARKER, cell):
+        if cell.source.startswith(TOC_MARKER):
             cell.source = contents
             cell.metadata = SLIDE_SHOW
             toc_cell_found = True
@@ -828,7 +802,8 @@ def add_contents(path_to_notes: str = '.',
                      arg1=TOC_MARKER, arg2=toc_nb_name)
         logging.info("- inserting table of contents in {arg}",
                      arg=toc_nb_name)
-        if toc_nb.cells and is_marker_cell(NAVIGATOR_MARKER, toc_nb.cells[-1]):
+        if toc_nb.cells \
+                and toc_nb.cells[-1].source.startswith(NAVIGATOR_MARKER):
             toc_nb.cells.insert(-1, new_markdown_cell(source=contents,
                                                       metadata=SLIDE_SHOW))
         else:
@@ -858,7 +833,7 @@ def add_headers(path_to_notes: str = '.', header: str = None) -> None:
         nb_file = os.path.join(path_to_notes, nb_name)
         nb = nbformat.read(nb_file, as_version=4)
 
-        if nb.cells and is_marker_cell(HEADER_MARKER, nb.cells[0]):
+        if nb.cells and nb.cells[0].source.startswith(HEADER_MARKER):
             logging.info('- updating header for {arg}', arg=nb_name)
             nb.cells[0].source = HEADER_MARKER + '\n' + header
             nb.cells[0].metadata = SLIDE_SKIP
@@ -1036,7 +1011,7 @@ def add_badges(path_to_notes: str = '.',
         for this_nb_custom_badge_link in this_nb_custom_badge_links:
             badges_top += this_nb_custom_badge_link + "&nbsp;"
 
-        if len(nb.cells) > 1 and is_marker_cell(BADGES_MARKER, nb.cells[1]):
+        if len(nb.cells) > 1 and nb.cells[1].source.startswith(BADGES_MARKER):
             logging.info("- updating badges for {arg}", arg=nb_name)
             nb.cells[1].source = badges_top
             nb.cells[1].metadata = SLIDE_SKIP
@@ -1178,13 +1153,13 @@ def add_navigators(path_to_notes: str = '.',
         navbar_top = NAVIGATOR_MARKER + "\n" + navbar + "\n\n---\n"
         navbar_bottom = NAVIGATOR_MARKER + "\n\n---\n" + navbar
 
-        if len(nb.cells) >= 1 and is_marker_cell(NAVIGATOR_MARKER,
-                                                 nb.cells[1]):
+        if len(nb.cells) >= 1 \
+                and nb.cells[1].source.startswith(NAVIGATOR_MARKER):
             logging.info("- updating navbar for {arg}", arg=nb_name)
             nb.cells[1].source = navbar_top
             nb.cells[1].metadata = SLIDE_SKIP
-        elif len(nb.cells) >= 2 and is_marker_cell(NAVIGATOR_MARKER,
-                                                   nb.cells[2]):
+        elif len(nb.cells) >= 2 \
+                and nb.cells[2].source.startswith(NAVIGATOR_MARKER):
             logging.info("- updating navbar for {arg}", arg=nb_name)
             nb.cells[2].source = navbar_top
             nb.cells[2].metadata = SLIDE_SKIP
@@ -1193,8 +1168,8 @@ def add_navigators(path_to_notes: str = '.',
             nb.cells.insert(1, new_markdown_cell(source=navbar_top,
                                                  metadata=SLIDE_SKIP))
 
-        if len(nb.cells) > 2 and is_marker_cell(NAVIGATOR_MARKER,
-                                                nb.cells[-1]):
+        if len(nb.cells) > 2 \
+                and nb.cells[-1].source.startswith(NAVIGATOR_MARKER):
             nb.cells[-1].source = navbar_bottom
             nb.cells[-1].metadata = SLIDE_SHOW
         else:
