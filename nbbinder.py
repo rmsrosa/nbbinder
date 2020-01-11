@@ -159,27 +159,6 @@ def increase_index(idx: str) -> str:
     return idx_plus_one
 
 
-def is_marker_cell(marker: str = None,
-                   cell: nbformat.notebooknode.NotebookNode = None) -> bool:
-    """Checks whether the given `cell` starts with the given `marker`.
-
-    Parameters
-    ----------
-    marker : str
-        The marker to be searched for.
-
-    cell : nbformat.notebooknode.NotebookNode
-        The cell to be checked.
-
-    Returns
-    -------
-    : bool
-        True or False, depending on whether the cell starts with the
-        marker or not.
-    """
-    return cell.source.startswith(marker)
-
-
 def refresh_marker_cells(path_to_notes: str = '.', marker: str = None,
                          mode: str = 'remove') -> None:
     """Removes or cleans the contents of any cell with the given `marker`
