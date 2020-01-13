@@ -28,10 +28,10 @@ from nbformat.v4.nbbase import new_markdown_cell
 from nbconvert import exporters
 
 # Regular expression for indexing the notebooks
-# First tested in https://regexr.com/ (which is not the same as in python)
-# then testeed with `re` library
+# Tested in https://regexr.com/ (which is not the same as in python)
+# in https://regex101.com/ (many flavors) and with re library
 
-IDX_GRP = r'(\d{2}|\b[A][A-Z]|\b[B][A-Z])'
+IDX_GRP = r'([0-9A-Z]{2})'
 NUM_GRP = r'(\*[a-z]?|)'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'
 EXT_GRP = r'(\.ipynb)'
@@ -424,11 +424,14 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
                 nbk_reg = REG_INS.match(nb_names_new[k])
                 if nbk_reg.group(1, 2) == nbj_reg.group(1, 2):
                     gk3 = nbk_reg.group(3)
-                    if nbk_reg.group(1, 2, 3, 4) == nbj_reg.group(1, 2, 3, 4):
+                    if ((gk3.isdecimal() and nbj_reg.group(3).isdecimal)
+                            or gk3[0] == nbj_reg.group(3)[0]):
                         gk3_new = increase_index(gk3)
+                    else:
+                        gk3_new = gk3
+                    if nbk_reg.group(3, 4) == nbj_reg.group(3, 4):
                         gk4_new = ''
                     else:
-                        gk3_new = increase_index(gk3)
                         gk4_new = nbk_reg.group(4)
                     nb_names_new[k] = nbk_reg.group(1) + nbk_reg.group(2) \
                         + '.' + gk3_new + gk4_new + nbk_reg.group(5) + '-' \
@@ -440,8 +443,9 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
         if nbj_reg.group(2):
             for k in range(j+1, len(nb_names_new)):
                 nbk_reg = REG_INS.match(nb_names_new[k])
-                if nbk_reg.group(1).isdecimal() \
-                        == nbj_reg.group(1).isdecimal():
+                if ((nbk_reg.group(1).isdecimal() and
+                        nbj_reg.group(1).isdecimal()) 
+                        or nbk_reg.group(1)[0] == nbj_reg.group(1)[0]):
                     if nbk_reg.group(1, 2) == nbj_reg.group(1, 2):
                         gk1_new = nbk_reg.group(1)
                         gk2_new = ''
