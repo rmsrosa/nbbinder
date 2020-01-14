@@ -499,55 +499,26 @@ def tighten_notebooks(path_to_notes: str = '.') -> None:
     nb_regs = [REG.match(nb_name) for nb_name in nb_names]
     nb_new_regs = nb_regs.copy()
 
-    for j, nb_regj in enumerate(nb_regs):
-        if j == 0:
-            if (nb_regj.group(1).isdecimal()
-                    and nb_regj.group(1) >= '02'):
-                nb_names_new[j] = '01.' + nb_regj.group(2) \
-                    + '-' + ''.join(nb_regj.group(4, 5))
-            elif (nb_regj.group(1).isalpha()
-                  and nb_regj.group(1)[1] >= 'B'):
-                nb_names_new[j] = nb_regj.group(1)[0] \
-                    + 'A.' + nb_regj.group(2) \
-                    + '-' + ''.join(nb_regj.group(4, 5))
-            elif (nb_regj.group(1).isalnum()
-                  and nb_regj.group(1)[1] >= '2'):
-                nb_names_new[j] = nb_regj.group(1)[0] \
-                    + '1.' + nb_regj.group(2) \
-                    + '-' + ''.join(nb_regj.group(4, 5))
+    for j, nb_regj in enumerate(nb_regs[1:], 1):
+        if nb_regj.group(1).isdecimal():
+            if nb_regj.group(1) == nb_regs[j-1].group(1):
+                nb_names_new[j] = nb_new_regs[j-1].group(1) \
+                    + nb_names[j][nb_regj.end(1):]
+            elif (nb_regj.group(1)
+                    > increase_index(nb_new_regs[j-1].group(1))):
+                nb_names_new[j] = \
+                    increase_index(nb_new_regs[j-1].group(1)) \
+                    + nb_names[j][nb_regj.end(1):]
         else:
-            if (nb_regj.group(1).isdecimal()
-                    and nb_regj.group(1) >= '02'):
-                if nb_regj.group(1) == nb_regs[j-1].group(1):
-                    nb_names_new[j] = nb_new_regs[j-1].group(1) \
-                        + '.' + nb_regj.group(2) \
-                        + '-' + ''.join(nb_regj.group(4, 5))
-                elif (nb_regj.group(1)
-                      > increase_index(nb_new_regs[j-1].group(1))):
-                    nb_names_new[j] = \
-                        increase_index(nb_new_regs[j-1].group(1)) \
-                        + '.' + nb_regj.group(2) \
-                        + '-' + ''.join(nb_regj.group(4, 5))
-            elif (nb_regj.group(1)[0] in ('A', 'B')
-                  and nb_regj.group(1)[1] >= 'B'):
-                if (nb_regj.group(1)[0] == 'A'
-                        and nb_new_regs[j-1].group(1).isdecimal()):
-                    nb_names_new[j] = 'AA.' + nb_regj.group(2) \
-                        + '-' + ''.join(nb_regj.group(4, 5))
-                elif (nb_regj.group(1)[0] == 'B'
-                      and nb_new_regs[j-1].group(1)[0] == 'A'):
-                    nb_names_new[j] = 'BA.' + nb_regj.group(2) \
-                        + '-' + ''.join(nb_regj.group(4, 5))
-                elif nb_regj.group(1) == nb_regs[j-1].group(1):
-                    nb_names_new[j] = nb_new_regs[j-1].group(1) \
-                        + '.' + nb_regj.group(2) \
-                        + '-' + ''.join(nb_regj.group(4, 5))
-                elif (nb_regj.group(1)
-                      > increase_index(nb_new_regs[j-1].group(1))):
-                    nb_names_new[j] = \
-                        increase_index(nb_new_regs[j-1].group(1)) \
-                        + '.' + nb_regj.group(2) \
-                        + '-' + ''.join(nb_regj.group(4, 5))
+            if nb_regj.group(1) == nb_regs[j-1].group(1):
+                nb_names_new[j] = nb_new_regs[j-1].group(1) \
+                    + nb_names[j][nb_regj.end(1):]
+            elif (nb_regj.group(1)[0] == nb_regs[j-1].group(1)[0]
+                    and nb_regj.group(1)
+                    > increase_index(nb_new_regs[j-1].group(1))):
+                nb_names_new[j] = \
+                    increase_index(nb_new_regs[j-1].group(1)) \
+                    + nb_names[j][nb_regj.end(1):]
         nb_new_regs[j] = REG.match(nb_names_new[j])
 
     nb_names_newest = nb_names_new.copy()
@@ -555,43 +526,19 @@ def tighten_notebooks(path_to_notes: str = '.') -> None:
     nb_new_regs = [REG.match(nb_name_new) for nb_name_new in nb_names_new]
     nb_newest_reg = nb_new_regs.copy()
 
-    for j, nb_new_regj in enumerate(nb_new_regs):
-        if j == 0 or nb_new_regj.group(1) != nb_new_regs[j-1].group(1):
+    for j, nb_new_regj in enumerate(nb_new_regs[1:], 1):
+        if nb_new_regj.group(1) == nb_newest_reg[j-1].group(1):           
             if (nb_new_regj.group(2).isdecimal()
-                    and nb_new_regj.group(2) >= '02'):
-                nb_names_newest[j] = nb_new_regj.group(1) \
-                    + '.01-' + ''.join(nb_new_regj.group(4, 5))
-            elif (nb_new_regj.group(2)[0] == 'A'
-                  and nb_new_regj.group(2)[1] >= 'B'):
-                nb_names_newest[j] = nb_new_regj.group(1) \
-                    + '.AA-' + ''.join(nb_new_regj.group(4, 5))
-            elif (nb_new_regj.group(2) == 'B'
-                  and nb_new_regj.group(2)[1] >= 'B'):
-                nb_names_newest[j] = nb_new_regj.group(1) \
-                    + '.BA-' + ''.join(nb_new_regj.group(4, 5))
-        else:
-            if (nb_new_regj.group(2).isdecimal()
-                    and nb_new_regj.group(2)
-                    > increase_index(nb_newest_reg[j-1].group(2))):
-                nb_names_newest[j] = nb_new_regj.group(1) + '.' \
-                    + increase_index(nb_newest_reg[j-1].group(2)) \
-                    + '-' + ''.join(nb_new_regj.group(4, 5))
-            elif (nb_new_regj.group(2)[0] in ('A', 'B')
-                  and nb_new_regj.group(2)[1] >= 'B'):
-                if (nb_new_regj.group(2)[0] == 'A'
-                        and nb_newest_reg[j-1].group(2).isdecimal()):
-                    nb_names_newest[j] = nb_new_regj.group(1) \
-                        + '.AA-' + ''.join(nb_new_regj.group(4, 5))
-                elif (nb_new_regj.group(2)[0] == 'B'
-                      and nb_newest_reg[j-1].group(1)[0] != 'B'):
-                    nb_names_newest[j] = nb_new_regj.group(1) \
-                        + '.BA-' + ''.join(nb_new_regj.group(4, 5))
-                elif (nb_new_regj.group(2)
-                      > increase_index(nb_newest_reg[j-1].group(2))):
-                    nb_names_newest[j] = nb_new_regj.group(1) + '.' \
+                    or (not nb_newest_reg[j-1].group(2).isdecimal()
+                    and nb_new_regj.group(2)[0] \
+                        == nb_newest_reg[j-1].group(2)[0])):
+                if nb_new_regj.group(2) \
+                        > increase_index(nb_newest_reg[j-1].group(2)):
+                    nb_names_newest[j] \
+                        = nb_names_new[j][:nb_new_regj.start(2)] \
                         + increase_index(nb_newest_reg[j-1].group(2)) \
-                        + '-' + ''.join(nb_new_regj.group(4, 5))
-        nb_newest_reg[j] = REG.match(nb_names_newest[j])
+                        + nb_names_new[j][nb_new_regj.end(2):]
+                    nb_newest_reg[j] = REG.match(nb_names_newest[j])
 
     if nb_names_newest == nb_names:
         logging.info('- no files need renaming, no reindexing needed')
