@@ -42,8 +42,8 @@ REG_IDX = re.compile(r'\b' + IDX_GRP + r'\b')
 REG = re.compile(r'\b' + IDX_GRP + r'\.' + IDX_GRP + NUM_GRP + '-'
                  + MAIN_GRP + EXT_GRP + r'\b')
 REG_INS = re.compile(r'\b' + IDX_GRP + INS_GRP + r'\.'
-                        + IDX_GRP + INS_GRP + NUM_GRP + '-'
-                        + MAIN_GRP + EXT_GRP + r'\b')
+                     + IDX_GRP + INS_GRP + NUM_GRP + '-'
+                     + MAIN_GRP + EXT_GRP + r'\b')
 REG_LINK = re.compile(MD_HTML_GRP + IDX_GRP + r'\.'
                       + IDX_GRP + NUM_GRP + '-'
                       + MAIN_GRP + EXT_GRP + r'\b')
@@ -105,6 +105,7 @@ def indexed_notebooks(path_to_notes: str = '.') -> list:
     """
     return sorted(nb for nb in os.listdir(path_to_notes) if REG.match(nb))
 
+
 def increase_index(idx: str) -> str:
     """Increases an index by one.
 
@@ -155,7 +156,7 @@ def increase_index(idx: str) -> str:
         if idx[1] == '9' or idx[1] == 'Z':
             raise Exception('Index cannot be increased beyond allowed range')
         idx_plus_one = idx[0] + chr(ord(idx[1])+1)
-    
+
     return idx_plus_one
 
 
@@ -413,7 +414,7 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
                           if REG_INS.match(nb))
     nb_names_new = nb_names_ins.copy()
 
-    for j in range(len(nb_names_new)):
+    for j, _ in enumerate(nb_names_new):
         nbj_reg = REG_INS.match(nb_names_new[j])
         if nbj_reg.group(4):
             nb_names_new[j] = nbj_reg.group(1) + nbj_reg.group(2) \
@@ -437,14 +438,14 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
                         + '.' + gk3_new + gk4_new + nbk_reg.group(5) + '-' \
                         + nbk_reg.group(6) + nbk_reg.group(7)
             nb_names_new[j] = nbj_reg.group(1) + nbj_reg.group(2) \
-                        + '.' + nbj_reg.group(3) \
-                        + nbj_reg.group(5) + '-' + nbj_reg.group(6) \
-                        + nbj_reg.group(7)
+                + '.' + nbj_reg.group(3) \
+                + nbj_reg.group(5) + '-' + nbj_reg.group(6) \
+                + nbj_reg.group(7)
         if nbj_reg.group(2):
             for k in range(j+1, len(nb_names_new)):
                 nbk_reg = REG_INS.match(nb_names_new[k])
                 if ((nbk_reg.group(1).isdecimal() and
-                        nbj_reg.group(1).isdecimal()) 
+                     nbj_reg.group(1).isdecimal())
                         or nbk_reg.group(1)[0] == nbj_reg.group(1)[0]):
                     if nbk_reg.group(1, 2) == nbj_reg.group(1, 2):
                         gk1_new = nbk_reg.group(1)
@@ -454,7 +455,7 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
                         gk2_new = nbk_reg.group(2)
                     nb_names_new[k] = gk1_new + gk2_new + '.' \
                         + nbk_reg.group(3) + nbk_reg.group(4) \
-                        + nbk_reg.group(5)+ '-' \
+                        + nbk_reg.group(5) + '-' \
                         + nbk_reg.group(6) + nbk_reg.group(7)
             nb_names_new[j] = nb_names_new[j][:nbj_reg.start(2)] \
                 + nb_names_new[j][nbj_reg.end(2):]
@@ -505,7 +506,7 @@ def tighten_notebooks(path_to_notes: str = '.') -> None:
                 nb_names_new[j] = nb_new_regs[j-1].group(1) \
                     + nb_names[j][nb_regj.end(1):]
             elif (nb_regj.group(1)
-                    > increase_index(nb_new_regs[j-1].group(1))):
+                  > increase_index(nb_new_regs[j-1].group(1))):
                 nb_names_new[j] = \
                     increase_index(nb_new_regs[j-1].group(1)) \
                     + nb_names[j][nb_regj.end(1):]
@@ -514,8 +515,8 @@ def tighten_notebooks(path_to_notes: str = '.') -> None:
                 nb_names_new[j] = nb_new_regs[j-1].group(1) \
                     + nb_names[j][nb_regj.end(1):]
             elif (nb_regj.group(1)[0] == nb_regs[j-1].group(1)[0]
-                    and nb_regj.group(1)
-                    > increase_index(nb_new_regs[j-1].group(1))):
+                  and nb_regj.group(1)
+                  > increase_index(nb_new_regs[j-1].group(1))):
                 nb_names_new[j] = \
                     increase_index(nb_new_regs[j-1].group(1)) \
                     + nb_names[j][nb_regj.end(1):]
@@ -527,10 +528,10 @@ def tighten_notebooks(path_to_notes: str = '.') -> None:
     nb_newest_reg = nb_new_regs.copy()
 
     for j, nb_new_regj in enumerate(nb_new_regs[1:], 1):
-        if nb_new_regj.group(1) == nb_newest_reg[j-1].group(1):           
+        if nb_new_regj.group(1) == nb_newest_reg[j-1].group(1):
             if (nb_new_regj.group(2).isdecimal()
                     or (not nb_newest_reg[j-1].group(2).isdecimal()
-                    and nb_new_regj.group(2)[0] \
+                        and nb_new_regj.group(2)[0]
                         == nb_newest_reg[j-1].group(2)[0])):
                 if nb_new_regj.group(2) \
                         > increase_index(nb_newest_reg[j-1].group(2)):
