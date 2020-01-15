@@ -262,23 +262,42 @@ def get_nb_full_entry(path_to_notes: str = '.',
         depending on the case, of the Chapter and Section numbers
         or letters.
     """
-    chapter, section = REG.match(nb_name).group(1, 2)
+    chapter, section, complement = REG.match(nb_name).group(1, 2, 3)
 
+#    if chapter.isdecimal():
+#        chapter_clean = int(chapter)
+#    else:
+#        chapter_clean = chapter[1]
     if chapter.isdecimal():
         chapter_clean = int(chapter)
-    else:
+    elif chapter[0].isdecimal():
         chapter_clean = chapter[1]
+    else:
+        chapter_clean = chapter
+
     title = get_nb_title(path_to_notes, nb_name)
 
-    if chapter == '00' or chapter[0] == 'B' or section == '':
+#    if chapter == '00' or chapter[0] == 'B' or section == '':
+#        markdown_entry = '### '
+#        num_entry = ''
+#    elif section == '00':
+#        markdown_entry = '### '
+#        num_entry = '{}. '.format(chapter_clean)
+#    else:
+#        markdown_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
+#        num_entry = '{}.{}. '.format(chapter_clean, int(section))        
+
+    if chapter == '00' or complement == '*':
         markdown_entry = '### '
         num_entry = ''
-    elif section == '00':
+    elif section == '00' or complement == '*#':
         markdown_entry = '### '
         num_entry = '{}. '.format(chapter_clean)
     else:
         markdown_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
-        num_entry = '{}.{}. '.format(chapter_clean, int(section))
+        num_entry = '{}.{}. '.format(chapter_clean, int(section)) 
+
+
 
     return markdown_entry, num_entry, title
 

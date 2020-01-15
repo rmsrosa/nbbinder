@@ -12,7 +12,7 @@ header: "[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbb
 navigators:
   core_navigators:
     - 00.00-Front_Page.ipynb
-    - BB.00-Bibliography.ipynb
+    - 1B.00*-Bibliography.ipynb
   show_index_in_nav: False
   show_nb_title_in_nav: True
 
