@@ -96,10 +96,10 @@ if __name__ == '__main__':
         '06.03-Narrative.ipynb',
         '06.04-Persuasive.ipynb',
         '07.00-Conclusion.ipynb',
-        '0A.00-Appendix.ipynb',
-        '1A.00*-Glossary.ipynb',
-        '1B.00*-Bibliography.ipynb',
-        '1C.00*-Index.ipynb'
+        'AA.00-Appendix.ipynb',
+        'BA.00-Glossary.ipynb',
+        'BB.00-Bibliography.ipynb',
+        'BC.00-Index.ipynb'
     ]
 
     logging.info("\n# Creating notebooks in {arg}",
@@ -135,7 +135,7 @@ if __name__ == '__main__':
              show_index_in_toc=True,
              header="NB Grammar Test for the NBBinder module",
              core_navigators=['00.00-Front_Page.ipynb',
-                              '1B.00*-Bibliography.ipynb'],
+                              'BB.00-Bibliography.ipynb'],
              show_index_in_nav=False)
 
     # Tests with nb_grammar_insert
@@ -159,10 +159,10 @@ if __name__ == '__main__':
         '06.02&b-Narrative.ipynb',
         '06.02-Persuasive.ipynb',
         '07.00-Conclusion.ipynb',
-        '0A.00-Appendix.ipynb',
-        '1A.00-Glossary.ipynb',
-        '1B&.00-Bibliography.ipynb',
-        '1B.00-Index.ipynb'
+        'AA.00-Appendix.ipynb',
+        'BA.00-Glossary.ipynb',
+        'BB&.00-Bibliography.ipynb',
+        'BB.00-Index.ipynb'
     ]
 
     logging.info("\n# Creating notebooks in {arg}",
@@ -196,10 +196,10 @@ if __name__ == '__main__':
         '09.03-Narrative.ipynb',
         '09.04-Persuasive.ipynb',
         '11.00-Conclusion.ipynb',
-        '0B.00-Appendix.ipynb',
-        '1A.00*-Glossary.ipynb',
-        '1C.02*-Bibliography.ipynb',
-        '1C.04*-Index.ipynb'
+        'AB.00-Appendix.ipynb',
+        'BA.00-Glossary.ipynb',
+        'BC.02-Bibliography.ipynb',
+        'BC.04-Index.ipynb'
     ]
 
     logging.info("\n# Creating notebooks in {arg}",

@@ -31,22 +31,23 @@ from nbconvert import exporters
 # Tested in https://regexr.com/ (which is not the same as in python)
 # in https://regex101.com/ (many flavors) and with re library
 
-IDX_GRP = r'([0-9A-Z]{2})'
-NUM_GRP = r'(\*[a-z]?|)'
+IDX_GRP = r'([0-9]{2}|[A-Z][0-9A-Z])'
+COMPL_GRP = r'(\*[a-z]?|)'
+COMPL_SUBGRP = r'(\*)\w(\*|\#)?\w?(\*|\#)?'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'
 EXT_GRP = r'(\.ipynb)'
 INS_GRP = r'(\&[a-z]?|)'
 MD_HTML_GRP = r'(\]\()'
 
 REG_IDX = re.compile(r'\b' + IDX_GRP + r'\b')
-REG = re.compile(r'\b' + IDX_GRP + r'\.' + IDX_GRP + NUM_GRP + '-'
-                 + MAIN_GRP + EXT_GRP + r'\b')
+REG = re.compile(r'\b' + IDX_GRP + r'\.' + IDX_GRP + COMPL_GRP
+                 + '-' + MAIN_GRP + EXT_GRP + r'\b')
 REG_INS = re.compile(r'\b' + IDX_GRP + INS_GRP + r'\.'
-                     + IDX_GRP + INS_GRP + NUM_GRP + '-'
-                     + MAIN_GRP + EXT_GRP + r'\b')
+                     + IDX_GRP + INS_GRP + COMPL_GRP
+                     + '-' + MAIN_GRP + EXT_GRP + r'\b')
 REG_LINK = re.compile(MD_HTML_GRP + IDX_GRP + r'\.'
-                      + IDX_GRP + NUM_GRP + '-'
-                      + MAIN_GRP + EXT_GRP + r'\b')
+                      + IDX_GRP + COMPL_GRP
+                      + '-' + MAIN_GRP + EXT_GRP + r'\b')
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"
@@ -261,33 +262,23 @@ def get_nb_full_entry(path_to_notes: str = '.',
         The full notebook entry, with the title, preceeded,
         depending on the case, of the Chapter and Section numbers
         or letters.
+
+    title : str
+        The title of the notebook, given in the first cell starting
+        with a single '# '.
     """
     chapter, section, complement = REG.match(nb_name).group(1, 2, 3)
 
-#    if chapter.isdecimal():
-#        chapter_clean = int(chapter)
-#    else:
-#        chapter_clean = chapter[1]
     if chapter.isdecimal():
         chapter_clean = int(chapter)
-    elif chapter[0].isdecimal():
-        chapter_clean = chapter[1]
-    else:
+    elif chapter[1].isdecimal():
         chapter_clean = chapter
+    else:
+        chapter_clean = chapter[1]
 
     title = get_nb_title(path_to_notes, nb_name)
 
-#    if chapter == '00' or chapter[0] == 'B' or section == '':
-#        markdown_entry = '### '
-#        num_entry = ''
-#    elif section == '00':
-#        markdown_entry = '### '
-#        num_entry = '{}. '.format(chapter_clean)
-#    else:
-#        markdown_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
-#        num_entry = '{}.{}. '.format(chapter_clean, int(section))        
-
-    if chapter == '00' or complement == '*':
+    if chapter == '00' or chapter[0] >= 'B' or complement == '*':
         markdown_entry = '### '
         num_entry = ''
     elif section == '00' or complement == '*#':
@@ -295,9 +286,7 @@ def get_nb_full_entry(path_to_notes: str = '.',
         num_entry = '{}. '.format(chapter_clean)
     else:
         markdown_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
-        num_entry = '{}.{}. '.format(chapter_clean, int(section)) 
-
-
+        num_entry = '{}.{}. '.format(chapter_clean, int(section))
 
     return markdown_entry, num_entry, title
 
