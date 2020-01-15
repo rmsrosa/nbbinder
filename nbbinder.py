@@ -51,7 +51,7 @@ REG_INS = re.compile('^' + IDX_GRP + INS_GRP + r'\.'
                      + '-' + MAIN_GRP + EXT_GRP + '$')
 REG_LINK = re.compile(r'(\]\()' + IDX_GRP + r'\.'
                       + IDX_GRP + COMPL_GRP
-                      + '-' + MAIN_GRP + EXT_GRP + '\)')
+                      + '-' + MAIN_GRP + EXT_GRP + r'\)')
 REG_COMPL = re.compile(COMPL_SUBGRPS)
 
 # Markers for the affected notebook cells
@@ -284,7 +284,7 @@ def get_nb_full_entry(path_to_notes: str = '.',
     elif section[0] == 'A':
         section = section[1]
     elif not section[1].isdecimal():
-        section = ''     
+        section = ''
 
     title = get_nb_title(path_to_notes, nb_name)
 
@@ -305,10 +305,7 @@ def get_nb_full_entry(path_to_notes: str = '.',
         else:
             md_pre_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
 
-        idx_entry = ''
-
-        if comp_reg.group(1):
-            idx_entry = comp_reg.group(1)
+        idx_entry = comp_reg.group(1)
 
         if comp_reg.group(2) == '#':
             idx_entry += ' ' + chapter
