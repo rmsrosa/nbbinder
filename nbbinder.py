@@ -28,26 +28,31 @@ from nbformat.v4.nbbase import new_markdown_cell
 from nbconvert import exporters
 
 # Regular expression for indexing the notebooks
+# '^' = beginning of string
+# '$' = end of string
+# r'' for raw text
 # Tested in https://regexr.com/ (which is not the same as in python)
-# in https://regex101.com/ (many flavors) and with re library
+# in https://regex101.com/ (many flavors)
+# in https://pythex.org/ (python regex)
+# and with the `re` module
 
 IDX_GRP = r'([0-9]{2}|[A-Z][0-9A-Z])'
-COMPL_GRP = r'(\*[a-z]?|)'
-COMPL_SUBGRP = r'(\*)\w(\*|\#)?\w?(\*|\#)?'
+COMPL_GRP = r'(\*.*|)'
+COMPL_SUBGRPS = r'^\*([^#^*^:]*)([\*|\#]?)([^#^*^:]*)([\*|\#]?)([^#^*]*)$'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'
 EXT_GRP = r'(\.ipynb)'
 INS_GRP = r'(\&[a-z]?|)'
-MD_HTML_GRP = r'(\]\()'
 
-REG_IDX = re.compile(r'\b' + IDX_GRP + r'\b')
-REG = re.compile(r'\b' + IDX_GRP + r'\.' + IDX_GRP + COMPL_GRP
-                 + '-' + MAIN_GRP + EXT_GRP + r'\b')
-REG_INS = re.compile(r'\b' + IDX_GRP + INS_GRP + r'\.'
+REG_IDX = re.compile('^' + IDX_GRP + '$')
+REG = re.compile('^' + IDX_GRP + r'\.' + IDX_GRP + COMPL_GRP
+                 + '-' + MAIN_GRP + EXT_GRP + '$')
+REG_INS = re.compile('^' + IDX_GRP + INS_GRP + r'\.'
                      + IDX_GRP + INS_GRP + COMPL_GRP
-                     + '-' + MAIN_GRP + EXT_GRP + r'\b')
-REG_LINK = re.compile(MD_HTML_GRP + IDX_GRP + r'\.'
+                     + '-' + MAIN_GRP + EXT_GRP + '$')
+REG_LINK = re.compile(r'(\]\()' + IDX_GRP + r'\.'
                       + IDX_GRP + COMPL_GRP
-                      + '-' + MAIN_GRP + EXT_GRP + r'\b')
+                      + '-' + MAIN_GRP + EXT_GRP + '\)')
+REG_COMPL = re.compile(COMPL_SUBGRPS)
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"
@@ -254,14 +259,12 @@ def get_nb_full_entry(path_to_notes: str = '.',
 
     Returns
     -------
-    markdown_entry : str
+    md_pre_entry : str
         The type of markdown header or identation for the entry in
         Table of Contents
 
-    notebook_entry : str
-        The full notebook entry, with the title, preceeded,
-        depending on the case, of the Chapter and Section numbers
-        or letters.
+    idx_entry : str
+        The index entry, with the Chapter and Section numbers or letters.
 
     title : str
         The title of the notebook, given in the first cell starting
@@ -270,25 +273,60 @@ def get_nb_full_entry(path_to_notes: str = '.',
     chapter, section, complement = REG.match(nb_name).group(1, 2, 3)
 
     if chapter.isdecimal():
-        chapter_clean = int(chapter)
-    elif chapter[1].isdecimal():
-        chapter_clean = chapter
-    else:
-        chapter_clean = chapter[1]
+        chapter = chapter.lstrip('0')
+    elif chapter[0] == 'A':
+        chapter = chapter[1]
+    elif not chapter[1].isdecimal():
+        chapter = ''
+
+    if section.isdecimal():
+        section = section.lstrip('0')
+    elif section[0] == 'A':
+        section = section[1]
+    elif not section[1].isdecimal():
+        section = ''     
 
     title = get_nb_title(path_to_notes, nb_name)
 
-    if chapter == '00' or chapter[0] >= 'B' or complement == '*':
-        markdown_entry = '### '
-        num_entry = ''
-    elif section == '00' or complement == '*#':
-        markdown_entry = '### '
-        num_entry = '{}. '.format(chapter_clean)
+    if not complement or set(complement) in ({'*'}, {'#', '*'}):
+        if not chapter or set(complement) == {'*'}:
+            md_pre_entry = '### '
+            idx_entry = ''
+        elif not section or complement == '*#' or complement == '*#*':
+            md_pre_entry = '### '
+            idx_entry = '{}. '.format(chapter)
+        else:
+            md_pre_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
+            idx_entry = '{}.{}. '.format(chapter, section)
     else:
-        markdown_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
-        num_entry = '{}.{}. '.format(chapter_clean, int(section))
+        comp_reg = REG_COMPL.match(complement)
+        if not comp_reg.group(4):
+            md_pre_entry = '### '
+        else:
+            md_pre_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
 
-    return markdown_entry, num_entry, title
+        idx_entry = ''
+
+        if comp_reg.group(1):
+            idx_entry = comp_reg.group(1)
+
+        if comp_reg.group(2) == '#':
+            idx_entry += ' ' + chapter
+
+        if comp_reg.group(3):
+            idx_entry += ' ' + comp_reg.group(3) + ' '
+
+        if comp_reg.group(4) == '#':
+            idx_entry += section
+
+        if comp_reg.group(5):
+            idx_entry += comp_reg.group(5) + ' '
+        else:
+            idx_entry += '. '
+
+        idx_entry = idx_entry.lstrip()
+
+    return md_pre_entry, idx_entry, title
 
 
 def get_nb_entry(path_to_notes: str = '.',
@@ -355,14 +393,14 @@ def yield_contents(path_to_notes: str = '.',
         Next navigator entry in the iterator
     """
     for nb_name in indexed_notebooks(path_to_notes):
-        markdown_entry, num_entry, title \
+        md_pre_entry, idx_entry, title \
             = get_nb_full_entry(path_to_notes, nb_name)
         if show_index_in_toc:
-            yield '{}[{}]({})\n'.format(markdown_entry,
-                                        num_entry + title,
+            yield '{}[{}]({})\n'.format(md_pre_entry,
+                                        idx_entry + title,
                                         nb_name)
         else:
-            yield '{}[{}]({})\n'.format(markdown_entry, title, nb_name)
+            yield '{}[{}]({})\n'.format(md_pre_entry, title, nb_name)
 
 
 def get_contents(path_to_notes: str = '.',
