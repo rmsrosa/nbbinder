@@ -22,7 +22,6 @@ badges:
       title: View Markdown
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_md
       extension: .md
-      replace_links: True
       label: view
       message: markdown
       color: orange
@@ -30,7 +29,6 @@ badges:
       title: View PDF
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_pdf
       extension: .pdf
-      replace_links: True
       label: view
       message: pdf
       color: blueviolet

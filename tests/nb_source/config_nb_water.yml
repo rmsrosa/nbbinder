@@ -28,8 +28,6 @@ badges:
     - name: nbviewer
       title: View in NBViewer
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water
-      extension: .ipynb
-      replace_links: False
       label: view in
       message: nbviewer
       color: orange
@@ -37,7 +35,6 @@ badges:
       title: View Slides
       url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_slides
       extension: .slides.html
-      replace_links: True
       label: view
       message: slides
       color: darkgreen

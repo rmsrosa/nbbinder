@@ -873,18 +873,17 @@ def get_badge_entries(path_to_notes: str = '.',
         to add custom badges.
 
         Each dictionary in the list should have the following keys:
-        `name` (str), `title` (str), `url` (str), `replace_links` (bool),
-        `extension` (str), `label` (str), `message` (str), and
-        `color` (str).
+        `name` (str), `title` (str), `url` (str), `extension` (str),
+        `label` (str), `message` (str), and `color` (str).
 
         The keys `name`, `title` and `url` are used for the building
         the `href` link in the badge, with `name` being the `alt`
         argument of `href`.
 
-        The keys `replace_links` and `extension` are used to replace
+        The key `extension` is used in case there is a need to replace
         the `.ipynb` extension of each notebook to the appropriate
         extension, e.g `.md`, `.slides.html`, `.pdf`, `.py`, `.tex`,
-        and so on.
+        and so on. If `extension` is omitted, no replacement occurs.
 
         The keys `label`, `message`, and `color` are used to build
         the badge via the `shields.io` constructor.
@@ -931,8 +930,9 @@ def get_badge_entries(path_to_notes: str = '.',
             for badge in custom_badges:
                 this_nb_custom_badge_links.append(CUSTOM_BADGE_LINK.format(
                     badge_url=badge['url'],
-                    badge_filename=this_nb[:REG.match(this_nb).start(5)]
-                    + badge['extension'],
+                    badge_filename=this_nb if 'extension' not in badge
+                    else this_nb[:REG.match(this_nb).start(5)]
+                        + badge['extension'],
                     badge_label=badge['label'],
                     badge_message=badge['message'],
                     badge_color=badge['color'],
