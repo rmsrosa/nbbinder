@@ -66,11 +66,22 @@ CENTER_TEMPLATE = "| [{title}]({url}) "
 NEXT_TEMPLATE = "| [{title} ->]({url})"
 
 # Link templates for the badges
-COLAB_LINK = """<a href="https://colab.research.google.com/github/{user}/{repository}/blob/{branch}/{nb_dir}/{notebook_filename}"><img align="left" src="https://colab.research.google.com/assets/colab-badge.svg" alt="Google Colab" title="Open in Google Colab"></a>
+COLAB_LINK = \
+    """<a href="https://colab.research.google.com/github/{user}/{repository}/\
+blob/{branch}/{nb_dir}/{notebook_filename}"><img align="left" \
+src="https://colab.research.google.com/assets/colab-badge.svg" \
+alt="Google Colab" title="Open in Google Colab"></a>
 """
-BINDER_LINK = """<a href="https://mybinder.org/v2/gh/{user}/{repository}/{branch}?filepath={nb_dir}/{notebook_filename}"><img align="left" src="https://mybinder.org/badge.svg" alt="Binder" title="Open in binder"></a>
+BINDER_LINK = \
+    """<a href="https://mybinder.org/v2/gh/{user}/{repository}/\
+{branch}?filepath={nb_dir}/{notebook_filename}"><img align="left" \
+src="https://mybinder.org/badge.svg" alt="Binder" \
+title="Open in binder"></a>
 """
-CUSTOM_BADGE_LINK = """<a href="{badge_url}/{badge_filename}"><img align="left" src="https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
+CUSTOM_BADGE_LINK = \
+    """<a href="{badge_url}/{badge_filename}"><img align="left" \
+src="https://img.shields.io/badge/{badge_label}-{badge_message}\
+-{badge_color}" alt="{badge_alt}" title="{badge_title}"></a>
 """
 
 # Metadata to flag cells for the slides
