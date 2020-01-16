@@ -12,7 +12,7 @@ header: "[*NBBinder test on a collection of notebooks about some thermodynamic p
 navigators:
   core_navigators:
     - 00.00-Water_Contents.ipynb
-    - 1A.00*-References.ipynb
+    - BA.00-References.ipynb
   show_index_in_nav: False
   show_nb_title_in_nav: True
 
