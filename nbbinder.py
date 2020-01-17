@@ -30,15 +30,16 @@ from nbconvert import exporters
 # Regular expression for indexing the notebooks
 # '^' = beginning of string
 # '$' = end of string
-# r'' for raw text
-# Tested in https://regexr.com/ (which is not the same as in python)
+# r'' for raw text, needed when using special characters
+# Tested in https://regexr.com/ (which is not the same flavor as python)
 # in https://regex101.com/ (many flavors)
-# in https://pythex.org/ (python regex)
+# in https://pythex.org/ (python flavor regex)
 # and with the `re` module
 
 IDX_GRP = r'([0-9]{2}|[A-Z][0-9A-Z])'
 COMPL_GRP = r'(\*.*|)'
-COMPL_SUBGRPS = r'^\*([^#^*^:]*)([\*|\#]?)([^#^*^:]*)([\*|\#]?)([^#^*]*)$'
+COMPL_SUBGRPS \
+    = r'^\*([#^$^*^-^.^:]*)([\*|\#]?)([#^$^*^-^.^:]*)([\*|\#]?)([:.]?)$'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'
 EXT_GRP = r'(\.ipynb)'
 INS_GRP = r'(\&[a-z]?|)'
@@ -928,6 +929,8 @@ def get_badge_entries(path_to_notes: str = '.',
 
         if custom_badges:
             for badge in custom_badges:
+#                print(this_nb)
+#                print(REG.match(this_nb).groups())
                 this_nb_custom_badge_links.append(CUSTOM_BADGE_LINK.format(
                     badge_url=badge['url'],
                     badge_filename=this_nb if 'extension' not in badge
