@@ -1,4 +1,4 @@
-nbbversion: 0.7a
+nbbversion: 0.9a
 
 path_to_notes: nb_builds/nb_water
 
@@ -17,27 +17,27 @@ navigators:
   show_nb_title_in_nav: True
 
 badges:
-  github_info:
-    user: rmsrosa
-    repository: nbbinder
-    branch: master
-    nb_dir: nb_builds/tests/nb_alice
-  show_colab: True
-  show_binder: True
-  custom_badges:
-    - name: nbviewer
-      title: View in NBViewer
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water
-      label: view in
-      message: nbviewer
-      color: orange
-    - name: slides
-      title: View Slides
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_slides
-      extension: .slides.html
-      label: view
-      message: slides
-      color: darkgreen
+  - name: Google Colab
+    title: Open in Google Colab
+    url: https://colab.research.google.com/github/rmsrosa/nbbinder/blob/master/nb_builds/tests/nb_alice
+    src: https://colab.research.google.com/assets/colab-badge.svg
+  - name: Binder
+    title: Open in binder
+    url: https://mybinder.org/v2/gh/rmsrosa/nbbinder/master?filepath=nb_builds/tests/nb_alice
+    src: https://mybinder.org/badge.svg
+  - name: nbviewer
+    title: View in NBViewer
+    url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water
+    label: view in
+    message: nbviewer
+    color: orange
+  - name: slides
+    title: View Slides
+    url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_slides
+    extension: .slides.html
+    label: view
+    message: slides
+    color: darkgreen
 
 exports:
   - export_path: nb_builds/nb_water_slides

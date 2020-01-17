@@ -1,4 +1,4 @@
-nbbversion: 0.7a
+nbbversion: 0.9a
 
 path_to_notes: nb_export_builds/nb_water_export
 
@@ -17,21 +17,20 @@ navigators:
   show_nb_title_in_nav: True
 
 badges:
-  custom_badges:
-    - name: mardown
-      title: View Markdown
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_md
-      extension: .md
-      label: view
-      message: markdown
-      color: orange
-    - name: pdf
-      title: View PDF
-      url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_pdf
-      extension: .pdf
-      label: view
-      message: pdf
-      color: blueviolet
+  - name: mardown
+    title: View Markdown
+    url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_md
+    extension: .md
+    label: view
+    message: markdown
+    color: orange
+  - name: pdf
+    title: View PDF
+    url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_pdf
+    extension: .pdf
+    label: view
+    message: pdf
+    color: blueviolet
 
 exports:
   - export_path: nb_export_builds/nb_water_md

@@ -61,14 +61,6 @@ if __name__ == '__main__':
              core_navigators=[
                  "00.00-Alice's_Adventures_in_Wonderland.ipynb"
              ],
-             github_info={
-                 'user': 'rmsrosa',
-                 'repository': 'nbbinder',
-                 'branch': 'master',
-                 'nb_dir': os.path.join('tests', BUILD_DIR, 'nb_alice')
-             },
-             show_colab=True,
-             show_binder=True,
              show_index_in_nav=False)
 
     bind_test(os.path.join(BUILD_DIR, 'nb_alice'),
