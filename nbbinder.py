@@ -37,10 +37,9 @@ from nbconvert import exporters
 # and with the `re` module
 
 IDX_GRP = r'([0-9]{2}|[A-Z][0-9A-Z])'
-COMPL_GRP = r'(\*.*|)'
-COMPL_SUBGRPS \
-    = r'^\*([#^$^*^-^.^:]*)([\*|\#]?)([#^$^*^-^.^:]*)([\*|\#]?)([:.]?)$'
-MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'
+COMPL_GRP = r'(\*[^#*]*[\*|\#]?[^#*]*[\*|\#]?[:.]?|)'
+COMPL_SUBGRPS = r'^\*([^#*]*)([\*|\#]?)([^#*]*)([\*|\#]?)([:.]?)$'
+MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)' # no open right parentheses
 EXT_GRP = r'(\.ipynb)'
 INS_GRP = r'(\&[a-z]?|)'
 
