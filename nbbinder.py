@@ -1086,117 +1086,6 @@ def add_navigators(path_to_notes: str = '.',
         nbformat.write(nb, nb_file)
 
 
-def bind_from_arguments(path_to_notes: str = '.',
-                        reindexing: list = None,
-                        contents: list = None,
-                        header: str = '',
-                        navigators: list = None,
-                        badges: list = None,
-                        exports: list = None) -> None:
-    """Binds the collection of notebooks from the arguments provided.
-
-    Parameters
-    ----------
-    path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
-
-    insert : bool
-        Indicates whether to insert notebooks in the collection of
-        indexed notebooks or not.
-
-    tighten : bool
-        Indicates whether to tighten the indices of the notebooks,
-        i.e. whether there are gaps in the indices of the notebooks
-        and, if so, rename the affected notebooks in the
-        appropriate order.
-
-    toc_nb_name : str
-        Filename of the notebook in which the table of contents
-        is to be inserted
-
-    toc_title : str
-        Text to be displayed as the title for the table of contents cell,
-        e.g. 'Contents', 'Table of Contents', or in other languages,
-        'Conteúdo', 'Table des Matières', and so on.
-
-    header : str
-        The string with the contents to be included in the header cell.
-
-    core_navigators : list of str
-        A lists of strings with the filenames of each notebook to be
-        included in the navigators, in between the links to the
-        "previous" and the "next" notebooks.
-
-    show_index_in_toc : bool
-        Whether to display the navigator with the chapter
-        and section number of each notebook or just their title.
-
-    show_nb_title_in_nav : bool
-        Whether to diplay the title of the notebook in the previous
-        and next links or just display the words 'Previous' and 'Next'.
-
-    show_index_in_nav : bool
-        Whether to display the navigator with the chapter
-        and section number of each notebook or just their title.
-    """
-
-    markers = {
-        'contents': (TOC_MARKER, contents),
-        'header': (HEADER_MARKER, header),
-        'badges': (BADGES_MARKER, badges),
-        'navigators': (NAVIGATOR_MARKER, navigators)
-    }
-
-    for key, (marker, arg) in markers.items():
-        refresh_marker_cells(
-            path_to_notes=path_to_notes,
-            marker=marker,
-            mode='clean' if arg else 'remove')
-
-    refresh_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
-
-    if reindexing:
-        reindex(path_to_notes, **reindexing)
-
-    if contents:
-        add_contents(path_to_notes=path_to_notes, **contents)
-
-    if header:
-        add_headers(path_to_notes=path_to_notes, header=header)
-
-    if navigators:
-        add_navigators(path_to_notes=path_to_notes, **navigators)
-
-    if badges:
-        add_badges(path_to_notes=path_to_notes, badges=badges)
-
-    if exports:
-        for export in exports:
-            export_notebooks(path_to_notes=path_to_notes, **export)
-
-
-def bind_from_configfile(config_filename: str) -> None:
-    """Binds the collection of notebooks from a configuration file.
-
-    It reads the given configuration file in YAML format and pass
-    the arguments in the configuration file to the function
-    `bind_from_arguments()`.
-
-    Parameters
-    ----------
-    config_filename : str
-        The filename of the configuration file.
-    """
-    with open(config_filename, 'r') as config_file:
-        config = yaml.load(config_file, Loader=yaml.FullLoader)
-
-    nbbversion = config.pop('nbbversion', None)
-
-    bind_from_arguments(**config)
-
-
 def bind(aux: str = None,
          path_to_notes: str = None,
          reindexing: list = None,
@@ -1206,10 +1095,19 @@ def bind(aux: str = None,
          badges: list = None,
          exports: list = None,
          config_filename: str = None) -> None:
-    """Binds the collection of notebooks from the arguments provided.
+    """Binds the collection of notebooks.
+
+    It binds the collection of notebooks from either a configuration
+    file `config_filename` or from the given arguments.
 
     Parameters
     ----------
+
+    aux : str
+        It allows for the first argument to be a non keyword argument
+        which can be either the `config_filename` (if it ends in `.yaml`
+        or `.yml`) or the `path_to_notes` (otherwise).
+
     path_to_notes : str
         The path to the directory that contains the notebooks,
         either the absolute path or the path relative from
@@ -1253,6 +1151,9 @@ def bind(aux: str = None,
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
+
+    config_filename : str
+        The filename of the configuration file.
     """
 
     if aux:
@@ -1303,40 +1204,6 @@ def bind(aux: str = None,
         if exports:
             for export in exports:
                 export_notebooks(path_to_notes=path_to_notes, **export)
-
-def bind_old(*args, **kargs) -> None:
-    """Binds the collection of notebooks.
-
-    It expects either a configuration file or a list of arguments in
-    order to bind the collection of indexed notebooks.
-
-    If the first argument is a string ending with either '.yml' or
-    '.yaml', it assumes this is the filename of a configuration file
-    and pass it on to the function `bind_from_configfile()`.
-
-    Otherwise, it assumes it is given directly the arguments to bind
-    the collections and pass them on to the function
-    `bind_from_arguments()`.
-
-    Parameters
-    ----------
-    *args : Variable arguments used to check whether a configuration file
-        or path_to_notes is given
-    *kargs: Variable keyword arguments to be passed to function
-        `bind_from_arguments()` in case a configuration file is not given
-
-    See also
-    --------
-    bind_from_arguments : binds the notebooks from the arguments provided.
-
-    bind_from_configfile: binds the notebooks using a configuration file.
-    """
-    if args and args[0].endswith(('.yml', '.yaml')):
-        bind_from_configfile(args[0])
-    elif 'path_to_notes' in kargs.keys():
-        bind_from_arguments(**kargs)
-    else:
-        bind_from_arguments(args[0], **kargs)
 
 
 if __name__ == '__main__':
