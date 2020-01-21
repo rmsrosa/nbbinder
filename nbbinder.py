@@ -60,13 +60,6 @@ HEADER_MARKER = "<!--HEADER-->"
 BADGES_MARKER = "<!--BADGES-->"
 NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 
-MARKERS = {
-    'contents': "<!--TABLE_OF_CONTENTS-->",
-    'header': "<!--HEADER-->",
-    'badges': "<!--BADGES-->",
-    'navigators': "<!--NAVIGATOR-->"
-}
-
 # Navigator templates
 PREV_TEMPLATE = "[<- {title}]({url}) "
 CENTER_TEMPLATE = "| [{title}]({url}) "
@@ -195,7 +188,7 @@ def refresh_marker_cells(path_to_notes: str = '.', marker: str = None,
         'clean' mode is to preserve any metadata that differs from the
         default ones added by the binder (such as about the slide property).
     """
-    if marker and mode in ('clean', 'remove'):
+    if marker and (mode in ('clean', 'remove')):
         for nb_name in indexed_notebooks(path_to_notes):
             nb_file = os.path.join(path_to_notes, nb_name)
             nb = nbformat.read(nb_file, as_version=4)
@@ -210,7 +203,7 @@ def refresh_marker_cells(path_to_notes: str = '.', marker: str = None,
                     new_cells.append(cell)
                     new_cells[-1].source = marker
                 elif mode == 'remove':
-                    logging.info("- cleaning '{arg1}' cell from {arg2}",
+                    logging.info("- removing '{arg1}' cell from {arg2}",
                                  arg1=marker, arg2=nb_name)
 
             nb.cells = new_cells
@@ -1149,10 +1142,6 @@ def bind_from_arguments(path_to_notes: str = '.',
         and section number of each notebook or just their title.
     """
 
-    refresh_marker_cells(path_to_notes, HEADER_MARKER, 'remove')
-    refresh_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
-    refresh_marker_cells(path_to_notes, BADGES_MARKER, 'remove')
-
     markers = {
         'contents': (TOC_MARKER, contents),
         'header': (HEADER_MARKER, header),
@@ -1160,17 +1149,13 @@ def bind_from_arguments(path_to_notes: str = '.',
         'navigators': (NAVIGATOR_MARKER, navigators)
     }
 
-    print()
-    print('path_to_notes:', path_to_notes)
     for key, (marker, arg) in markers.items():
-        print('key:', key)
-        print('marker', marker)
-        print('arg:', arg)
-        print('mode:', 'clean' if arg else 'remove')
-#        refresh_marker_cells(
-#            path_to_notes,
-#            marker=marker,
-#            mode=['clean' if arg else 'remove'])
+        refresh_marker_cells(
+            path_to_notes=path_to_notes,
+            marker=marker,
+            mode='clean' if arg else 'remove')
+
+    refresh_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
 
     if reindexing:
         reindex(path_to_notes, **reindexing)
@@ -1192,7 +1177,7 @@ def bind_from_arguments(path_to_notes: str = '.',
             export_notebooks(path_to_notes=path_to_notes, **export)
 
 
-def bind_from_configfile_new(config_file: str) -> None:
+def bind_from_configfile(config_filename: str) -> None:
     """Binds the collection of notebooks from a configuration file.
 
     It reads the given configuration file in YAML format and pass
@@ -1201,77 +1186,125 @@ def bind_from_configfile_new(config_file: str) -> None:
 
     Parameters
     ----------
-    config_file : str
+    config_filename : str
         The filename of the configuration file.
     """
-    with open(config_file, 'r') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
+    with open(config_filename, 'r') as config_file:
+        config = yaml.load(config_file, Loader=yaml.FullLoader)
 
     nbbversion = config.pop('nbbversion', None)
 
-    print()
-    print(config_file)
     bind_from_arguments(**config)
 
 
-def bind_from_configfile(config_file: str) -> None:
-    """Binds the collection of notebooks from a configuration file.
-
-    It reads the given configuration file in YAML format and pass
-    the arguments in the configuration file to the function
-    `bind_from_arguments()`.
+def bind(aux: str = None,
+         path_to_notes: str = None,
+         reindexing: list = None,
+         contents: list = None,
+         header: str = '',
+         navigators: list = None,
+         badges: list = None,
+         exports: list = None,
+         config_filename: str = None) -> None:
+    """Binds the collection of notebooks from the arguments provided.
 
     Parameters
     ----------
-    config_file : str
-        The filename of the configuration file.
+    path_to_notes : str
+        The path to the directory that contains the notebooks,
+        either the absolute path or the path relative from
+        where the code is being ran.
+
+    insert : bool
+        Indicates whether to insert notebooks in the collection of
+        indexed notebooks or not.
+
+    tighten : bool
+        Indicates whether to tighten the indices of the notebooks,
+        i.e. whether there are gaps in the indices of the notebooks
+        and, if so, rename the affected notebooks in the
+        appropriate order.
+
+    toc_nb_name : str
+        Filename of the notebook in which the table of contents
+        is to be inserted
+
+    toc_title : str
+        Text to be displayed as the title for the table of contents cell,
+        e.g. 'Contents', 'Table of Contents', or in other languages,
+        'Conteúdo', 'Table des Matières', and so on.
+
+    header : str
+        The string with the contents to be included in the header cell.
+
+    core_navigators : list of str
+        A lists of strings with the filenames of each notebook to be
+        included in the navigators, in between the links to the
+        "previous" and the "next" notebooks.
+
+    show_index_in_toc : bool
+        Whether to display the navigator with the chapter
+        and section number of each notebook or just their title.
+
+    show_nb_title_in_nav : bool
+        Whether to diplay the title of the notebook in the previous
+        and next links or just display the words 'Previous' and 'Next'.
+
+    show_index_in_nav : bool
+        Whether to display the navigator with the chapter
+        and section number of each notebook or just their title.
     """
-    with open(config_file, 'r') as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
 
-    if 'path_to_notes' in config:
-        path_to_notes = config['path_to_notes']
+    if aux:
+        if not config_filename and aux.endswith(('.yml', '.yaml')):
+            config_filename = aux
+        elif not path_to_notes:
+            path_to_notes = aux
+        else:
+            raise Exception('No path to notebooks nor config file given.')
+
+    if config_filename:
+        with open(config_filename, 'r') as config_file:
+            config = yaml.load(config_file, Loader=yaml.FullLoader)
+        nbbversion = config.pop('nbbversion', None)
+        bind(**config)
     else:
-        path_to_notes = '.'
+        markers = {
+            'contents': (TOC_MARKER, contents),
+            'header': (HEADER_MARKER, header),
+            'badges': (BADGES_MARKER, badges),
+            'navigators': (NAVIGATOR_MARKER, navigators)
+        }
 
-    if 'reindexing' in config:
-        reindex(path_to_notes, **config['reindexing'])
+        for key, (marker, arg) in markers.items():
+            refresh_marker_cells(
+                path_to_notes,
+                marker=marker,
+                mode='clean' if arg else 'remove'
+                )
 
-#    key_marker = {
-#        'header': HEADER_MARKER,
-#        'navigators': NAVIGATOR_MARKER,
-#        'badges': BADGES_MARKER
-#    }
-#    for key in key_marker:
-#        if key in config:
-#            mode = 'clean'
-#        else:
-#            mode = 'remove'
-#        refresh_marker_cells(path_to_notes, key_marker[key], mode)
+        refresh_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
 
-    for key, marker in MARKERS.items():
-        refresh_marker_cells(path_to_notes,
-                            marker=marker,
-                            mode=['clean' if key in config else 'remove'])
+        if reindexing:
+            reindex(path_to_notes, **reindexing)
 
-    if 'contents' in config:
-        add_contents(path_to_notes=path_to_notes, **config['contents'])
+        if contents:
+            add_contents(path_to_notes=path_to_notes, **contents)
 
-    if 'header' in config:
-        add_headers(path_to_notes=path_to_notes, header=config['header'])
+        if header:
+            add_headers(path_to_notes=path_to_notes, header=header)
 
-    if 'navigators' in config:
-        add_navigators(path_to_notes=path_to_notes, **config['navigators'])
+        if navigators:
+            add_navigators(path_to_notes=path_to_notes, **navigators)
 
-    if 'badges' in config:
-        add_badges(path_to_notes=path_to_notes, badges=config['badges'])
+        if badges:
+            add_badges(path_to_notes=path_to_notes, badges=badges)
 
-    if 'exports' in config:
-        for export in config['exports']:
-            export_notebooks(path_to_notes=path_to_notes, **export)
+        if exports:
+            for export in exports:
+                export_notebooks(path_to_notes=path_to_notes, **export)
 
-
-def bind(*args, **kargs) -> None:
+def bind_old(*args, **kargs) -> None:
     """Binds the collection of notebooks.
 
     It expects either a configuration file or a list of arguments in
@@ -1299,7 +1332,7 @@ def bind(*args, **kargs) -> None:
     bind_from_configfile: binds the notebooks using a configuration file.
     """
     if args and args[0].endswith(('.yml', '.yaml')):
-        bind_from_configfile_new(args[0])
+        bind_from_configfile(args[0])
     elif 'path_to_notes' in kargs.keys():
         bind_from_arguments(**kargs)
     else:
@@ -1314,7 +1347,7 @@ if __name__ == '__main__':
         logging.info("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
     else:
         try:
-            bind_from_configfile(sys.argv[1])
+            bind(sys.argv[1])
         except NotImplementedError:
             logging.info('provided argument is not a yaml file or not \
                           a properly formated yaml configuration file.')
