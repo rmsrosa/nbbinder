@@ -54,14 +54,22 @@ if __name__ == '__main__':
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_alice'))
 
     logging.info("\n# Binding 'nb_alice' notebooks with parameters")
-    nbb.bind(path_to_notes=os.path.join(BUILD_DIR, 'nb_alice'),
-             toc_nb_name="00.00-Alice's_Adventures_in_Wonderland.ipynb",
-             show_index_in_toc=True,
-             header="NBBinder test with 'Alice's Adventures in Wonderland'",
-             core_navigators=[
-                 "00.00-Alice's_Adventures_in_Wonderland.ipynb"
-             ],
-             show_index_in_nav=False)
+
+
+    nbb.bind(
+        path_to_notes=os.path.join(BUILD_DIR, 'nb_alice'),
+        contents = {
+            'toc_nb_name': "00.00-Alice's_Adventures_in_Wonderland.ipynb",
+            'show_index_in_toc': True
+            },
+        header = "NBBinder test with 'Alice's Adventures in Wonderland'",
+        navigators = {
+            'core_navigators': 
+                ["00.00-Alice's_Adventures_in_Wonderland.ipynb"
+                ],
+            'show_index_in_nav': False
+            }
+        )
 
     bind_test(os.path.join(BUILD_DIR, 'nb_alice'),
               os.path.join(BUILD_DIR, 'nb_alice'),
@@ -120,15 +128,27 @@ if __name__ == '__main__':
     logging.info("\n# Binding the notebooks in {arg} with 'nbb.bind()'",
                  arg=os.path.join(os.path.dirname(__file__),
                                   BUILD_DIR, 'nb_grammar_bound'))
-    nbb.bind(path_to_notes=os.path.join(BUILD_DIR, 'nb_grammar_bound'),
-             insert=True, tighten=True,
-             toc_nb_name='00.00-Front_Page.ipynb',
-             toc_title='Table of Contents',
-             show_index_in_toc=True,
-             header="NB Grammar Test for the NBBinder module",
-             core_navigators=['00.00-Front_Page.ipynb',
-                              'BB.00-Bibliography.ipynb'],
-             show_index_in_nav=False)
+
+    nbb.bind(
+        path_to_notes=os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+        reindexing = {
+            'insert': True, 
+            'tighten': True
+            },
+        contents = {
+            'toc_nb_name': '00.00-Front_Page.ipynb',
+            'toc_title': 'Table of Contents',
+            'show_index_in_toc': True
+            },
+        header = "NB Grammar Test for the NBBinder module",
+        navigators = {
+            'core_navigators': 
+                ['00.00-Front_Page.ipynb',
+                'BB.00-Bibliography.ipynb'
+                ],
+            'show_index_in_nav': False
+            }
+        )
 
     # Tests with nb_grammar_insert
 

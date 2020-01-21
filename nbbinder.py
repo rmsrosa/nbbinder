@@ -60,6 +60,13 @@ HEADER_MARKER = "<!--HEADER-->"
 BADGES_MARKER = "<!--BADGES-->"
 NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 
+MARKERS = {
+    'contents': "<!--TABLE_OF_CONTENTS-->",
+    'header': "<!--HEADER-->",
+    'badges': "<!--BADGES-->",
+    'navigators': "<!--NAVIGATOR-->"
+}
+
 # Navigator templates
 PREV_TEMPLATE = "[<- {title}]({url}) "
 CENTER_TEMPLATE = "| [{title}]({url}) "
@@ -122,15 +129,14 @@ def increase_index(idx: str) -> str:
     If the index is alphanumeric, with the first character being a
     letter and the second character being a digit in the range '0' to
     '8', the digit is increased by one, and the function returns an
-    index with the same letter and with the digit in the range '1'
+    index with the same first letter and with the digit in the range '1'
     to '9'. If the digit is already '9', there is an Exception error.
 
-    If the index is purely alphabetical or if it is alphanumeric with
-    the second character being a letter from 'A' to 'Y', then the
-    ordinal number of the letter is increased, with the function
-    returning an index with the same first character and with the
-    second character in the range 'B' to 'Z'. If the second character
-    is already 'Z', there is an Exception error.
+    If the index is purely alphabetical, then the ordinal ascii number 
+    of the letter is increased by 1, with the function returning 
+    an index with the same first character and with the second character 
+    in the range 'B' to 'Z'. If the second character is already 'Z', 
+    there is an Exception error.
 
     It also raises an exception if the given argument is not an index.
 
@@ -148,7 +154,7 @@ def increase_index(idx: str) -> str:
     ------
     Exception if string is not an index.
 
-    Exception if index is increasead beyond allowed range.
+    Exception if index is increasead beyond the allowed range.
     """
     if not REG_IDX.match(idx):
         raise Exception('String is not an index')
@@ -909,27 +915,27 @@ def add_badges(path_to_notes: str = '.',
         Info for building extra badges. See the docstring
         of `get_badge_entries()`
     """
-    for nb_filename, \
-        this_nb_badge_links \
-            in get_badge_entries(path_to_notes, badges):
-        nb = nbformat.read(nb_filename, as_version=4)
-        nb_name = os.path.basename(nb_filename)
+    if badges:
+        for nb_filename, this_nb_badge_links \
+                in get_badge_entries(path_to_notes, badges):
+            nb = nbformat.read(nb_filename, as_version=4)
+            nb_name = os.path.basename(nb_filename)
 
-        badges_top = BADGES_MARKER + "\n"
+            badges_top = BADGES_MARKER + "\n"
 
-        for badge_link in this_nb_badge_links:
-            badges_top += badge_link + "&nbsp;"
+            for badge_link in this_nb_badge_links:
+                badges_top += badge_link + "&nbsp;"
 
-        if len(nb.cells) > 1 and nb.cells[1].source.startswith(BADGES_MARKER):
-            logging.info("- updating badges for {arg}", arg=nb_name)
-            nb.cells[1].source = badges_top
-            nb.cells[1].metadata = SLIDE_SKIP
-        else:
-            logging.info("- inserting badges for {arg}", arg=nb_name)
-            nb.cells.insert(1, new_markdown_cell(source=badges_top,
-                                                 metadata=SLIDE_SKIP))
+            if len(nb.cells) > 1 and nb.cells[1].source.startswith(BADGES_MARKER):
+                logging.info("- updating badges for {arg}", arg=nb_name)
+                nb.cells[1].source = badges_top
+                nb.cells[1].metadata = SLIDE_SKIP
+            else:
+                logging.info("- inserting badges for {arg}", arg=nb_name)
+                nb.cells.insert(1, new_markdown_cell(source=badges_top,
+                                                    metadata=SLIDE_SKIP))
 
-        nbformat.write(nb, nb_filename)
+            nbformat.write(nb, nb_filename)
 
 
 def prev_this_next(collection: list = None) -> None:
@@ -1088,16 +1094,12 @@ def add_navigators(path_to_notes: str = '.',
 
 
 def bind_from_arguments(path_to_notes: str = '.',
-                        insert: bool = False,
-                        tighten: bool = False,
-                        toc_nb_name: str = '',
-                        toc_title: str = '',
+                        reindexing: list = None,
+                        contents: list = None,
                         header: str = '',
-                        core_navigators: list = None,
+                        navigators: list = None,
                         badges: list = None,
-                        show_index_in_toc: bool = True,
-                        show_nb_title_in_nav: bool = True,
-                        show_index_in_nav: bool = True) -> None:
+                        exports: list = None) -> None:
     """Binds the collection of notebooks from the arguments provided.
 
     Parameters
@@ -1147,26 +1149,69 @@ def bind_from_arguments(path_to_notes: str = '.',
         and section number of each notebook or just their title.
     """
 
-    if insert or tighten:
-        reindex(path_to_notes, insert, tighten)
-
     refresh_marker_cells(path_to_notes, HEADER_MARKER, 'remove')
     refresh_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
+    refresh_marker_cells(path_to_notes, BADGES_MARKER, 'remove')
 
-    add_contents(path_to_notes=path_to_notes,
-                 toc_nb_name=toc_nb_name,
-                 toc_title=toc_title,
-                 show_index_in_toc=show_index_in_toc)
+    markers = {
+        'contents': (TOC_MARKER, contents),
+        'header': (HEADER_MARKER, header),
+        'badges': (BADGES_MARKER, badges),
+        'navigators': (NAVIGATOR_MARKER, navigators)
+    }
 
-    add_headers(path_to_notes=path_to_notes, header=header)
+    print()
+    print('path_to_notes:', path_to_notes)
+    for key, (marker, arg) in markers.items():
+        print('key:', key)
+        print('marker', marker)
+        print('arg:', arg)
+        print('mode:', 'clean' if arg else 'remove')
+#        refresh_marker_cells(
+#            path_to_notes,
+#            marker=marker,
+#            mode=['clean' if arg else 'remove'])
 
-    add_navigators(path_to_notes=path_to_notes,
-                   core_navigators=core_navigators,
-                   show_nb_title_in_nav=show_nb_title_in_nav,
-                   show_index_in_nav=show_index_in_nav)
+    if reindexing:
+        reindex(path_to_notes, **reindexing)
 
-    add_badges(path_to_notes=path_to_notes,
-               badges=badges)
+    if contents:
+        add_contents(path_to_notes=path_to_notes, **contents)
+
+    if header:
+        add_headers(path_to_notes=path_to_notes, header=header)
+
+    if navigators:
+        add_navigators(path_to_notes=path_to_notes, **navigators)
+
+    if badges:
+        add_badges(path_to_notes=path_to_notes, badges=badges)
+
+    if exports:
+        for export in exports:
+            export_notebooks(path_to_notes=path_to_notes, **export)
+
+
+def bind_from_configfile_new(config_file: str) -> None:
+    """Binds the collection of notebooks from a configuration file.
+
+    It reads the given configuration file in YAML format and pass
+    the arguments in the configuration file to the function
+    `bind_from_arguments()`.
+
+    Parameters
+    ----------
+    config_file : str
+        The filename of the configuration file.
+    """
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+
+    nbbversion = config.pop('nbbversion', None)
+
+    print()
+    print(config_file)
+    bind_from_arguments(**config)
 
 
 def bind_from_configfile(config_file: str) -> None:
@@ -1192,17 +1237,22 @@ def bind_from_configfile(config_file: str) -> None:
     if 'reindexing' in config:
         reindex(path_to_notes, **config['reindexing'])
 
-    key_marker = {
-        'header': HEADER_MARKER,
-        'navigatores': NAVIGATOR_MARKER,
-        'badges': BADGES_MARKER
-    }
-    for key in key_marker:
-        if key in config:
-            mode = 'clean'
-        else:
-            mode = 'remove'
-        refresh_marker_cells(path_to_notes, key_marker[key], mode)
+#    key_marker = {
+#        'header': HEADER_MARKER,
+#        'navigators': NAVIGATOR_MARKER,
+#        'badges': BADGES_MARKER
+#    }
+#    for key in key_marker:
+#        if key in config:
+#            mode = 'clean'
+#        else:
+#            mode = 'remove'
+#        refresh_marker_cells(path_to_notes, key_marker[key], mode)
+
+    for key, marker in MARKERS.items():
+        refresh_marker_cells(path_to_notes,
+                            marker=marker,
+                            mode=['clean' if key in config else 'remove'])
 
     if 'contents' in config:
         add_contents(path_to_notes=path_to_notes, **config['contents'])
@@ -1249,7 +1299,7 @@ def bind(*args, **kargs) -> None:
     bind_from_configfile: binds the notebooks using a configuration file.
     """
     if args and args[0].endswith(('.yml', '.yaml')):
-        bind_from_configfile(args[0])
+        bind_from_configfile_new(args[0])
     elif 'path_to_notes' in kargs.keys():
         bind_from_arguments(**kargs)
     else:
