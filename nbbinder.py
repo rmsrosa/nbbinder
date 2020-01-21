@@ -27,6 +27,9 @@ from nbformat.v4.nbbase import new_markdown_cell
 
 from nbconvert import exporters
 
+# Regular expression for splitting versioning scheme
+REG_VER = re.compile(r'^(\d+)\.(\d+)(a|b|\.)(\d*)$')
+
 # Regular expression for indexing the notebooks
 # '^' = beginning of string
 # '$' = end of string
@@ -1167,6 +1170,10 @@ def bind(aux: str = None,
         with open(config_filename, 'r') as config_file:
             config = yaml.load(config_file, Loader=yaml.FullLoader)
         nbbversion = config.pop('nbbversion', None)
+        if REG_VER.match(nbbversion).group(1,2) < \
+                REG_VER.match(__version__).group(1,2):
+            logging.WARNING('Version of config file lower than that \
+                            of script.')
         bind(**config)
     else:
         markers = {
