@@ -10,7 +10,7 @@ __copyright__ = """Modified work Copyright (c) 2019 Ricardo M S Rosa
 Original work Copyright (c) 2016 Jacob VanderPlas
 """
 __license__ = "MIT"
-__version__ = "0.9a2"
+__version__ = "0.10a1"
 
 import os
 import re

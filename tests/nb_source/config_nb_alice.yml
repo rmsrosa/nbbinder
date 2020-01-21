@@ -1,4 +1,6 @@
-nbbversion: 0.9a
+# Configuration file for the python module NBBinder
+
+nbbversion: 0.10a
 
 path_to_notes: nb_builds/nb_alice
 

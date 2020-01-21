@@ -20,11 +20,11 @@
 
 ## Description
 
-The main function in this package is called `bind()`. It reads a collection of Jupyter notebooks from a given directory and, upon configuration,
+The main function in this module is called `bind()`. It reads a collection of Jupyter notebooks from a given directory and, upon configuration,
 
 - adds a **Table of Contents** to a selected notebook file, with links to the other notebooks;
 - adds a **header** cell to each notebook, with custom information about the collection of notebooks;
-- adds a **badge** cell to each notebook, with links to opening the notebooks in different platforms or formats. One can include a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com), and other custom badges, useful for showing **slides** as exported with `nbconvert`, and so on.
+- adds a **badge** cell to each notebook, with links to opening the notebooks in different platforms or formats. For instance, on can include a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com), a badge for showing **slides** as exported with `nbconvert`, and so on.
 - adds **navigator links**, at the beggining and at the end of each notebook, with links to traverse to the previous and the next notebook, and to other selected notebooks, such as the Table of Contents and the References;
 
 ## Example
@@ -36,7 +36,9 @@ The most convenient way to use the module, or script, is via a configuration fil
 For instance, consider the following `config_nb_alice.yml` in the tests folder:
 
 ```yaml
-nbbversion: 0.7a
+# Configuration file for the python module NBBinder
+
+nbbversion: 0.10a
 
 path_to_notes: nb_builds/nb_alice
 
@@ -56,7 +58,7 @@ navigators:
 
 ### Notebook collection
 
-The following collection of indexed notebooks is included in the folder `nb_alice` in the `tests` directory:
+The following collection of indexed notebooks is built in the folder `tests/nb_builds/nb_alice`:
 
 ```text
 00.00-Alice's_Adventures_in_Wonderland.ipynb
@@ -123,23 +125,25 @@ After binding the notebooks in one of the two ways mentioned above, the followin
 
 ### [12. Alice's Evidence](#/)
 
-See [00.00-Alice's_Adventures_in_Wonderland](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the bound version of the first notebook. Experiment clicking on the badges with the mouse's right button to open the notebooks in [NBViewer](https://nbviewer.jupyter.org/) or to view the pdf of the notebooks. Experiment also the navigators to move to the other notebooks.
+See [00.00-Alice's_Adventures_in_Wonderland](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the bound version of the first notebook. Experiment clicking on the badges with the mouse's right button to open the notebooks in different ways. Experiment also with the navigator links to move to the other notebooks.
 
 ## Installation
 
-The package can be installed from [PyPi](https://pypi.org/project/nbbinder/) with
+After development is complete, the module will be available in [PyPI](https://pypi.org/project/nbbinder/) and installation will be possible with
 
 ```bash
 pip install nbbinder
 ```
 
-It can also be downloaded directly from github.com/rmsrosa/nbbinder.
+For the moment, it is only available in [TestPyPI](https://test.pypi.org/project/nbbinder/).
 
-More information about the installation processes on the [Installation section of NBBinder documentation](https://nbbinder.readthedocs.io/en/latest/Installation.html)
+The module can also be downloaded directly from github.com/rmsrosa/nbbinder.
+
+More information about the installation processes on the [Installation section of NBBinder documentation](https://nbbinder.readthedocs.io/en/latest/Installation.html) (NOT UP TO DATE)
 
 ## Documentation
 
-The documentation of NBBinder is hosted on [nbbinder.readthedocs.io](https://nbbinder.readthedocs.io).
+The documentation of NBBinder is hosted on [nbbinder.readthedocs.io](https://nbbinder.readthedocs.io). (NOT UP TO DATE)
 
 ## Development
 
@@ -155,4 +159,4 @@ During the current alpha stage of the project, development is being done in the 
 
 The original work in [Python Data Science Handbook/tools](https://github.com/jakevdp/PythonDataScienceHandbook/tree/master/tools) is licensed by [Jake VanderPlas](http://vanderplas.com/), under the [MIT license](https://opensource.org/licenses/MIT).
 
-The current modifications in this package is also provided under the [MIT license](https://opensource.org/licenses/MIT). See the file [LICENSE](LICENSE).
+The current modifications in this module is also provided under the [MIT license](https://opensource.org/licenses/MIT). See the file [LICENSE](LICENSE).
