@@ -87,7 +87,7 @@ SLIDE_SKIP = {
 }
 
 
-def indexed_notebooks(path_to_notes: str = '.') -> list:
+def indexed_notebooks(path_to_notes: str = None) -> list:
     """Returns a sorted list with the filenames of the "indexed notebooks".
 
     The notebooks are expected to be in the folder indicated by the
@@ -165,7 +165,7 @@ def increase_index(idx: str) -> str:
     return idx_plus_one
 
 
-def refresh_marker_cells(path_to_notes: str = '.', marker: str = None,
+def refresh_marker_cells(path_to_notes: str = None, marker: str = None,
                          mode: str = 'remove') -> None:
     """Removes or cleans the contents of any cell with the given `marker`
     from the indexed notebooks in path_to_notes.
@@ -181,11 +181,10 @@ def refresh_marker_cells(path_to_notes: str = '.', marker: str = None,
         The marker to be searched for.
 
     mode : str
-        A string indicating whether to clean (if mode == 'clean')
-        or remove (if mode == 'remove') the cells marked with the
-        provided `marker`. The mode 'clean' leaves the MAKER in the cell,
-        but no other content in the source. The useful thing about the
-        'clean' mode is to preserve any metadata that differs from the
+        A string indicating whether to clean or remove the cells marked with
+        the provided `marker`. The mode 'clean' leaves the MAKER in the cell,
+        but no other content in the source. The useful thing about the 
+        'clean' mode is to preserve any metadata that differs from the 
         default ones added by the binder (such as about the slide property).
     """
     if marker and (mode in ('clean', 'remove')):
@@ -210,7 +209,7 @@ def refresh_marker_cells(path_to_notes: str = '.', marker: str = None,
             nbformat.write(nb, nb_file)
 
 
-def get_nb_title(path_to_notes: str = '.', nb_name: str = None) -> str:
+def get_nb_title(path_to_notes: str = None, nb_name: str = None) -> str:
     """Returns the title of a juyter notebook.
 
     It looks for the first cell, in the notebook, that starts with
@@ -230,7 +229,7 @@ def get_nb_title(path_to_notes: str = '.', nb_name: str = None) -> str:
     Returns
     -------
     : str
-        The desired title of the notebook or "" if not found.
+        The desired title of the notebook or the empty string if not found.
     """
     nb = nbformat.read(os.path.join(path_to_notes, nb_name), as_version=4)
     for cell in nb.cells:
@@ -239,7 +238,7 @@ def get_nb_title(path_to_notes: str = '.', nb_name: str = None) -> str:
     return None
 
 
-def get_nb_full_entry(path_to_notes: str = '.',
+def get_nb_full_entry(path_to_notes: str = None,
                       nb_name: str = None) -> list:
     """Returns the full entry of a notebook.
 
@@ -325,7 +324,7 @@ def get_nb_full_entry(path_to_notes: str = '.',
     return md_pre_entry, idx_entry, title
 
 
-def get_nb_entry(path_to_notes: str = '.',
+def get_nb_entry(path_to_notes: str = None,
                  nb_name: str = None,
                  show_index: bool = True) -> str:
     """Returns the entry of a notebook.
@@ -364,7 +363,7 @@ def get_nb_entry(path_to_notes: str = '.',
     return entry
 
 
-def yield_contents(path_to_notes: str = '.',
+def yield_contents(path_to_notes: str = None,
                    show_index_in_toc: bool = True) -> Iterable[str]:
     """Iterable with entries for each of the indexed notebooks.
 
@@ -399,7 +398,7 @@ def yield_contents(path_to_notes: str = '.',
             yield '{}[{}]({})\n'.format(md_pre_entry, title, nb_name)
 
 
-def get_contents(path_to_notes: str = '.',
+def get_contents(path_to_notes: str = None,
                  toc_title: str = '',
                  show_index_in_toc: bool = True) -> str:
     """Returns the 'Table of Contents'.
@@ -437,7 +436,7 @@ def get_contents(path_to_notes: str = '.',
     return contents
 
 
-def insert_notebooks(path_to_notes: str = '.') -> None:
+def insert_notebooks(path_to_notes: str = None) -> None:
     """Includes a notebook in the colllection.
 
     Checks whether there is any notebook that matches the regular expression
@@ -521,7 +520,7 @@ def insert_notebooks(path_to_notes: str = '.') -> None:
                       os.path.join(path_to_notes, f_new))
 
 
-def tighten_notebooks(path_to_notes: str = '.') -> None:
+def tighten_notebooks(path_to_notes: str = None) -> None:
     """Tighten the indexes of the notebooks in the colllection.
 
     Checks whether there are gaps in the indices of the notebooks
@@ -601,7 +600,7 @@ def tighten_notebooks(path_to_notes: str = '.') -> None:
                       os.path.join(path_to_notes, f_newest))
 
 
-def reindex(path_to_notes: str = '.',
+def reindex(path_to_notes: str = None,
             insert: bool = True,
             tighten: bool = False) -> None:
     """Reindex the collection of notebooks.
@@ -631,7 +630,7 @@ def reindex(path_to_notes: str = '.',
         tighten_notebooks(path_to_notes)
 
 
-def export_notebooks(path_to_notes: str = '.',
+def export_notebooks(path_to_notes: str = None,
                      export_path: str = None,
                      exporter_name: str = None,
                      exporter_args: dict = None) -> None:
@@ -713,7 +712,7 @@ def export_notebooks(path_to_notes: str = '.',
         export_file.close()
 
 
-def add_contents(path_to_notes: str = '.',
+def add_contents(path_to_notes: str = None,
                  toc_nb_name: str = None,
                  toc_title: str = '',
                  show_index_in_toc: bool = True) -> None:
@@ -786,7 +785,7 @@ def add_contents(path_to_notes: str = '.',
     nbformat.write(toc_nb, toc_nb_file)
 
 
-def add_headers(path_to_notes: str = '.', header: str = None) -> None:
+def add_headers(path_to_notes: str = None, header: str = None) -> None:
     """Adds header to each notebook in the collection.
 
     It adds the provided `header`as the first cell of each notebook
@@ -818,7 +817,7 @@ def add_headers(path_to_notes: str = '.', header: str = None) -> None:
         nbformat.write(nb, nb_file)
 
 
-def get_badge_entries(path_to_notes: str = '.',
+def get_badge_entries(path_to_notes: str = None,
                       badges: list = None) -> Iterable[tuple]:
     """Iterable with the bagdes info for each notebook.
 
@@ -890,7 +889,7 @@ def get_badge_entries(path_to_notes: str = '.',
             this_nb_badge_links
 
 
-def add_badges(path_to_notes: str = '.',
+def add_badges(path_to_notes: str = None,
                badges: list = None) -> None:
     """Adds badges to each notebook in the collection.
 
@@ -956,7 +955,7 @@ def prev_this_next(collection: list = None) -> None:
     return zip(itertools.chain([None], a), b, itertools.chain(c, [None]))
 
 
-def get_navigator_entries(path_to_notes: str = '.',
+def get_navigator_entries(path_to_notes: str = None,
                           core_navigators: list = None,
                           show_nb_title_in_nav: bool = True,
                           show_index_in_nav: bool = True) -> Iterable[str]:
@@ -1021,7 +1020,7 @@ def get_navigator_entries(path_to_notes: str = '.',
         yield os.path.join(path_to_notes, this_nb), navbar
 
 
-def add_navigators(path_to_notes: str = '.',
+def add_navigators(path_to_notes: str = None,
                    core_navigators: list = None,
                    show_nb_title_in_nav: bool = True,
                    show_index_in_nav: bool = True) -> None:
