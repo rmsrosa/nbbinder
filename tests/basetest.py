@@ -25,8 +25,8 @@ def change_to_file_dir():
     Change current directory to that where this file resides.
     """
     os.chdir(os.path.dirname(__file__))
-    logging.info("# Directory changed to '{arg}'",
-                 arg=os.path.dirname(__file__))
+    logging.info("# Directory changed to '%s'",
+                 os.path.dirname(__file__))
 
 
 def create_build_dir(build_dir):
@@ -36,7 +36,7 @@ def create_build_dir(build_dir):
     if os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
     os.mkdir(build_dir)
-    logging.info("Build directory '{arg}' created.", arg=build_dir)
+    logging.info("Build directory '%s' created.", build_dir)
 
 
 def create_notebooks(path_to_notes, nb_filenames):
@@ -69,7 +69,7 @@ def create_notebooks(path_to_notes, nb_filenames):
                                                    metadata=nbb.SLIDE_SHOW))
         nbformat.write(notebook, os.path.join(path_to_notes, nb_filename))
 
-    logging.info("\n# Notebooks created in {arg}", arg=path_to_notes)
+    logging.info("\n# Notebooks created in '%s'", path_to_notes)
 
 
 def bind_test(source_path, build_path, config_file):
@@ -85,7 +85,7 @@ def bind_test(source_path, build_path, config_file):
 
         shutil.copytree(source_path, build_path)
 
-    logging.info("\n# Binding the notebooks in {arg1} with '{arg2}'",
-                 arg1=source_path, arg2=config_file)
+    logging.info("\n# Binding the notebooks in '%s' with '%s'",
+                 source_path, config_file)
 
     nbb.bind(config_file)

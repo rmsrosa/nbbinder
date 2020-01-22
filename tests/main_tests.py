@@ -43,14 +43,14 @@ if __name__ == '__main__':
         "12.00-Alice's_Evidence.ipynb"
     ]
 
-    logging.info("# Creating notebooks in {arg} ...",
-                 arg=os.path.join(os.path.dirname(__file__),
-                                  BUILD_DIR, 'nb_alice'))
+    logging.info("# Creating notebooks in %s ...",
+                 os.path.join(os.path.dirname(__file__),
+                              BUILD_DIR, 'nb_alice'))
     create_notebooks(os.path.join(BUILD_DIR, 'nb_alice'), NB_ALICE)
     logging.info('... notebooks created')
-    logging.info("\n# Reindexing the notebooks in {arg}",
-                 arg=os.path.join(os.path.dirname(__file__),
-                                  BUILD_DIR, 'nb_alice'))
+    logging.info("\n# Reindexing the notebooks in %s",
+                 os.path.join(os.path.dirname(__file__),
+                              BUILD_DIR, 'nb_alice'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_alice'))
 
     logging.info("\n# Binding 'nb_alice' notebooks with parameters")
@@ -102,13 +102,13 @@ if __name__ == '__main__':
         'BC.00-Index.ipynb'
     ]
 
-    logging.info("\n# Creating notebooks in {arg}",
-                 arg=os.path.join(os.path.dirname(__file__),
-                                  BUILD_DIR, 'nb_grammar'))
+    logging.info("\n# Creating notebooks in %s",
+                 os.path.join(os.path.dirname(__file__),
+                              BUILD_DIR, 'nb_grammar'))
     create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar'), NB_GRAMMAR)
-    logging.info("\n# Reindexing the notebooks in {arg}",
-                 arg=os.path.join(os.path.dirname(__file__),
-                                  BUILD_DIR, 'nb_grammar'))
+    logging.info("\n# Reindexing the notebooks in %s",
+                 os.path.join(os.path.dirname(__file__),
+                              BUILD_DIR, 'nb_grammar'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar'))
 
     create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_bound'), NB_GRAMMAR)
@@ -125,9 +125,9 @@ if __name__ == '__main__':
               os.path.join(BUILD_DIR, 'nb_grammar_bound'),
               os.path.join(SOURCE_DIR, 'config_nb_grammar_reindex.yml'))
 
-    logging.info("\n# Binding the notebooks in {arg} with 'nbb.bind()'",
-                 arg=os.path.join(os.path.dirname(__file__),
-                                  BUILD_DIR, 'nb_grammar_bound'))
+    logging.info("\n# Binding the notebooks in %s with 'nbb.bind()'",
+                 os.path.join(os.path.dirname(__file__),
+                              BUILD_DIR, 'nb_grammar_bound'))
 
     nbb.bind(
         path_to_notes=os.path.join(BUILD_DIR, 'nb_grammar_bound'),
@@ -177,14 +177,14 @@ if __name__ == '__main__':
         'BB.00-Index.ipynb'
     ]
 
-    logging.info("\n# Creating notebooks in {arg}",
-                 arg=os.path.join(os.path.dirname(__file__),
-                                  BUILD_DIR, 'nb_grammar_insert'))
+    logging.info("\n# Creating notebooks in %s",
+                 os.path.join(os.path.dirname(__file__),
+                              BUILD_DIR, 'nb_grammar_insert'))
     create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_insert'),
                      NB_GRAMMAR_INSERT)
-    logging.info("\n# Reindexing the notebooks in {arg}",
-                 arg=os.path.join(os.path.dirname(__file__),
-                                  BUILD_DIR, 'nb_grammar_insert'))
+    logging.info("\n# Reindexing the notebooks in %s",
+                 os.path.join(os.path.dirname(__file__),
+                              BUILD_DIR, 'nb_grammar_insert'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_insert'), insert=True)
 
     # Tests with nb_grammar_tighten
@@ -214,14 +214,14 @@ if __name__ == '__main__':
         'BC.04-Index.ipynb'
     ]
 
-    logging.info("\n# Creating notebooks in {arg}",
-                 arg=os.path.join(os.path.dirname(__file__),
-                                  BUILD_DIR, 'nb_grammar_tighten'))
+    logging.info("\n# Creating notebooks in %s",
+                 os.path.join(os.path.dirname(__file__),
+                              BUILD_DIR, 'nb_grammar_tighten'))
     create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_tighten'),
                      NB_GRAMMAR_TIGHTEN)
-    logging.info("\n# Reindexing the notebooks in {arg}",
-                 arg=os.path.join(os.path.dirname(__file__),
-                                  BUILD_DIR, 'nb_grammar_tighten'))
+    logging.info("\n# Reindexing the notebooks in %s",
+                 os.path.join(os.path.dirname(__file__),
+                              BUILD_DIR, 'nb_grammar_tighten'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_tighten'), tighten=True)
 
     # Tests with nb_water
