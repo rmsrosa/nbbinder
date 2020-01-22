@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#!/anaconda3/envs/nbbinder/bin/python
+# -*- coding: utf-8 -*-
 """
 **NBBinder** generates a navigable book-like structure
 to a collection of Jupyter notebooks.
@@ -18,6 +19,7 @@ import itertools
 import sys
 import logging
 
+from packaging import version
 from typing import Iterable
 
 import yaml
@@ -26,9 +28,6 @@ import nbformat
 from nbformat.v4.nbbase import new_markdown_cell
 
 from nbconvert import exporters
-
-# Regular expression for splitting versioning scheme
-REG_VER = re.compile(r'^(\d+)\.(\d+)(a|b|\.)(\d*)$')
 
 # Regular expression for indexing the notebooks
 # '^' = beginning of string
@@ -1169,11 +1168,11 @@ def bind(aux: str = None,
     if config_filename:
         with open(config_filename, 'r') as config_file:
             config = yaml.load(config_file, Loader=yaml.FullLoader)
-        nbbversion = config.pop('nbbversion', None)
-        if REG_VER.match(nbbversion).group(1,2) < \
-                REG_VER.match(__version__).group(1,2):
-            logging.WARNING('Version of config file lower than that \
-                            of script.')
+        config_version = config.pop('nbbversion', None)
+        if version.parse(config_version).release[:2] < \
+                version.parse(__version__).release[:2]:
+            logging.warning("Version of config file '%s' lower than that \
+of current NBBinder module.", config_filename)
         bind(**config)
     else:
         markers = {
@@ -1215,7 +1214,7 @@ def bind(aux: str = None,
 if __name__ == '__main__':
     if len(sys.argv) == 1 or sys.argv[1] == '--help' or sys.argv[1] == '-h':
         logging.info("\n Run the script with a configuration file \
-                        as argument, e.g.")
+as argument, e.g.")
         logging.info("\n   ./nbbinder.py config.yml")
         logging.info("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
     else:
@@ -1223,4 +1222,4 @@ if __name__ == '__main__':
             bind(sys.argv[1])
         except NotImplementedError:
             logging.info('provided argument is not a yaml file or not \
-                          a properly formated yaml configuration file.')
+a properly formated yaml configuration file.')
