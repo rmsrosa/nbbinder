@@ -19,8 +19,9 @@ import itertools
 import sys
 import logging
 
-from packaging import version
 from typing import Iterable
+
+from packaging import version
 
 import yaml
 
@@ -29,34 +30,30 @@ from nbformat.v4.nbbase import new_markdown_cell
 
 from nbconvert import exporters
 
-# Logging level
-logging.basicConfig(level=logging.WARNING)
+# Logging
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.WARNING)
 
 # Regular expression for indexing the notebooks
-# '^' = beginning of string
-# '$' = end of string
-# r'' for raw text, needed when using special characters
 # Tested in https://regexr.com/ (which is not the same flavor as python)
 # in https://regex101.com/ (many flavors)
 # in https://pythex.org/ (python flavor regex)
-# and with the `re` module
 
 IDX_GRP = r'([0-9]{2}|[A-Z][0-9A-Z])'
 COMPL_GRP = r'(\*[^#*]*[\*|\#]?[^#*]*[\*|\#]?[:.]?|)'
 COMPL_SUBGRPS = r'^\*([^#*]*)([\*|\#]?)([^#*]*)([\*|\#]?)([:.]?)$'
-MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)' # no open right parentheses
-EXT_GRP = r'(\.ipynb)'
+MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'  # no open right parentheses
 INS_GRP = r'(\&[a-z]?|)'
 
 REG_IDX = re.compile('^' + IDX_GRP + '$')
 REG = re.compile('^' + IDX_GRP + r'\.' + IDX_GRP + COMPL_GRP
-                 + '-' + MAIN_GRP + EXT_GRP + '$')
+                 + '-' + MAIN_GRP + r'(\.ipynb)$')
 REG_INS = re.compile('^' + IDX_GRP + INS_GRP + r'\.'
                      + IDX_GRP + INS_GRP + COMPL_GRP
-                     + '-' + MAIN_GRP + EXT_GRP + '$')
+                     + '-' + MAIN_GRP + r'(\.ipynb)$')
 REG_LINK = re.compile(r'(\]\()' + IDX_GRP + r'\.'
                       + IDX_GRP + COMPL_GRP
-                      + '-' + MAIN_GRP + EXT_GRP + r'\)')
+                      + '-' + MAIN_GRP + r'(\.ipynb)\)')
 REG_COMPL = re.compile(COMPL_SUBGRPS)
 
 # Markers for the affected notebook cells
@@ -75,7 +72,7 @@ BADGE_LINK = \
     """<a href="{badge_url}/{badge_filename}"><img align="left" \
 src="{badge_src}" alt="{badge_alt}" title="{badge_title}"></a>
 """
-BADGE_SRC = "https://img.shields.io/badge/\
+BADGE_SHIELD_SRC = "https://img.shields.io/badge/\
 {badge_label}-{badge_message}-{badge_color}"
 
 # Metadata to flag cells for the slides
@@ -130,10 +127,10 @@ def increase_index(idx: str) -> str:
     index with the same first letter and with the digit in the range '1'
     to '9'. If the digit is already '9', there is an Exception error.
 
-    If the index is purely alphabetical, then the ordinal ascii number 
-    of the letter is increased by 1, with the function returning 
-    an index with the same first character and with the second character 
-    in the range 'B' to 'Z'. If the second character is already 'Z', 
+    If the index is purely alphabetical, then the ordinal ascii number
+    of the letter is increased by 1, with the function returning
+    an index with the same first character and with the second character
+    in the range 'B' to 'Z'. If the second character is already 'Z',
     there is an Exception error.
 
     It also raises an exception if the given argument is not an index.
@@ -188,8 +185,8 @@ def refresh_marker_cells(path_to_notes: str = None, marker: str = None,
     mode : str
         A string indicating whether to clean or remove the cells marked with
         the provided `marker`. The mode 'clean' leaves the MAKER in the cell,
-        but no other content in the source. The useful thing about the 
-        'clean' mode is to preserve any metadata that differs from the 
+        but no other content in the source. The useful thing about the
+        'clean' mode is to preserve any metadata that differs from the
         default ones added by the binder (such as about the slide property).
     """
     if marker and (mode in ('clean', 'remove')):
@@ -202,13 +199,13 @@ def refresh_marker_cells(path_to_notes: str = None, marker: str = None,
                 if not cell.source.startswith(marker):
                     new_cells.append(cell)
                 elif mode == 'clean':
-                    logging.info("- cleaning '%s' cell from %s",
-                                 marker, nb_name)
+                    LOGGER.info("- cleaning '%s' cell from %s",
+                                marker, nb_name)
                     new_cells.append(cell)
                     new_cells[-1].source = marker
                 elif mode == 'remove':
-                    logging.info("- removing '%s' cell from %s",
-                                 marker, nb_name)
+                    LOGGER.info("- removing '%s' cell from %s",
+                                marker, nb_name)
 
             nb.cells = new_cells
             nbformat.write(nb, nb_file)
@@ -507,15 +504,15 @@ def insert_notebooks(path_to_notes: str = None) -> None:
                 + nb_names_new[j][nbj_reg.end(2):]
 
     if nb_names_new == nb_names_ins:
-        logging.info('- no files need renaming, no reindexing needed')
+        LOGGER.info('- no files need renaming, no reindexing needed')
     else:
         count = 0
         for f_ins, f_new in zip(nb_names_ins, nb_names_new):
             count += 1
             if f_ins != f_new:
-                logging.info('- replacing %s with %s', f_ins, f_new)
+                LOGGER.info('- replacing %s with %s', f_ins, f_new)
             else:
-                logging.info('- keeping %s', f_ins)
+                LOGGER.info('- keeping %s', f_ins)
             os.rename(os.path.join(path_to_notes, f_ins),
                       os.path.join(path_to_notes, str(count) + '-' + f_new))
         count = 0
@@ -588,14 +585,14 @@ def tighten_notebooks(path_to_notes: str = None) -> None:
                     nb_newest_reg[j] = REG.match(nb_names_newest[j])
 
     if nb_names_newest == nb_names:
-        logging.info('- no files need renaming, no reindexing needed')
+        LOGGER.info('- no files need renaming, no reindexing needed')
     else:
         count = 0
         for f_cur, f_newest in zip(nb_names, nb_names_newest):
             count += 1
             if f_cur != f_newest:
-                logging.info('- replacing %s with %s',
-                             f_cur, f_newest)
+                LOGGER.info('- replacing %s with %s',
+                            f_cur, f_newest)
             os.rename(os.path.join(path_to_notes, f_cur),
                       os.path.join(path_to_notes, str(count) + '-' + f_newest))
         count = 0
@@ -703,7 +700,7 @@ def export_notebooks(path_to_notes: str = None,
                     source_new += cell.source[i:]
                     cell.source = source_new
 
-        logging.info("Adjusting links for %s", export_path)
+        LOGGER.info("Adjusting links for %s", export_path)
         body = exporter.from_notebook_node(nb)[0]
         export_filename = \
             os.path.join(export_path,
@@ -773,12 +770,12 @@ def add_contents(path_to_notes: str = None,
 
     if toc_cell_found:
         nbformat.write(toc_nb, toc_nb_file)
-        logging.info('- Table of contents updated in %s', toc_nb_name)
+        LOGGER.info('- Table of contents updated in %s', toc_nb_name)
     else:
-        logging.info('* No markdown cell starting with %s found in %s',
-                     TOC_MARKER, toc_nb_name)
-        logging.info("- inserting table of contents in %s",
-                     toc_nb_name)
+        LOGGER.info('* No markdown cell starting with %s found in %s',
+                    TOC_MARKER, toc_nb_name)
+        LOGGER.info("- inserting table of contents in %s",
+                    toc_nb_name)
         if toc_nb.cells \
                 and toc_nb.cells[-1].source.startswith(NAVIGATOR_MARKER):
             toc_nb.cells.insert(-1, new_markdown_cell(source=contents,
@@ -811,11 +808,11 @@ def add_headers(path_to_notes: str = None, header: str = None) -> None:
         nb = nbformat.read(nb_file, as_version=4)
 
         if nb.cells and nb.cells[0].source.startswith(HEADER_MARKER):
-            logging.info('- updating header for %s', nb_name)
+            LOGGER.info('- updating header for %s', nb_name)
             nb.cells[0].source = HEADER_MARKER + '\n' + header
             nb.cells[0].metadata = SLIDE_SKIP
         else:
-            logging.info('- inserting header for %s', nb_name)
+            LOGGER.info('- inserting header for %s', nb_name)
             nb.cells.insert(0, new_markdown_cell(
                 source=HEADER_MARKER + '\n' + header,
                 metadata=SLIDE_SKIP))
@@ -883,7 +880,7 @@ def get_badge_entries(path_to_notes: str = None,
                         else this_nb[:REG.match(this_nb).start(5)]
                         + badge['extension'],
                         badge_src=badge['src'] if 'src' in badge
-                        else BADGE_SRC.format(
+                        else BADGE_SHIELD_SRC.format(
                             badge_label=badge['label'],
                             badge_message=badge['message'],
                             badge_color=badge['color']),
@@ -923,14 +920,15 @@ def add_badges(path_to_notes: str = None,
             for badge_link in this_nb_badge_links:
                 badges_top += badge_link + "&nbsp;"
 
-            if len(nb.cells) > 1 and nb.cells[1].source.startswith(BADGES_MARKER):
-                logging.info("- updating badges for %s", nb_name)
+            if len(nb.cells) > 1 \
+                    and nb.cells[1].source.startswith(BADGES_MARKER):
+                LOGGER.info("- updating badges for %s", nb_name)
                 nb.cells[1].source = badges_top
                 nb.cells[1].metadata = SLIDE_SKIP
             else:
-                logging.info("- inserting badges for %s", nb_name)
+                LOGGER.info("- inserting badges for %s", nb_name)
                 nb.cells.insert(1, new_markdown_cell(source=badges_top,
-                                                    metadata=SLIDE_SKIP))
+                                                     metadata=SLIDE_SKIP))
 
             nbformat.write(nb, nb_filename)
 
@@ -1067,16 +1065,16 @@ def add_navigators(path_to_notes: str = None,
 
         if len(nb.cells) >= 1 \
                 and nb.cells[1].source.startswith(NAVIGATOR_MARKER):
-            logging.info("- updating navbar for %s", nb_name)
+            LOGGER.info("- updating navbar for %s", nb_name)
             nb.cells[1].source = navbar_top
             nb.cells[1].metadata = SLIDE_SKIP
         elif len(nb.cells) >= 2 \
                 and nb.cells[2].source.startswith(NAVIGATOR_MARKER):
-            logging.info("- updating navbar for %s", nb_name)
+            LOGGER.info("- updating navbar for %s", nb_name)
             nb.cells[2].source = navbar_top
             nb.cells[2].metadata = SLIDE_SKIP
         else:
-            logging.info("- inserting navbar for %s", nb_name)
+            LOGGER.info("- inserting navbar for %s", nb_name)
             nb.cells.insert(1, new_markdown_cell(source=navbar_top,
                                                  metadata=SLIDE_SKIP))
 
@@ -1174,18 +1172,18 @@ def bind(aux: str = None,
         config_version = config.pop('nbbversion', None)
         if version.parse(config_version).release[:2] < \
                 version.parse(__version__).release[:2]:
-            logging.warning("Version of config file '%s' lower than that \
+            LOGGER.warning("Version of config file '%s' lower than that \
 of current NBBinder module.", config_filename)
         bind(**config)
     else:
-        markers = {
-            'contents': (TOC_MARKER, contents),
-            'header': (HEADER_MARKER, header),
-            'badges': (BADGES_MARKER, badges),
-            'navigators': (NAVIGATOR_MARKER, navigators)
-        }
+        markers_and_args = [
+            (TOC_MARKER, contents),
+            (HEADER_MARKER, header),
+            (BADGES_MARKER, badges),
+            (NAVIGATOR_MARKER, navigators)
+        ]
 
-        for key, (marker, arg) in markers.items():
+        for marker, arg in markers_and_args:
             refresh_marker_cells(
                 path_to_notes,
                 marker=marker,
@@ -1216,13 +1214,13 @@ of current NBBinder module.", config_filename)
 
 if __name__ == '__main__':
     if len(sys.argv) == 1 or sys.argv[1] == '--help' or sys.argv[1] == '-h':
-        logging.info("\n Run the script with a configuration file \
+        LOGGER.info("\n Run the script with a configuration file \
 as argument, e.g.")
-        logging.info("\n   ./nbbinder.py config.yml")
-        logging.info("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
+        LOGGER.info("\n   ./nbbinder.py config.yml")
+        LOGGER.info("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
     else:
         try:
             bind(sys.argv[1])
         except NotImplementedError:
-            logging.info('provided argument is not a yaml file or not \
+            LOGGER.info('provided argument is not a yaml file or not \
 a properly formated yaml configuration file.')

@@ -16,7 +16,9 @@ from faker import Faker
 from context import nbbinder as nbb
 
 # Logging level
-logging.basicConfig(level=logging.WARNING)
+#logging.basicConfig(level=logging.WARNING)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
 
 # pylint: disable=E1101
 
@@ -25,7 +27,7 @@ def change_to_file_dir():
     Change current directory to that where this file resides.
     """
     os.chdir(os.path.dirname(__file__))
-    logging.info("# Directory changed to '%s'",
+    logger.info("# Directory changed to '%s'",
                  os.path.dirname(__file__))
 
 
@@ -36,7 +38,7 @@ def create_build_dir(build_dir):
     if os.path.isdir(build_dir):
         shutil.rmtree(build_dir)
     os.mkdir(build_dir)
-    logging.info("Build directory '%s' created.", build_dir)
+    logger.info("Build directory '%s' created.", build_dir)
 
 
 def create_notebooks(path_to_notes, nb_filenames):
@@ -69,7 +71,7 @@ def create_notebooks(path_to_notes, nb_filenames):
                                                    metadata=nbb.SLIDE_SHOW))
         nbformat.write(notebook, os.path.join(path_to_notes, nb_filename))
 
-    logging.info("\n# Notebooks created in '%s'", path_to_notes)
+    logger.info("\n# Notebooks created in '%s'", path_to_notes)
 
 
 def bind_test(source_path, build_path, config_file):
@@ -81,11 +83,11 @@ def bind_test(source_path, build_path, config_file):
     to the configuration file `config_file`.
     """
     if build_path != source_path:
-        logging.info("\n# Copying source notebooks to build directory")
+        logger.info("\n# Copying source notebooks to build directory")
 
         shutil.copytree(source_path, build_path)
 
-    logging.info("\n# Binding the notebooks in '%s' with '%s'",
+    logger.info("\n# Binding the notebooks in '%s' with '%s'",
                  source_path, config_file)
 
     nbb.bind(config_file)

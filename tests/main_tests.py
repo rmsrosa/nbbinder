@@ -7,13 +7,15 @@ Main NBBinder test
 import os
 import logging
 
-from basetest import change_to_file_dir, create_build_dir
-from basetest import create_notebooks, bind_test
+import basetest as bt
 
 from context import nbbinder as nbb
 
 # Logging level
 logging.basicConfig(level=logging.WARNING)
+
+#bt.logger.setLevel(logging.INFO)
+#nbb.logger.setLevel(logging.INFO)
 
 # Directories
 BUILD_DIR = 'nb_builds'
@@ -21,9 +23,9 @@ SOURCE_DIR = 'nb_source'
 
 if __name__ == '__main__':
 
-    change_to_file_dir()
+    bt.change_to_file_dir()
 
-    create_build_dir(BUILD_DIR)
+    bt.create_build_dir(BUILD_DIR)
 
     # Tests with nb_alice
 
@@ -46,7 +48,7 @@ if __name__ == '__main__':
     logging.info("# Creating notebooks in %s ...",
                  os.path.join(os.path.dirname(__file__),
                               BUILD_DIR, 'nb_alice'))
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_alice'), NB_ALICE)
+    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_alice'), NB_ALICE)
     logging.info('... notebooks created')
     logging.info("\n# Reindexing the notebooks in %s",
                  os.path.join(os.path.dirname(__file__),
@@ -71,9 +73,9 @@ if __name__ == '__main__':
             }
         )
 
-    bind_test(os.path.join(BUILD_DIR, 'nb_alice'),
-              os.path.join(BUILD_DIR, 'nb_alice'),
-              os.path.join(SOURCE_DIR, 'config_nb_alice.yml'))
+    bt.bind_test(os.path.join(BUILD_DIR, 'nb_alice'),
+                 os.path.join(BUILD_DIR, 'nb_alice'),
+                 os.path.join(SOURCE_DIR, 'config_nb_alice.yml'))
 
     # Tests with nb_grammar
 
@@ -105,25 +107,26 @@ if __name__ == '__main__':
     logging.info("\n# Creating notebooks in %s",
                  os.path.join(os.path.dirname(__file__),
                               BUILD_DIR, 'nb_grammar'))
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar'), NB_GRAMMAR)
+    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar'), NB_GRAMMAR)
     logging.info("\n# Reindexing the notebooks in %s",
                  os.path.join(os.path.dirname(__file__),
                               BUILD_DIR, 'nb_grammar'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar'))
 
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_bound'), NB_GRAMMAR)
+    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
+                        NB_GRAMMAR)
 
-    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
-              os.path.join(BUILD_DIR, 'nb_grammar_bound'),
-              os.path.join(SOURCE_DIR, 'config_nb_grammar.yml'))
+    bt.bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+                 os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+                 os.path.join(SOURCE_DIR, 'config_nb_grammar.yml'))
 
-    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
-              os.path.join(BUILD_DIR, 'nb_grammar_bound'),
-              os.path.join(SOURCE_DIR, 'config_nb_grammar_no_header.yml'))
+    bt.bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+                 os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+                 os.path.join(SOURCE_DIR, 'config_nb_grammar_no_header.yml'))
 
-    bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
-              os.path.join(BUILD_DIR, 'nb_grammar_bound'),
-              os.path.join(SOURCE_DIR, 'config_nb_grammar_reindex.yml'))
+    bt.bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+                 os.path.join(BUILD_DIR, 'nb_grammar_bound'),
+                 os.path.join(SOURCE_DIR, 'config_nb_grammar_reindex.yml'))
 
     logging.info("\n# Binding the notebooks in %s with 'nbb.bind()'",
                  os.path.join(os.path.dirname(__file__),
@@ -180,8 +183,8 @@ if __name__ == '__main__':
     logging.info("\n# Creating notebooks in %s",
                  os.path.join(os.path.dirname(__file__),
                               BUILD_DIR, 'nb_grammar_insert'))
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_insert'),
-                     NB_GRAMMAR_INSERT)
+    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_insert'),
+                        NB_GRAMMAR_INSERT)
     logging.info("\n# Reindexing the notebooks in %s",
                  os.path.join(os.path.dirname(__file__),
                               BUILD_DIR, 'nb_grammar_insert'))
@@ -217,8 +220,8 @@ if __name__ == '__main__':
     logging.info("\n# Creating notebooks in %s",
                  os.path.join(os.path.dirname(__file__),
                               BUILD_DIR, 'nb_grammar_tighten'))
-    create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_tighten'),
-                     NB_GRAMMAR_TIGHTEN)
+    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_tighten'),
+                        NB_GRAMMAR_TIGHTEN)
     logging.info("\n# Reindexing the notebooks in %s",
                  os.path.join(os.path.dirname(__file__),
                               BUILD_DIR, 'nb_grammar_tighten'))
@@ -226,6 +229,6 @@ if __name__ == '__main__':
 
     # Tests with nb_water
 
-    bind_test(os.path.join(SOURCE_DIR, 'nb_water'),
-              os.path.join(BUILD_DIR, 'nb_water'),
-              os.path.join(SOURCE_DIR, 'config_nb_water.yml'))
+    bt.bind_test(os.path.join(SOURCE_DIR, 'nb_water'),
+                 os.path.join(BUILD_DIR, 'nb_water'),
+                 os.path.join(SOURCE_DIR, 'config_nb_water.yml'))
