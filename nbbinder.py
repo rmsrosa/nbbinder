@@ -167,7 +167,7 @@ def increase_index(idx: str) -> str:
     return idx_plus_one
 
 
-def refresh_marker_cells(path_to_notes: str = None, marker: str = None,
+def cleanup_marker_cells(path_to_notes: str = None, marker: str = None,
                          mode: str = 'remove') -> None:
     """Removes or cleans the contents of any cell with the given `marker`
     from the indexed notebooks in path_to_notes.
@@ -184,12 +184,12 @@ def refresh_marker_cells(path_to_notes: str = None, marker: str = None,
 
     mode : str
         A string indicating whether to clean or remove the cells marked with
-        the provided `marker`. The mode 'clean' leaves the MAKER in the cell,
+        the provided `marker`. The mode 'clear' leaves the MAKER in the cell,
         but no other content in the source. The useful thing about the
-        'clean' mode is to preserve any metadata that differs from the
+        'clear' mode is to preserve any metadata that differs from the
         default ones added by the binder (such as about the slide property).
     """
-    if marker and (mode in ('clean', 'remove')):
+    if marker and (mode in ('clear', 'remove')):
         for nb_name in indexed_notebooks(path_to_notes):
             nb_file = os.path.join(path_to_notes, nb_name)
             nb = nbformat.read(nb_file, as_version=4)
@@ -198,7 +198,7 @@ def refresh_marker_cells(path_to_notes: str = None, marker: str = None,
             for cell in nb.cells:
                 if not cell.source.startswith(marker):
                     new_cells.append(cell)
-                elif mode == 'clean':
+                elif mode == 'clear':
                     LOGGER.info("- cleaning '%s' cell from %s",
                                 marker, nb_name)
                     new_cells.append(cell)
@@ -208,6 +208,7 @@ def refresh_marker_cells(path_to_notes: str = None, marker: str = None,
                                 marker, nb_name)
 
             nb.cells = new_cells
+
             nbformat.write(nb, nb_file)
 
 
@@ -1176,21 +1177,11 @@ def bind(aux: str = None,
 of current NBBinder module.", config_filename)
         bind(**config)
     else:
-        markers_and_args = [
-            (TOC_MARKER, contents),
-            (HEADER_MARKER, header),
-            (BADGES_MARKER, badges),
-            (NAVIGATOR_MARKER, navigators)
-        ]
-
-        for marker, arg in markers_and_args:
-            refresh_marker_cells(
-                path_to_notes,
-                marker=marker,
-                mode='clean' if arg else 'remove'
-                )
-
-        refresh_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
+        for marker in (HEADER_MARKER, BADGES_MARKER, NAVIGATOR_MARKER):
+            cleanup_marker_cells(path_to_notes, marker, 'remove')
+        
+        cleanup_marker_cells(path_to_notes, TOC_MARKER, 
+                             'clear' if contents else 'remove')
 
         if reindexing:
             reindex(path_to_notes, **reindexing)
