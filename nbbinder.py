@@ -11,7 +11,8 @@ __copyright__ = """Modified work Copyright (c) 2019 Ricardo M S Rosa
 Original work Copyright (c) 2016 Jacob VanderPlas
 """
 __license__ = "MIT"
-__version__ = "0.10a1"
+__version__ = "0.11a1"
+__config_version__ = "0.9a"
 
 import os
 import re
@@ -1171,10 +1172,10 @@ def bind(aux: str = None,
         with open(config_filename, 'r') as config_file:
             config = yaml.load(config_file, Loader=yaml.FullLoader)
         config_version = config.pop('nbbversion', None)
-        if version.parse(config_version).release[:2] < \
-                version.parse(__version__).release[:2]:
+        if version.parse(config_version) < \
+                version.parse(__config_version__):
             LOGGER.warning("Version of config file '%s' lower than that \
-of current NBBinder module.", config_filename)
+of fully compatible configuration.", config_filename)
         bind(**config)
     else:
         for marker in (HEADER_MARKER, BADGES_MARKER, NAVIGATOR_MARKER):
