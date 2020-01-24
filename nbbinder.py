@@ -805,19 +805,17 @@ def add_headers(path_to_notes: str = None, header: str = None) -> None:
     header : str
         The string with the contents to be included in the header cell.
     """
+    cleanup_marker_cells(path_to_notes, HEADER_MARKER, 'remove')
+
     for nb_name in indexed_notebooks(path_to_notes):
         nb_file = os.path.join(path_to_notes, nb_name)
         nb = nbformat.read(nb_file, as_version=4)
 
-        if nb.cells and nb.cells[0].source.startswith(HEADER_MARKER):
-            LOGGER.info('- updating header for %s', nb_name)
-            nb.cells[0].source = HEADER_MARKER + '\n' + header
-            nb.cells[0].metadata = SLIDE_SKIP
-        else:
-            LOGGER.info('- inserting header for %s', nb_name)
-            nb.cells.insert(0, new_markdown_cell(
-                source=HEADER_MARKER + '\n' + header,
-                metadata=SLIDE_SKIP))
+        LOGGER.info('- inserting header for %s', nb_name)
+        nb.cells.insert(0, new_markdown_cell(
+            source=HEADER_MARKER + '\n' + header,
+            metadata=SLIDE_SKIP))
+
         nbformat.write(nb, nb_file)
 
 
@@ -838,27 +836,9 @@ def get_badge_entries(path_to_notes: str = None,
 
     badges : list of dict
         A list of dictionaries with the necessary information
-        to add badges.
-
-        Each dictionary in the list should have the following keys:
-        `name` (str), `title` (str), `url` (str), an optional
-        `extension` (str), and either `src` or the three keys
-        `label` (str), `message` (str), and `color` (str).
-
-        The keys `name`, `title` and `url` are used for the building
-        the `href` link in the badge, with `name` being the `alt`
-        argument of `href`. `href` will be composed of the given
-        `url` appended by the name of the corresponding notebook.
-
-        The key `extension` is used in case there is a need to replace
-        the `.ipynb` extension of each notebook to the appropriate
-        extension, e.g `.md`, `.slides.html`, `.pdf`, `.py`, `.tex`,
-        and so on. If `extension` is omitted, no replacement occurs.
-
-        The keys `label`, `message`, and `color` are used to build
-        the badge via the `shields.io` constructor, which will then
-        become the argument `src` of the badge image. Alternatively,
-        one can provide a direct `src` link to the badge image.
+        to add badges. See the docstring of `add_badges()` for 
+        the explanation of required and optional key-value pairs 
+        in each dictionary.
 
     Yields
     ------
@@ -908,31 +888,52 @@ def add_badges(path_to_notes: str = None,
         where the code is being ran.
 
     badges: list of dict
-        Info for building extra badges. See the docstring
-        of `get_badge_entries()`
+        A list of dictionaries with the necessary information
+        to add the badges. 
+
+        Each item in the list is a dictionary which should have 
+        the keys `name` (str), `title` (str), `url` (str), an optional
+        `extension` (str), and either `src` or the three keys
+        `label` (str), `message` (str), and `color` (str).
+
+        The keys `name`, `title` and `url` are used for the building
+        the `href` link in the badge, with `name` being the `alt`
+        argument of `href`. `href` will be composed of the given
+        `url` appended by the name of the corresponding notebook.
+
+        The key `extension` is used in case there is a need to replace
+        the `.ipynb` extension of each notebook to the appropriate
+        extension, e.g `.md`, `.slides.html`, `.pdf`, `.py`, `.tex`,
+        and so on. If `extension` is omitted, no replacement occurs.
+
+        The keys `label`, `message`, and `color` are used to build
+        the badge via the `shields.io` constructor, which will then
+        become the argument `src` of the badge image. Alternatively,
+        one can provide a direct `src` link to the badge image.
     """
-    if badges:
-        for nb_filename, this_nb_badge_links \
-                in get_badge_entries(path_to_notes, badges):
-            nb = nbformat.read(nb_filename, as_version=4)
-            nb_name = os.path.basename(nb_filename)
 
-            badges_top = BADGES_MARKER + "\n"
+    cleanup_marker_cells(path_to_notes, BADGES_MARKER, 'remove')
 
-            for badge_link in this_nb_badge_links:
-                badges_top += badge_link + "&nbsp;"
+    for nb_filename, this_nb_badge_links \
+            in get_badge_entries(path_to_notes, badges):
+        nb = nbformat.read(nb_filename, as_version=4)
+        nb_name = os.path.basename(nb_filename)
 
-            if len(nb.cells) > 1 \
-                    and nb.cells[1].source.startswith(BADGES_MARKER):
-                LOGGER.info("- updating badges for %s", nb_name)
-                nb.cells[1].source = badges_top
-                nb.cells[1].metadata = SLIDE_SKIP
-            else:
-                LOGGER.info("- inserting badges for %s", nb_name)
-                nb.cells.insert(1, new_markdown_cell(source=badges_top,
-                                                     metadata=SLIDE_SKIP))
+        badges_top = BADGES_MARKER + "\n"
 
-            nbformat.write(nb, nb_filename)
+        for badge_link in this_nb_badge_links:
+            badges_top += badge_link + "&nbsp;"
+
+        if not nb.cells or not nb.cells[0].source.startswith(HEADER_MARKER):
+            LOGGER.info("- inserting badges for %s", nb_name)
+            nb.cells.insert(0, new_markdown_cell(source=badges_top,
+                                                 metadata=SLIDE_SKIP))
+        else:
+            LOGGER.info("- inserting badges for %s", nb_name)
+            nb.cells.insert(1, new_markdown_cell(source=badges_top,
+                                                 metadata=SLIDE_SKIP))
+
+        nbformat.write(nb, nb_filename)
 
 
 def prev_this_next(collection: list = None) -> None:
@@ -1178,26 +1179,34 @@ def bind(aux: str = None,
 of fully compatible configuration.", config_filename)
         bind(**config)
     else:
-        for marker in (HEADER_MARKER, BADGES_MARKER, NAVIGATOR_MARKER):
-            cleanup_marker_cells(path_to_notes, marker, 'remove')
+#        for marker in (HEADER_MARKER, BADGES_MARKER, NAVIGATOR_MARKER):
+#            cleanup_marker_cells(path_to_notes, marker, 'remove')
         
-        cleanup_marker_cells(path_to_notes, TOC_MARKER, 
-                             'clear' if contents else 'remove')
+#        cleanup_marker_cells(path_to_notes, TOC_MARKER, 
+#                             'clear' if contents else 'remove')
 
         if reindexing:
             reindex(path_to_notes, **reindexing)
 
         if contents:
             add_contents(path_to_notes=path_to_notes, **contents)
+        else:
+            cleanup_marker_cells(path_to_notes, TOC_MARKER, 'remove')
 
         if header:
             add_headers(path_to_notes=path_to_notes, header=header)
+        else:
+            cleanup_marker_cells(path_to_notes, HEADER_MARKER, 'remove')
 
         if navigators:
             add_navigators(path_to_notes=path_to_notes, **navigators)
+        else:
+            cleanup_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
 
         if badges:
             add_badges(path_to_notes=path_to_notes, badges=badges)
+        else:
+            cleanup_marker_cells(path_to_notes, BADGES_MARKER, 'remove')
 
         if exports:
             for export in exports:
