@@ -11,7 +11,7 @@ __copyright__ = """Modified work Copyright (c) 2019 Ricardo M S Rosa
 Original work Copyright (c) 2016 Jacob VanderPlas
 """
 __license__ = "MIT"
-__version__ = "0.11a1"
+__version__ = "0.11a2"
 __config_version__ = "0.9a"
 
 import os
@@ -911,7 +911,6 @@ def add_badges(path_to_notes: str = None,
         become the argument `src` of the badge image. Alternatively,
         one can provide a direct `src` link to the badge image.
     """
-
     cleanup_marker_cells(path_to_notes, BADGES_MARKER, 'remove')
 
     for nb_filename, this_nb_badge_links \
@@ -1055,6 +1054,8 @@ def add_navigators(path_to_notes: str = None,
         Whether to display the navigator with the chapter
         and section number of each notebook or just their title.
     """
+    cleanup_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
+
     for nb_file, navbar \
         in get_navigator_entries(path_to_notes,
                                  core_navigators,
@@ -1066,28 +1067,30 @@ def add_navigators(path_to_notes: str = None,
         navbar_top = NAVIGATOR_MARKER + "\n" + navbar + "\n\n---\n"
         navbar_bottom = NAVIGATOR_MARKER + "\n\n---\n" + navbar
 
-        if len(nb.cells) >= 1 \
-                and nb.cells[1].source.startswith(NAVIGATOR_MARKER):
-            LOGGER.info("- updating navbar for %s", nb_name)
-            nb.cells[1].source = navbar_top
-            nb.cells[1].metadata = SLIDE_SKIP
-        elif len(nb.cells) >= 2 \
-                and nb.cells[2].source.startswith(NAVIGATOR_MARKER):
-            LOGGER.info("- updating navbar for %s", nb_name)
-            nb.cells[2].source = navbar_top
-            nb.cells[2].metadata = SLIDE_SKIP
-        else:
+        if not nb.cells or not \
+                (nb.cells[0].source.startswith(HEADER_MARKER) \
+                or nb.cells[0].source.startswith(BADGES_MARKER)):
+            LOGGER.info("- inserting navbar for %s", nb_name)
+            nb.cells.insert(0, new_markdown_cell(source=navbar_top,
+                                                 metadata=SLIDE_SKIP))
+        elif len(nb.cells) == 1 or not \
+                (nb.cells[1].source.startswith(HEADER_MARKER) \
+                or nb.cells[1].source.startswith(BADGES_MARKER)):
             LOGGER.info("- inserting navbar for %s", nb_name)
             nb.cells.insert(1, new_markdown_cell(source=navbar_top,
                                                  metadata=SLIDE_SKIP))
-
-        if len(nb.cells) > 2 \
-                and nb.cells[-1].source.startswith(NAVIGATOR_MARKER):
-            nb.cells[-1].source = navbar_bottom
-            nb.cells[-1].metadata = SLIDE_SHOW
         else:
+            LOGGER.info("- inserting navbar for %s", nb_name)
+            nb.cells.insert(2, new_markdown_cell(source=navbar_top,
+                                                 metadata=SLIDE_SKIP))
+
+        if (len(nb.cells) == 2 \
+                and not nb.cells[1].source.startswith(NAVIGATOR_MARKER)) \
+                or (len(nb.cells) > 2 
+                and not nb.cells[-1].source.startswith(NAVIGATOR_MARKER)):
             nb.cells.append(new_markdown_cell(source=navbar_bottom,
                                               metadata=SLIDE_SHOW))
+
         nbformat.write(nb, nb_file)
 
 
@@ -1198,15 +1201,15 @@ of fully compatible configuration.", config_filename)
         else:
             cleanup_marker_cells(path_to_notes, HEADER_MARKER, 'remove')
 
-        if navigators:
-            add_navigators(path_to_notes=path_to_notes, **navigators)
-        else:
-            cleanup_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
-
         if badges:
             add_badges(path_to_notes=path_to_notes, badges=badges)
         else:
             cleanup_marker_cells(path_to_notes, BADGES_MARKER, 'remove')
+
+        if navigators:
+            add_navigators(path_to_notes=path_to_notes, **navigators)
+        else:
+            cleanup_marker_cells(path_to_notes, NAVIGATOR_MARKER, 'remove')
 
         if exports:
             for export in exports:
