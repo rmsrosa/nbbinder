@@ -668,16 +668,16 @@ def export_notebooks(path_to_notes: str = None,
         Arguments to be passed on to the exporter via
         `nbconvert.exporters.get_exporter(exporter_name)(**exporter_args)`.
     """
-    assert(isinstance(export_path, str)), "Argument `export_path` should \
-        be a string"
-    assert(exporter_name in exporters.get_export_names()), "The \
-        `exporter_name` argument with value {} is not in the \
-        list of available exporters listed in \
-        `nbconvert.exporters.get_export_names()`".format(exporter_name)
+    assert isinstance(export_path, str), \
+        "Argument `export_path` should be a string"
+    assert exporter_name in exporters.get_export_names(), \
+        "The `exporter_name` argument with value {} is not in the \
+list of available exporters listed in \
+`nbconvert.exporters.get_export_names()`".format(exporter_name)
 
     if os.path.isdir(export_path):
-        for f in os.listdir(export_path):
-            os.remove(os.path.join(export_path, f))
+        for file in os.listdir(export_path):
+            os.remove(os.path.join(export_path, file))
     else:
         os.mkdir(export_path)
 
@@ -750,12 +750,12 @@ def add_contents(path_to_notes: str = None,
         and section number of each notebook or just their title.
     """
     # error handling
-    assert(isinstance(path_to_notes, str)), "Argument `path_to_notes` \
-        should be a string"
-    assert(isinstance(toc_nb_name, str)), "Argument `toc_nb_name` \
-        should be a string"
-    assert(isinstance(toc_title, str)), "Argument `toc_title` \
-        should be a string"
+    assert isinstance(path_to_notes, str), \
+        "Argument `path_to_notes` should be a string"
+    assert isinstance(toc_nb_name, str), \
+        "Argument `toc_nb_name` should be a string"
+    assert isinstance(toc_title, str), \
+        "Argument `toc_title` should be a string"
 
     contents = get_contents(path_to_notes, toc_title, show_index_in_toc)
 
@@ -836,8 +836,8 @@ def get_badge_entries(path_to_notes: str = None,
 
     badges : list of dict
         A list of dictionaries with the necessary information
-        to add badges. See the docstring of `add_badges()` for 
-        the explanation of required and optional key-value pairs 
+        to add badges. See the docstring of `add_badges()` for
+        the explanation of required and optional key-value pairs
         in each dictionary.
 
     Yields
@@ -889,9 +889,9 @@ def add_badges(path_to_notes: str = None,
 
     badges: list of dict
         A list of dictionaries with the necessary information
-        to add the badges. 
+        to add the badges.
 
-        Each item in the list is a dictionary which should have 
+        Each item in the list is a dictionary which should have
         the keys `name` (str), `title` (str), `url` (str), an optional
         `extension` (str), and either `src` or the three keys
         `label` (str), `message` (str), and `color` (str).
@@ -1068,14 +1068,14 @@ def add_navigators(path_to_notes: str = None,
         navbar_bottom = NAVIGATOR_MARKER + "\n\n---\n" + navbar
 
         if not nb.cells or not \
-                (nb.cells[0].source.startswith(HEADER_MARKER) \
-                or nb.cells[0].source.startswith(BADGES_MARKER)):
+                (nb.cells[0].source.startswith(HEADER_MARKER)
+                 or nb.cells[0].source.startswith(BADGES_MARKER)):
             LOGGER.info("- inserting navbar for %s", nb_name)
             nb.cells.insert(0, new_markdown_cell(source=navbar_top,
                                                  metadata=SLIDE_SKIP))
         elif len(nb.cells) == 1 or not \
-                (nb.cells[1].source.startswith(HEADER_MARKER) \
-                or nb.cells[1].source.startswith(BADGES_MARKER)):
+                (nb.cells[1].source.startswith(HEADER_MARKER)
+                 or nb.cells[1].source.startswith(BADGES_MARKER)):
             LOGGER.info("- inserting navbar for %s", nb_name)
             nb.cells.insert(1, new_markdown_cell(source=navbar_top,
                                                  metadata=SLIDE_SKIP))
@@ -1084,10 +1084,10 @@ def add_navigators(path_to_notes: str = None,
             nb.cells.insert(2, new_markdown_cell(source=navbar_top,
                                                  metadata=SLIDE_SKIP))
 
-        if (len(nb.cells) == 2 \
+        if (len(nb.cells) == 2
                 and not nb.cells[1].source.startswith(NAVIGATOR_MARKER)) \
-                or (len(nb.cells) > 2 
-                and not nb.cells[-1].source.startswith(NAVIGATOR_MARKER)):
+                or (len(nb.cells) > 2
+                    and not nb.cells[-1].source.startswith(NAVIGATOR_MARKER)):
             nb.cells.append(new_markdown_cell(source=navbar_bottom,
                                               metadata=SLIDE_SHOW))
 
@@ -1182,12 +1182,6 @@ def bind(aux: str = None,
 of fully compatible configuration.", config_filename)
         bind(**config)
     else:
-#        for marker in (HEADER_MARKER, BADGES_MARKER, NAVIGATOR_MARKER):
-#            cleanup_marker_cells(path_to_notes, marker, 'remove')
-        
-#        cleanup_marker_cells(path_to_notes, TOC_MARKER, 
-#                             'clear' if contents else 'remove')
-
         if reindexing:
             reindex(path_to_notes, **reindexing)
 
