@@ -1,6 +1,6 @@
 # Configuration file for the python module NBBinder
 
-nbbversion: 0.10a
+version: 0.12a
 
 path_to_notes: nb_builds/nb_grammar_bound
 
@@ -17,5 +17,5 @@ header: "[*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbb
 navigators:
   core_navigators:
     - 00.00-Front_Page.ipynb
-  show_index_in_nav: False
   show_nb_title_in_nav: True
+  show_index_in_nav: False

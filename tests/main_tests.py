@@ -60,13 +60,13 @@ if __name__ == '__main__':
 
     nbb.bind(
         path_to_notes=os.path.join(BUILD_DIR, 'nb_alice'),
-        contents = {
+        contents={
             'toc_nb_name': "00.00-Alice's_Adventures_in_Wonderland.ipynb",
             'show_index_in_toc': True
             },
-        header = "NBBinder test with 'Alice's Adventures in Wonderland'",
-        navigators = {
-            'core_navigators': 
+        header="NBBinder test with 'Alice's Adventures in Wonderland'",
+        navigators={
+            'core_navigators':
                 ["00.00-Alice's_Adventures_in_Wonderland.ipynb"
                 ],
             'show_index_in_nav': False
@@ -113,7 +113,7 @@ if __name__ == '__main__':
                               BUILD_DIR, 'nb_grammar'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar'))
 
-    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_bound'), 
+    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
                         NB_GRAMMAR)
 
     bt.bind_test(os.path.join(BUILD_DIR, 'nb_grammar_bound'),
@@ -134,20 +134,20 @@ if __name__ == '__main__':
 
     nbb.bind(
         path_to_notes=os.path.join(BUILD_DIR, 'nb_grammar_bound'),
-        reindexing = {
-            'insert': True, 
+        reindexing={
+            'insert': True,
             'tighten': True
             },
-        contents = {
+        contents={
             'toc_nb_name': '00.00-Front_Page.ipynb',
             'toc_title': 'Table of Contents',
             'show_index_in_toc': True
             },
-        header = "NB Grammar Test for the NBBinder module",
-        navigators = {
-            'core_navigators': 
+        header="NB Grammar Test for the NBBinder module",
+        navigators={
+            'core_navigators':
                 ['00.00-Front_Page.ipynb',
-                'BB.00-Bibliography.ipynb'
+                 'BB.00-Bibliography.ipynb'
                 ],
             'show_index_in_nav': False
             }

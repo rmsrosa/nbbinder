@@ -38,7 +38,7 @@ For instance, consider the following `config_nb_alice.yml` in the tests folder:
 ```yaml
 # Configuration file for the python module NBBinder
 
-nbbversion: 0.10a
+version: 0.12a
 
 path_to_notes: nb_builds/nb_alice
 
@@ -52,8 +52,8 @@ header: "NBBinder test on a collection of notebooks named after the chapters of 
 navigators:
   core_navigators:
     - 00.00-Alice's_Adventures_in_Wonderland.ipynb
-  show_index_in_nav: False
   show_nb_title_in_nav: False
+  show_index_in_nav: False
 ```
 
 ### Notebook collection

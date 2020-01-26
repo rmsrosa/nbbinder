@@ -11,8 +11,8 @@ __copyright__ = """Modified work Copyright (c) 2019 Ricardo M S Rosa
 Original work Copyright (c) 2016 Jacob VanderPlas
 """
 __license__ = "MIT"
-__version__ = "0.11a2"
-__config_version__ = "0.9a"
+__version__ = "0.12a1"
+__config_version__ = "0.12a"
 
 import os
 import re
@@ -665,7 +665,7 @@ def export_notebooks(path_to_notes: str = None,
         choices are 'markdown', 'pdf', 'slides', 'latex', etc.
 
     exporter_args : dict
-        Arguments to be passed on to the exporter via
+        Arguments, if any, to be passed on to the exporter via
         `nbconvert.exporters.get_exporter(exporter_name)(**exporter_args)`.
     """
     assert isinstance(export_path, str), \
@@ -857,6 +857,8 @@ def get_badge_entries(path_to_notes: str = None,
             for badge in badges:
                 this_nb_badge_links.append(
                     BADGE_LINK.format(
+                        badge_alt=badge['alt'],
+                        badge_title=badge['title'],
                         badge_url=badge['url'],
                         badge_filename=this_nb if 'extension' not in badge
                         else this_nb[:REG.match(this_nb).start(5)]
@@ -865,9 +867,7 @@ def get_badge_entries(path_to_notes: str = None,
                         else BADGE_SHIELD_SRC.format(
                             badge_label=badge['label'],
                             badge_message=badge['message'],
-                            badge_color=badge['color']),
-                        badge_alt=badge['name'],
-                        badge_title=badge['title']))
+                            badge_color=badge['color'])))
 
         yield os.path.join(path_to_notes, this_nb), \
             this_nb_badge_links
@@ -892,14 +892,13 @@ def add_badges(path_to_notes: str = None,
         to add the badges.
 
         Each item in the list is a dictionary which should have
-        the keys `name` (str), `title` (str), `url` (str), an optional
+        the keys `alt` (str), `title` (str), `url` (str), an optional
         `extension` (str), and either `src` or the three keys
         `label` (str), `message` (str), and `color` (str).
 
-        The keys `name`, `title` and `url` are used for the building
-        the `href` link in the badge, with `name` being the `alt`
-        argument of `href`. `href` will be composed of the given
-        `url` appended by the name of the corresponding notebook.
+        The keys `alt`, `title` and `url` are used for the building
+        the link in the badge, with `href` argument being composed of
+        the given `url` appended by the name of the corresponding notebook.
 
         The key `extension` is used in case there is a need to replace
         the `.ipynb` extension of each notebook to the appropriate
@@ -1175,11 +1174,15 @@ def bind(aux: str = None,
     if config_filename:
         with open(config_filename, 'r') as config_file:
             config = yaml.load(config_file, Loader=yaml.FullLoader)
-        config_version = config.pop('nbbversion', None)
+        config_version = config.pop('version', None)
         if version.parse(config_version) < \
                 version.parse(__config_version__):
-            LOGGER.warning("Version of config file '%s' lower than that \
-of fully compatible configuration.", config_filename)
+            LOGGER.warning(
+                "Version '%s' of config file '%s' lower than minimal \
+version '%s' for fully compatible configuration.",
+                version.parse(config_version),
+                config_filename,
+                version.parse(__config_version__))
         bind(**config)
     else:
         if reindexing:

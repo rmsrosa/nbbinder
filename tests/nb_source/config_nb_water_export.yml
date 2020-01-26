@@ -1,6 +1,6 @@
 # Configuration file for the python module NBBinder
 
-nbbversion: 0.10a
+version: 0.12a
 
 path_to_notes: nb_export_builds/nb_water_export
 
@@ -15,18 +15,18 @@ navigators:
   core_navigators:
     - 00.00-Water_Contents.ipynb
     - BA.00-References.ipynb
-  show_index_in_nav: False
   show_nb_title_in_nav: True
+  show_index_in_nav: False
 
 badges:
-  - name: mardown
+  - alt: mardown
     title: View Markdown
     url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_md
     extension: .md
     label: view
     message: markdown
     color: orange
-  - name: pdf
+  - alt: pdf
     title: View PDF
     url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_pdf
     extension: .pdf
