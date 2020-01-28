@@ -1,5 +1,7 @@
 # Usage
 
+**THIS DOCUMENTATION FILE IS OUTDATED**
+
 ## Indexing the collection of notebooks
 
 In order to be processed, each notebook in the collection should start with an *index*, which is to be identified by a certain regular expression ending with a dash:
