@@ -4,13 +4,12 @@
 
 ## Description
 
-The main function in this package is called `bind()`. It reads a collection of Jupyter notebooks from a given directory and, upon configuration,
+The main function in this module is called `bind()`. It reads a collection of Jupyter notebooks from a given directory and, upon configuration,
 
-- adds a **Table of Contents** to a selected notebook file, with links to the other notebooks;
-- adds a **header** to each notebook, with custom informations;
-- adds, in the **header** and in the **footline** of each notebook, **navigator links**, to traverse  to the previous or the next notebook, or to other selected notebooks, such as the Table of Contents and the Bibliography;
-- insert, in the **header** of each notebook, a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com);
-- **restructures** the notebooks, by automatically renaming the files, in case a new notebook is to be inserted in between other notebooks.
+- adds a **table of contents** to a selected notebook file, with links to the other notebooks;
+- adds a **header** cell to each notebook, with custom information about the collection of notebooks;
+- adds a **badge** cell to each notebook, with links to opening the notebooks in different platforms or formats. For instance, on can include a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com), a badge for showing **slides** as exported with `nbconvert`, and so on.
+- adds **navigator links**, at the beggining and at the end of each notebook, with links to traverse to the previous and the next notebook, and to other selected notebooks, such as the Table of Contents and the References;
 
 ## Functions
 
@@ -21,9 +20,10 @@ The function `bind()` can be called in two different ways:
 
 The `bind()` function calls the following functions in this module, which take care of each of the main features of the notebook binder:
 
-- `restructure()`: reorder the notebooks when a new notebook is to be inserted between others;
+- `reindex()`: reorder the notebooks when a new notebook is to be inserted between others or whether there are gaps in the indices;
 - `add_contents()`: adds the Table of Contents to a selected "Contents" file;
 - `add_headers()`: adds a header to each notebook with a given custom information;
+- `add_badges()`: adds a badge cell to each notebook with one or more badges to open up the document in different platforms or formats;
 - `add_navigators()`: adds navigation bars to the top and bottom of each notebook.
 
 Each of these later functions can be called separately, if only some of these features are desired.
@@ -34,28 +34,32 @@ Look at the documentation for more information on each of these functions and fo
 
 ## Example
 
-The most convenient way to use the module, or script, is via a configuration file. Consider, for instance, the configuration file `config_nb_alice.yml` used for testing the package and available in the subdirectory `tests` of the root directory:
+The most convenient way to use the module, or script, is via a configuration file. The configuration files are written in the [YAML](https://en.wikipedia.org/wiki/YAML) format.
+
+For instance, consider the following `config_nb_alice.yml` in the tests folder:
 
 ```yaml
-directory:
-  path_to_notes: nb_alice
+# Configuration file for the python module NBBinder
 
-book:
+version: 0.12a
+
+path_to_notes: nb_builds/nb_alice
+
+contents:
   toc_nb_name: 00.00-Alice's_Adventures_in_Wonderland.ipynb
-  show_full_entry_in_toc: True
-  header: "[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)*"
+  toc_title: Table of Contents
+  show_index_in_toc: True
+
+header: "NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'"
+
+navigators:
   core_navigators:
     - 00.00-Alice's_Adventures_in_Wonderland.ipynb
-  user: rmsrosa
-  repository: nbbinder
-  branch: master
-  github_nb_dir: tests/nb_alice
-  show_colab: True
-  show_binder: True
-  show_full_entry_in_nav: False
+  show_nb_title_in_nav: False
+  show_index_in_nav: False
 ```
 
-Then, we import the module (in the same folder) and use the `bind()` function with this configuration file as argument:
+Then, we import the module and use the `bind()` function with this configuration file as argument:
 
 ```python
 import nbbinder as nbb
@@ -68,11 +72,9 @@ Or we execute it as a script in the command line:
 ./nbbinder.py config.yml
 ```
 
-Notice, in the example configuration file above, the parameters `show_colab: True` and `show_binder: True`, and other parameters with the information about the github repository and directory where the notebooks in this package reside. This allows the module to add direct links for the corresponding notebooks to be opened in one of these cloud computing python environments.
-
 **When opening the direct links from within the notebook-rendering of the github, it is necessary to click the badges with the right button, otherwise nothing will be opened.**
 
-The key `path_to_notes` indicates that the notebooks are in the folder `nb_alice`, relative to where the script that calls the function `bind()` is located. In this folder, one finds the following notebooks, properly indexed:
+The key `path_to_notes` indicates that the notebooks are in the folder `nb_builds/nb_alice`, relative to where the script that calls the function `bind()` is located. In this folder, one finds the following notebooks, properly indexed:
 
 ```text
 00.00-Alice's_Adventures_in_Wonderland.ipynb

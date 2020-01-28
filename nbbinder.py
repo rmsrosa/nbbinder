@@ -15,9 +15,9 @@ __version__ = "0.12a2"
 __config_version__ = "0.12a"
 
 import os
+import sys
 import re
 import itertools
-import sys
 import logging
 
 from typing import Iterable

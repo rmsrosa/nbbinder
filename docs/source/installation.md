@@ -32,4 +32,3 @@ If you do not wish to install the package, you can simply download it and import
   ```
 
 In case of downloading the package and using it or installing it locally, you just need the file `nbbinder.py` in the root directory`.
-

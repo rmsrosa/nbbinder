@@ -5,3 +5,5 @@ This package is based on three modules available, in early 2018, in the subdirec
 In February 2018, these modules were modified and packaged together as a single module named [`jupyterbookmaker`](https://github.com/rmsrosa/jupyterbookmaker). This was used in my classroom notes on Mathematical Modelling, taught on early 2018. The notes are available (in Portuguese) at the [github repository for Modelagem Matemática - IM/UFRJ](https://github.com/rmsrosa/modelagem_matematica.).
 
 At the end of 2019, the package was improved and renamed [`nbbinder`](https://github.com/rmsrosa/nbbinder).
+
+Meanwhile, [Jake VanderPlas](http://vanderplas.com/) seems to have modified his original `tools`, as well.
