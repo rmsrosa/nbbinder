@@ -129,13 +129,11 @@ See [00.00-Alice's_Adventures_in_Wonderland](tests/nb_builds/nb_alice/00.00-Alic
 
 ## Installation
 
-After development is complete, the module will be available in [PyPI](https://pypi.org/project/nbbinder/) and installation will be possible with
+The module is available in [PyPI](https://pypi.org/project/nbbinder/) and installation is done with
 
 ```bash
 pip install nbbinder
 ```
-
-For the moment, it is only available in [TestPyPI](https://test.pypi.org/project/nbbinder/).
 
 The module can also be downloaded directly from github.com/rmsrosa/nbbinder.
 
