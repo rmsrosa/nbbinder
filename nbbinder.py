@@ -1,8 +1,8 @@
 #!/anaconda3/envs/nbbinder/bin/python
 # -*- coding: utf-8 -*-
 """
-**NBBinder** generates a navigable book-like structure
-to a collection of Jupyter notebooks.
+**NBBinder** generates a navigable book-like structure to a collection of
+Jupyter notebooks.
 """
 
 __author__ = "Ricardo M. S. Rosa <rmsrosa@gmail.com>"
@@ -11,7 +11,7 @@ __copyright__ = """Modified work Copyright (c) 2019 Ricardo M S Rosa
 Original work Copyright (c) 2016 Jacob VanderPlas
 """
 __license__ = "MIT"
-__version__ = "0.12a1"
+__version__ = "0.12a2"
 __config_version__ = "0.12a"
 
 import os
@@ -95,28 +95,26 @@ def indexed_notebooks(path_to_notes: str = None) -> list:
 
     The notebooks are expected to be in the folder indicated by the
     argument `path_to_notes`. The "indexed notebooks" are those that
-    match the regular expression REG. Filenames that do not
-    match the regular expression are ignored.
+    match the regular expression REG. Filenames that do not match
+    this regular expression are ignored.
 
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     Returns
     -------
     : list of str
-        A list with the filenames of the notebooks that match
-        the regular expression (the "indexed notebooks"),
-        ordered by the lexicographycal order.
+        A list with the filenames of the notebooks that match the regular
+        expression, ordered by the lexicographycal order.
     """
     return sorted(nb for nb in os.listdir(path_to_notes) if REG.match(nb))
 
 
 def increase_index(idx: str) -> str:
-    """Increases an index by one.
+    """Increases an index by one unit.
 
     If the index is numeric, in the range '00' to '98', it adds one
     to the index and returns an index in the range '01' to '99'.
@@ -170,25 +168,24 @@ def increase_index(idx: str) -> str:
 
 def cleanup_marker_cells(path_to_notes: str = None, marker: str = None,
                          mode: str = 'remove') -> None:
-    """Removes or cleans the contents of any cell with the given `marker`
-    from the indexed notebooks in path_to_notes.
+    """Removes or clears the contents of any cell with the given `marker`.
+
+    Depending on the value of the argument `mode`, it removes all the cells
+    with the given `marker` from all the indexed notebooks in `path_to_notes`,
+    if `mode == 'remove'`, or clears the contents of these cells (leaving
+    the marker in the cell), if `mode == 'clear'`.
 
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     marker : str
         The marker to be searched for.
 
     mode : str
-        A string indicating whether to clean or remove the cells marked with
-        the provided `marker`. The mode 'clear' leaves the MAKER in the cell,
-        but no other content in the source. The useful thing about the
-        'clear' mode is to preserve any metadata that differs from the
-        default ones added by the binder (such as about the slide property).
+        A string which should be either 'remove' or 'clear'.
     """
     if marker and (mode in ('clear', 'remove')):
         for nb_name in indexed_notebooks(path_to_notes):
@@ -200,7 +197,7 @@ def cleanup_marker_cells(path_to_notes: str = None, marker: str = None,
                 if not cell.source.startswith(marker):
                     new_cells.append(cell)
                 elif mode == 'clear':
-                    LOGGER.info("- cleaning '%s' cell from %s",
+                    LOGGER.info("- clearing contents of '%s' cell from %s",
                                 marker, nb_name)
                     new_cells.append(cell)
                     new_cells[-1].source = marker
@@ -218,14 +215,13 @@ def get_nb_title(path_to_notes: str = None, nb_name: str = None) -> str:
 
     It looks for the first cell, in the notebook, that starts with
     a single markdown symbol '#' and returns the contents of the first
-    line of this cell, striped out of '# ' and the remaining lines.
+    line of this cell, striped out of '# ' and of any remaining lines.
 
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     nb_name : str
         The name of the jupyter notebook file.
@@ -233,7 +229,7 @@ def get_nb_title(path_to_notes: str = None, nb_name: str = None) -> str:
     Returns
     -------
     : str
-        The desired title of the notebook or the empty string if not found.
+        The desired title of the notebook or `None` if not found.
     """
     nb = nbformat.read(os.path.join(path_to_notes, nb_name), as_version=4)
     for cell in nb.cells:
@@ -252,9 +248,8 @@ def get_nb_full_entry(path_to_notes: str = None,
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     nb_name : str
         The name of the jupyter notebook file.
@@ -269,8 +264,7 @@ def get_nb_full_entry(path_to_notes: str = None,
         The index entry, with the Chapter and Section numbers or letters.
 
     title : str
-        The title of the notebook, given in the first cell starting
-        with a single '# '.
+        The title of the notebook, as obtained from `get_nb_title()`.
     """
     chapter, section, complement = REG.match(nb_name).group(1, 2, 3)
 
@@ -343,9 +337,8 @@ def get_nb_entry(path_to_notes: str = None,
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     nb_name : str
         The name of the jupyter notebook file.
@@ -378,9 +371,8 @@ def yield_contents(path_to_notes: str = None,
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     show_index_in_toc : bool
         Whether to display the navigator with the chapter
@@ -414,9 +406,8 @@ def get_contents(path_to_notes: str = None,
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     toc_title : str
         Text to be displayed as the title for the table of contents cell,
@@ -450,9 +441,8 @@ def insert_notebooks(path_to_notes: str = None) -> None:
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
     """
 
     nb_names_ins = sorted(nb for nb in os.listdir(path_to_notes)
@@ -525,7 +515,7 @@ def insert_notebooks(path_to_notes: str = None) -> None:
 
 
 def tighten_notebooks(path_to_notes: str = None) -> None:
-    """Tighten the indexes of the notebooks in the colllection.
+    """Tighten the indices of the notebooks in the colllection.
 
     Checks whether there are gaps in the indices of the notebooks
     and, if so, renames the affected notebooks in the appropriate
@@ -534,9 +524,8 @@ def tighten_notebooks(path_to_notes: str = None) -> None:
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
     """
 
     nb_names = sorted(nb for nb in os.listdir(path_to_notes) if REG.match(nb))
@@ -609,17 +598,15 @@ def reindex(path_to_notes: str = None,
             tighten: bool = False) -> None:
     """Reindex the collection of notebooks.
 
-    Reindex the notebooks by inserting (by calling `insert_notebooks`)
-    and/or tightening (by calling `tighten_notebooks`) the collection
-    of notebooks, depending on whether the arguments `insert` and/or
-    `tighten` are True or False.
+    Reindex the notebooks by inserting (via `insert_notebooks()`) and/or
+    tightening (calling `tighten_notebooks()`) the collection of notebooks,
+    depending on whether the corresponding arguments are `True` or `False`.
 
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     insert : bool
         Whether to insert notebooks in the collection or not.
@@ -641,8 +628,8 @@ def export_notebooks(path_to_notes: str = None,
     """
     Export notebooks via nbconvert.
 
-    It reads all the notes in `path_to_notes` and export them to
-    the directory `export_path` using the exporter defined by
+    It reads all the indexed notebooks in `path_to_notes` and export them
+    to the directory `export_path` using the exporter defined by
     `exporter_name`, with the arguments in `exporter_args`.
 
     The name of the exporter (`exporter_name`) must be one of the default
@@ -651,9 +638,8 @@ def export_notebooks(path_to_notes: str = None,
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     export_path : str
         The path to the directory where the exported, or converted,
@@ -732,9 +718,8 @@ def add_contents(path_to_notes: str = None,
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     toc_nb_name : str
         filename of the notebook in which the table of contents
@@ -798,9 +783,8 @@ def add_headers(path_to_notes: str = None, header: str = None) -> None:
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     header : str
         The string with the contents to be included in the header cell.
@@ -830,9 +814,8 @@ def get_badge_entries(path_to_notes: str = None,
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     badges : list of dict
         A list of dictionaries with the necessary information
@@ -877,15 +860,15 @@ def add_badges(path_to_notes: str = None,
                badges: list = None) -> None:
     """Adds badges to each notebook in the collection.
 
-    Adds top and bottom badges to each notebook in the collection
-    of indexed notebooks in the folder `path_to_notes`.
+    Adds a badge cell with one or more badges to each notebook in the
+    collection of indexed notebooks in the folder `path_to_notes`.
+    The information for creating each badge is in the list `badges`.
 
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     badges: list of dict
         A list of dictionaries with the necessary information
@@ -896,19 +879,20 @@ def add_badges(path_to_notes: str = None,
         `extension` (str), and either `src` or the three keys
         `label` (str), `message` (str), and `color` (str).
 
-        The keys `alt`, `title` and `url` are used for the building
-        the link in the badge, with `href` argument being composed of
-        the given `url` appended by the name of the corresponding notebook.
+        The key `url` is used for building link address, with the `href`
+        argument being composed of the given `url` appended by the nam
+        of the corresponding notebook.
+
+        The keys `label`, `message`, and `color` are used to build
+        the badge image via the `shields.io` constructor, which will then
+        become the argument `src` of the badge image. Alternatively,
+        one can provide a direct `src` link to the badge image.
+        The keys `alt` and `title` complement the information of the image.
 
         The key `extension` is used in case there is a need to replace
         the `.ipynb` extension of each notebook to the appropriate
         extension, e.g `.md`, `.slides.html`, `.pdf`, `.py`, `.tex`,
         and so on. If `extension` is omitted, no replacement occurs.
-
-        The keys `label`, `message`, and `color` are used to build
-        the badge via the `shields.io` constructor, which will then
-        become the argument `src` of the badge image. Alternatively,
-        one can provide a direct `src` link to the badge image.
     """
     cleanup_marker_cells(path_to_notes, BADGES_MARKER, 'remove')
 
@@ -972,9 +956,8 @@ def get_navigator_entries(path_to_notes: str = None,
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     core_navigators : list of str
         A lists of strings with the filenames of each notebook to be
@@ -987,7 +970,7 @@ def get_navigator_entries(path_to_notes: str = None,
 
     show_index_in_nav : bool
         Whether to display the navigator with the chapter
-        and section number of each notebook or just their title.
+        and section numbers of each notebook or just their title.
 
     Yields
     ------
@@ -1036,9 +1019,8 @@ def add_navigators(path_to_notes: str = None,
     Parameters
     ----------
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
     core_navigators : list of str
         A lists of strings with the filenames of each notebook to be
@@ -1113,51 +1095,27 @@ def bind(aux: str = None,
     aux : str
         It allows for the first argument to be a non keyword argument
         which can be either the `config_filename` (if it ends in `.yaml`
-        or `.yml`) or the `path_to_notes` (otherwise).
+        or `.yml`) or the `path_to_notes` (otherwise). These can also
+        be given with the corresponding keyword arguments mentioned below.
 
     path_to_notes : str
-        The path to the directory that contains the notebooks,
-        either the absolute path or the path relative from
-        where the code is being ran.
+        The path to the directory that contains the notebooks, either
+        absolute or relative to the script that calls `nbbinder.bind()`.
 
-    insert : bool
-        Indicates whether to insert notebooks in the collection of
-        indexed notebooks or not.
+    reindexing: list of bool
+        A list with the arguments `insert` and `tighten` for the function
+        `reindex()`.
 
-    tighten : bool
-        Indicates whether to tighten the indices of the notebooks,
-        i.e. whether there are gaps in the indices of the notebooks
-        and, if so, rename the affected notebooks in the
-        appropriate order.
-
-    toc_nb_name : str
-        Filename of the notebook in which the table of contents
-        is to be inserted
-
-    toc_title : str
-        Text to be displayed as the title for the table of contents cell,
-        e.g. 'Contents', 'Table of Contents', or in other languages,
-        'Conteúdo', 'Table des Matières', and so on.
+    contents: list
+        A list with the arguments `toc_nb_name`, `toc_title`, and
+        `show_index_in_toc` for the function `add_contents()`.
 
     header : str
-        The string with the contents to be included in the header cell.
+        The string to be included as the contents of the header cell.
 
-    core_navigators : list of str
-        A lists of strings with the filenames of each notebook to be
-        included in the navigators, in between the links to the
-        "previous" and the "next" notebooks.
-
-    show_index_in_toc : bool
-        Whether to display the navigator with the chapter
-        and section number of each notebook or just their title.
-
-    show_nb_title_in_nav : bool
-        Whether to diplay the title of the notebook in the previous
-        and next links or just display the words 'Previous' and 'Next'.
-
-    show_index_in_nav : bool
-        Whether to display the navigator with the chapter
-        and section number of each notebook or just their title.
+    navigators: list
+        A list with the arguments `core_navigators`, `show_nb_title_in_nav`,
+        and `show_index_in_nav` for the function `add_navigators()`
 
     config_filename : str
         The filename of the configuration file.
@@ -1214,11 +1172,11 @@ version '%s' for fully compatible configuration.",
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1 or sys.argv[1] == '--help' or sys.argv[1] == '-h':
-        LOGGER.info("\n Run the script with a configuration file \
+    if len(sys.argv) == 1 or set(sys.argv).intersection({'--help', '-h'}):
+        LOGGER.warning("\n Run the script with a configuration file \
 as argument, e.g.")
-        LOGGER.info("\n   ./nbbinder.py config.yml")
-        LOGGER.info("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
+        LOGGER.warning("\n   ./nbbinder.py config.yml")
+        LOGGER.warning("\nFor the documentation, type 'pydoc3 nbbinder.py'.\n")
     else:
         try:
             bind(sys.argv[1])

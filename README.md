@@ -22,7 +22,7 @@
 
 The main function in this module is called `bind()`. It reads a collection of Jupyter notebooks from a given directory and, upon configuration,
 
-- adds a **Table of Contents** to a selected notebook file, with links to the other notebooks;
+- adds a **table of contents** to a selected notebook file, with links to the other notebooks;
 - adds a **header** cell to each notebook, with custom information about the collection of notebooks;
 - adds a **badge** cell to each notebook, with links to opening the notebooks in different platforms or formats. For instance, on can include a **Google Colab badge** and a **Binder badge**, with links to opening each notebook in these cloud computing plataforms (if the notebooks are hosted in github.com), a badge for showing **slides** as exported with `nbconvert`, and so on.
 - adds **navigator links**, at the beggining and at the end of each notebook, with links to traverse to the previous and the next notebook, and to other selected notebooks, such as the Table of Contents and the References;
@@ -91,7 +91,7 @@ Or we execute it as a script in the command line:
 ./nbbinder.py config_nb_alice.yml
 ```
 
-In the `tests` directory, the configuration file is actually not in the same folder as the script. The collection is two folders down. That is why the argument `path_to_notes: nb_builds/nb_alice` is given in the configuration file.
+In the `tests` directory, the configuration file is actually not in the same folder as the script. The collection is two folders down. This is indicated by the argument `path_to_notes: nb_builds/nb_alice`, given in the configuration file.
 
 ### Result
 
@@ -125,7 +125,7 @@ After binding the notebooks in one of the two ways mentioned above, the followin
 
 ### [12. Alice's Evidence](#/)
 
-See [00.00-Alice's_Adventures_in_Wonderland](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the bound version of the first notebook. Experiment clicking on the badges with the mouse's right button to open the notebooks in different ways. Experiment also with the navigator links to move to the other notebooks.
+See [00.00-Alice's_Adventures_in_Wonderland](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the bound version of the first notebook. Notice the **header** in the begining of the notebook and the **navigator** cells after the header and at the end of the notebook. Experiment with the navigator links to move to the other notebooks.
 
 ## Installation
 
