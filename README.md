@@ -4,7 +4,7 @@
 
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/nbbinder) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/nbbinder)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub file size in bytes](https://img.shields.io/github/size/rmsrosa/nbbinder/nbbinder.py) ![GitHub repo size](https://img.shields.io/github/repo-size/rmsrosa/nbbinder)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub file size in bytes](https://img.shields.io/github/size/rmsrosa/nbbinder/nbbinder.py?label=module%20size) ![GitHub repo size](https://img.shields.io/github/repo-size/rmsrosa/nbbinder)
 
 **NBBinder** generates a navigable book-like structure to a collection of Jupyter notebooks.
 
