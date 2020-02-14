@@ -7,7 +7,7 @@
 &nbsp;
 
 <!--NAVIGATOR-->
-[<- Appendix](AA.00-Appendix.md) | [Front Page](00.00-Front_Page.md) | [Bibliography](BB.00-Bibliography.md) | [Bibliography ->](BB.00-Bibliography.md)
+[<- Appendix](A0.00-Appendix.md) | [Front Page](00.00-Front_Page.md) | [Bibliography](BB.00-Bibliography.md) | [Bibliography ->](BB.00-Bibliography.md)
 
 ---
 
@@ -26,4 +26,4 @@ Situation control message participant most. Key why will within cultural.
 <!--NAVIGATOR-->
 
 ---
-[<- Appendix](AA.00-Appendix.md) | [Front Page](00.00-Front_Page.md) | [Bibliography](BB.00-Bibliography.md) | [Bibliography ->](BB.00-Bibliography.md)
+[<- Appendix](A0.00-Appendix.md) | [Front Page](00.00-Front_Page.md) | [Bibliography](BB.00-Bibliography.md) | [Bibliography ->](BB.00-Bibliography.md)

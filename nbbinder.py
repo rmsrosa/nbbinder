@@ -41,8 +41,8 @@ LOGGER.setLevel(logging.WARNING)
 # in https://pythex.org/ (python flavor regex)
 
 IDX_GRP = r'([0-9]{2}|[A-Z][0-9A-Z])'
-COMPL_GRP = r'(\*[^#*]*[\*|\#]?[^#*]*[\*|\#]?[:.]?|)'
-COMPL_SUBGRPS = r'^\*([^#*]*)([\*|\#]?)([^#*]*)([\*|\#]?)([:.]?)$'
+COMPL_GRP = r'(\$[^#*]*[\$|\#]?[^#*]*[\$|\#]?[:.]?|)'
+COMPL_SUBGRPS = r'^\$([^#*]*)([\$|\#]?)([^#*]*)([\$|\#]?)([:.]?)$'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'  # no open right parentheses
 INS_GRP = r'(\&[a-z]?|)'
 
@@ -268,27 +268,17 @@ def get_nb_full_entry(path_to_notes: str = None,
     """
     chapter, section, complement = REG.match(nb_name).group(1, 2, 3)
 
-    if chapter.isdecimal():
-        chapter = chapter.lstrip('0')
-    elif chapter[0] == 'A':
-        chapter = chapter[1]
-    elif not chapter[1].isdecimal():
-        chapter = ''
-
-    if section.isdecimal():
-        section = section.lstrip('0')
-    elif section[0] == 'A':
-        section = section[1]
-    elif not section[1].isdecimal():
-        section = ''
-
+    chapter = chapter.lstrip('0') if chapter.isdecimal() \
+        else '' if chapter.isalpha() else chapter.rstrip('0')
+    section = section.lstrip('0') if section.isdecimal() \
+        else '' if section.isalpha() else section.rstrip('0')
     title = get_nb_title(path_to_notes, nb_name)
 
-    if not complement or set(complement) in ({'*'}, {'#', '*'}):
-        if not chapter or set(complement) == {'*'}:
+    if not complement or set(complement) in ({'$'}, {'#', '$'}):
+        if not chapter or set(complement) == {'$'}:
             md_pre_entry = '### '
             idx_entry = ''
-        elif not section or complement == '*#' or complement == '*#*':
+        elif not section or complement == '$#' or complement == '$#$':
             md_pre_entry = '### '
             idx_entry = '{}. '.format(chapter)
         else:
@@ -386,12 +376,8 @@ def yield_contents(path_to_notes: str = None,
     for nb_name in indexed_notebooks(path_to_notes):
         md_pre_entry, idx_entry, title \
             = get_nb_full_entry(path_to_notes, nb_name)
-        if show_index_in_toc:
-            yield '{}[{}]({})\n'.format(md_pre_entry,
-                                        idx_entry + title,
-                                        nb_name)
-        else:
-            yield '{}[{}]({})\n'.format(md_pre_entry, title, nb_name)
+        entry = idx_entry + title if show_index_in_toc else title
+        yield '{}[{}]({})\n'.format(md_pre_entry, entry, nb_name)
 
 
 def get_contents(path_to_notes: str = None,

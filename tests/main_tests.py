@@ -98,7 +98,7 @@ if __name__ == '__main__':
         '06.03-Narrative.ipynb',
         '06.04-Persuasive.ipynb',
         '07.00-Conclusion.ipynb',
-        'AA.00-Appendix.ipynb',
+        'A0.00-Appendix.ipynb',
         'BA.00-Glossary.ipynb',
         'BB.00-Bibliography.ipynb',
         'BC.00-Index.ipynb'
