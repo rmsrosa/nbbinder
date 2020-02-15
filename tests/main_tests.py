@@ -227,6 +227,32 @@ if __name__ == '__main__':
                               BUILD_DIR, 'nb_grammar_tighten'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_tighten'), tighten=True)
 
+    # Test with complement
+
+    NB_COMPLEMENT = [
+        '00.00-Introduction.ipynb',
+        '01.00.Lecture-Math_Background.ipynb',
+        '01.01-Vector_Calculus.ipynb',
+        '01.02-Rigid_Motions.ipynb',
+        '02.00.Lecture-Kinematics.ipynb',
+        '03.00.Lecture-Dynamics.ipynb',
+        '03.01..Part-Force_and_Momentum.ipynb',
+        '03.02..Part-Orbits_of_Planets_and_Satellites.ipynb',
+        '03.03..Part-Interception_and_Rendezvous.ipynb',
+        '04.00.Lecture-Trajectory_Optimization.ipynb',
+        '04.01.Lecture.Part-Performance.ipynb',
+        '04.02.Lecture.Part-Gravity_Turn.ipynb',
+        '04.03.Lecture.Part-Optimization.ipynb',
+        'AA.00-References.ipynb'
+    ]
+
+    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_complement'),
+                        NB_COMPLEMENT)
+
+    bt.bind_test(os.path.join(BUILD_DIR, 'nb_complement'),
+                 os.path.join(BUILD_DIR, 'nb_complement'),
+                 os.path.join(SOURCE_DIR, 'config_nb_complement.yml'))
+    
     # Tests with nb_water
 
     bt.bind_test(os.path.join(SOURCE_DIR, 'nb_water'),

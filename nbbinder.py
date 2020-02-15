@@ -11,7 +11,7 @@ __copyright__ = """Modified work Copyright (c) 2019 Ricardo M S Rosa
 Original work Copyright (c) 2016 Jacob VanderPlas
 """
 __license__ = "MIT"
-__version__ = "0.12a2"
+__version__ = "0.12a3"
 __config_version__ = "0.12a"
 
 import os
@@ -41,8 +41,10 @@ LOGGER.setLevel(logging.WARNING)
 # in https://pythex.org/ (python flavor regex)
 
 IDX_GRP = r'([0-9]{2}|[A-Z][0-9A-Z])'
-COMPL_GRP = r'(\$[^#*]*[\$|\#]?[^#*]*[\$|\#]?[:.]?|)'
-COMPL_SUBGRPS = r'^\$([^#*]*)([\$|\#]?)([^#*]*)([\$|\#]?)([:.]?)$'
+COMPL_GRP = r'(\.?[^-]*)'
+COMPL_SUBGRPS = r'\.([^\.]*)\.?([^\.]*)$'
+#COMPL_GRP = r'(\$[^#*]*[\$|\#]?[^#*]*[\$|\#]?[:.]?|)'
+#COMPL_SUBGRPS = r'^\$([^#*]*)([\$|\#]?)([^#*]*)([\$|\#]?)([:.]?)$'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'  # no open right parentheses
 INS_GRP = r'(\&[a-z]?|)'
 
@@ -274,11 +276,11 @@ def get_nb_full_entry(path_to_notes: str = None,
         else '' if section.isalpha() else section.rstrip('0')
     title = get_nb_title(path_to_notes, nb_name)
 
-    if not complement or set(complement) in ({'$'}, {'#', '$'}):
-        if not chapter or set(complement) == {'$'}:
+    if not complement or set(complement) in ({'.'}, {'..'}):
+        if not chapter or set(complement) == {'..'}:
             md_pre_entry = '### '
             idx_entry = ''
-        elif not section or complement == '$#' or complement == '$#$':
+        elif not section or complement == '.':
             md_pre_entry = '### '
             idx_entry = '{}. '.format(chapter)
         else:
@@ -286,26 +288,19 @@ def get_nb_full_entry(path_to_notes: str = None,
             idx_entry = '{}.{}. '.format(chapter, section)
     else:
         comp_reg = REG_COMPL.match(complement)
-        if not comp_reg.group(4):
+        if not comp_reg.group(2):
             md_pre_entry = '### '
         else:
             md_pre_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
 
-        idx_entry = comp_reg.group(1)
-
-        if comp_reg.group(2) == '#':
-            idx_entry += ' ' + chapter
-
-        if comp_reg.group(3):
-            idx_entry += ' ' + comp_reg.group(3) + ' '
-
-        if comp_reg.group(4) == '#':
-            idx_entry += section
-
-        if comp_reg.group(5):
-            idx_entry += comp_reg.group(5) + ' '
+        if comp_reg.group(1) and comp_reg.group(2):
+            idx_entry = '{} {}.{} {}. '.format(
+                comp_reg.group(1), chapter,
+                comp_reg.group(2), section)
+        elif comp_reg.group(1):
+            idx_entry = '{} {}. '.format(comp_reg.group(1), chapter)
         else:
-            idx_entry += '. '
+            idx_entry = '{} {}. '.format(comp_reg.group(2), section)
 
         idx_entry = idx_entry.lstrip()
 

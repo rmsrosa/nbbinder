@@ -1,0 +1,27 @@
+# Configuration file for the python module NBBinder
+
+version: 0.12a
+
+path_to_notes: nb_builds/nb_complement
+
+contents:
+  toc_nb_name: 00.00-Introduction.ipynb
+  toc_title: Contents
+  show_index_in_toc: True
+
+header: "[*Test Complement for the NBBinder module*](https://github.com/rmsrosa/nbbinder)"
+
+navigators:
+  core_navigators:
+    - 00.00-Introduction.ipynb
+  show_nb_title_in_nav: True
+  show_index_in_nav: False
+
+badges:
+  - alt: nbviewer
+    title: View in NBViewer
+    url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice
+    label: view in
+    message: nbviewer
+    color: orange
+        
