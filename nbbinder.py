@@ -43,8 +43,6 @@ LOGGER.setLevel(logging.WARNING)
 IDX_GRP = r'([0-9]{2}|[A-Z][0-9A-Z])'
 COMPL_GRP = r'(\.?[^-]*)'
 COMPL_SUBGRPS = r'\.([^\.]*)\.?([^\.]*)$'
-#COMPL_GRP = r'(\$[^#*]*[\$|\#]?[^#*]*[\$|\#]?[:.]?|)'
-#COMPL_SUBGRPS = r'^\$([^#*]*)([\$|\#]?)([^#*]*)([\$|\#]?)([:.]?)$'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'  # no open right parentheses
 INS_GRP = r'(\&[a-z]?|)'
 
