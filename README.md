@@ -123,7 +123,7 @@ See [00.00-Alice's_Adventures_in_Wonderland.ipynb](tests/nb_builds/nb_alice/00.0
 
 ## Other examples
 
-By appropriately naming the files, we can have different formattings for the *Table of Contents*. 
+By appropriately naming the files, we can have different formattings for the *Table of Contents*.
 
 ### Notebooks with subsections
 

@@ -294,7 +294,8 @@ def get_nb_full_entry(path_to_notes: str = None,
         elif comp_reg.group(1) and not section:
             idx_entry = '{} {}. '.format(comp_reg.group(1), chapter)
         elif comp_reg.group(1) and section:
-            idx_entry = '{} {}.{}. '.format(comp_reg.group(1), chapter, section)
+            idx_entry = '{} {}.{}. '.format(comp_reg.group(1),
+                                            chapter, section)
         else:
             idx_entry = '{} {}. '.format(comp_reg.group(2), section)
 
