@@ -235,6 +235,8 @@ if __name__ == '__main__':
         '01.01-Vector_Calculus.ipynb',
         '01.02-Rigid_Motions.ipynb',
         '02.00.Lecture-Kinematics.ipynb',
+        '02.01.Lecture-Velocity_and_Acceleration.ipynb',
+        '02.02.Lecture-Different_Types_of_Motions_and_Their_Components.ipynb',
         '03.00.Lecture-Dynamics.ipynb',
         '03.01..Part-Force_and_Momentum.ipynb',
         '03.02..Part-Orbits_of_Planets_and_Satellites.ipynb',
