@@ -142,7 +142,7 @@ By appropriately naming the files, we can have different formattings for the *Ta
 
 For instance, if your list of files is
 
-```(text)
+```text
 00.00-Front_Page.ipynb
 02.00-Introduction.ipynb
 04.00-Project_Requirements.ipynb
@@ -218,9 +218,9 @@ As before, the links above have been changed for display here. See [00.00-Front-
 
 ### Notebooks for lecture notes
 
-Ff your list of files is
+If your list of files is
 
-```(text)
+```text
 00.00-Introduction.ipynb
 01.00.Lecture-Math_Background.ipynb
 01.01-Vector_Calculus.ipynb
