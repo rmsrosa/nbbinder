@@ -288,7 +288,7 @@ def get_nb_full_entry(path_to_notes: str = None,
     else:
         comp_reg = REG_COMPL.match(complement)
         if comp_reg.group(1) and comp_reg.group(2):
-            idx_entry = '{} {}.{} {}. '.format(
+            idx_entry = '{} {}. {} {}. '.format(
                 comp_reg.group(1), chapter,
                 comp_reg.group(2), section)
         elif comp_reg.group(1) and not section:
