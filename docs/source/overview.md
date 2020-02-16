@@ -98,37 +98,24 @@ The key `path_to_notes` indicates that the notebooks are in the folder `nb_build
 
 The function `bind()` then reads the notebooks and *binds* them accordingly. In particular, the following table of contents is added to the file indicated by the key `toc_nb_name` in the configuration file:
 
-## [Table of Contents](#/)
+```text
+Table of Contents
+Alice's Adventures in Wonderland
+1. Down the Rabbit-Hole
+2. The Pool of Tears
+3. A Caucus-Race and a Long Tale
+4. The Rabbit Sends in a Little Bill
+5. Advice from a Caterpillar
+6. Pig and Pepper
+7. A Mad Tea-Party
+8. The Queen's Croquet-Ground
+9. The Mock Turtle's Story
+10. The Lobster Quadrille
+11. Who Stole the Tarts?
+12. Alice's Evidence
+```
 
-### [Alice's Adventures in Wonderland](#/)
-
-### [1. Down the Rabbit-Hole](#/)
-
-### [2. The Pool of Tears](#/)
-
-### [3. A Caucus-Race and a Long Tale](#/)
-
-### [4. The Rabbit Sends in a Little Bill](#/)
-
-### [5. Advice from a Caterpillar](#/)
-
-### [6. Pig and Pepper](#/)
-
-### [7. A Mad Tea-Party](#/)
-
-### [8. The Queen's Croquet-Ground](#/)
-
-### [9. The Mock Turtle's Story](#/)
-
-### [10. The Lobster Quadrille](#/)
-
-### [11. Who Stole the Tarts?](#/)
-
-### [12. Alice's Evidence](#/)
-
-The links above have been changed for display here, but in the actual table of contents they link to the corresponding notebook.
-
-See [00.00-Alice's_Adventures_in_Wonderland.ipynb](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the bound version of the first notebook. Notice the **header** in the begining of the notebook and the **navigator** cells after the header and at the end of the notebook. Experiment with the navigator links to move to the other notebooks.
+See [00.00-Alice's_Adventures_in_Wonderland.ipynb](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the actual bound version of the first notebook. Notice the **header** in the begining of the notebook and the **navigator** cells after the header and at the end of the notebook. Experiment with the navigator links to move to the other notebooks.
 
 ## Other examples
 
@@ -162,55 +149,36 @@ BA.00-Glossary.ipynb
 BC.02-Bibliography.ipynb
 BC.04-Index.ipynb
 ```
+
 we get the *Table of Contents*
 
-## [Table of Contents](#)
+```text
+Table of Contents
+Front Page
+1. Introduction
+2. Project Requirements
+3. The History of Grammar
+4. Parts of Speech
+  4.1. Nouns
+  4.2. Verbs
+  4.3. Adjectives
+  4.4. Adverbs
+5. Sentences
+  5.1. Complex Sentences
+  5.2. Compound Sentences
+6. Paragraphs
+  6.1. Descriptive
+  6.2. Expository
+  6.3. Narrative
+  6.4. Persuasive
+7. Conclusion
+A. Appendix
+Glossary
+Bibliography
+Index
+```
 
-### [Front Page](#/)
-
-### [1. Introduction](#/)
-
-### [2. Project Requirements](#/)
-
-### [3. The History of Grammar](#/)
-
-### [4. Parts of Speech](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [4.1. Nouns](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [4.2. Verbs](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [4.3. Adjectives](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [4.4. Adverbs](#/)
-
-### [5. Sentences](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [5.1. Complex Sentences](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [5.2. Compound Sentences](#/)
-
-### [6. Paragraphs](06.00-Paragraphs.ipynb)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [6.1. Descriptive](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [6.2. Expository](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [6.3. Narrative](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [6.4. Persuasive](#/)
-
-### [7. Conclusion](#/)
-
-### [A. Appendix](#/)
-
-### [Glossary](#/)
-
-### [Bibliography](#/)
-
-### [Index](#/)
-
-As before, the links above have been changed for display here. See [00.00-Front-Page.ipynb](tests/nb_builds/nb_grammar_bound/00.00-Front_Page.ipynb) for the bound version of the first notebook.
+See [00.00-Front-Page.ipynb](tests/nb_builds/nb_grammar_bound/00.00-Front_Page.ipynb) for the actual bound version of the first notebook.
 
 ### Notebooks for lecture notes
 
@@ -237,40 +205,28 @@ AA.00-References.ipynb
 
 we get the *Table of Contents*
 
-## [Contents](#)
+```text
+Contents
+Introduction
+Lecture 1. Math Background
+  1.1. Vector Calculus
+  1.2. Rigid Motions
+Lecture 2. Kinematics
+  Lecture 2.1. Velocity and Acceleration
+  Lecture 2.2. Different Types of Motions and Their Components
+Lecture 3. Dynamics
+  Part 1. Force and Momentum
+  Part 2. Orbits of Planets and Satellites
+  Part 3. Interception and Rendezvous
+Lecture 4. Trajectory Optimization
+  Lecture 4. Part 1. Performance
+  Lecture 4. Part 2. Gravity Turn
+  Lecture 4. Part 3. Optimization
+References
+```
 
-### [Introduction](#/)
+See [00.00-Introduction.ipynb](tests/nb_builds/nb_complement/00.00-Introduction.ipynb) for the actual bound version of the first notebook.
 
-### [Lecture 1. Math Background](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [1.1. Vector Calculus](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [1.2. Rigid Motions](#/)
-
-### [Lecture 2. Kinematics](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [Lecture 2.1. Velocity and Acceleration](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [Lecture 2.2. Different Types of Motions and Their Components](#/)
-
-### [Lecture 3. Dynamics](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [Part 1. Force and Momentum](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [Part 2. Orbits of Planets and Satellites](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [Part 3. Interception and Rendezvous](#/)
-
-### [Lecture 4. Trajectory Optimization](04.00.Lecture-Trajectory_Optimization.ipynb)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [Lecture 4.Part 1. Performance](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [Lecture 4.Part 2. Gravity Turn](#/)
-
-&nbsp;&nbsp;&nbsp;&nbsp; [Lecture 4.Part 3. Optimization](#/)
-
-### [References](#/)
-
-As before, the links above have been changed for display here. See [00.00-Introductino.ipynb](tests/nb_builds/nb_complement/00.00-Introduction.ipynb) for the bound version of the first notebook.
+Notice, above, different forms of displaying the parts of the same lecture note.
 
 The binder for the notebooks in this collection is configured to include a *badge* to open them in [nbviewer](https://nbviewer.jupyter.org/). The *badge* is located just below the header. Just click the badge with the **mouse right button** for to open it. If clicking it with the right button, from within github, nothing will happen.
