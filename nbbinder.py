@@ -270,27 +270,23 @@ def get_nb_full_entry(path_to_notes: str = None,
 
     chapter = chapter.lstrip('0') if chapter.isdecimal() \
         else '' if chapter.isalpha() else chapter.rstrip('0')
+
     section = section.lstrip('0') if section.isdecimal() \
         else '' if section.isalpha() else section.rstrip('0')
+
     title = get_nb_title(path_to_notes, nb_name)
+
+    md_pre_entry = '&nbsp;&nbsp;&nbsp;&nbsp; ' if section else '### '
 
     if not complement or set(complement) in ({'.'}, {'..'}):
         if not chapter or set(complement) == {'..'}:
-            md_pre_entry = '### '
             idx_entry = ''
         elif not section or complement == '.':
-            md_pre_entry = '### '
             idx_entry = '{}. '.format(chapter)
         else:
-            md_pre_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
             idx_entry = '{}.{}. '.format(chapter, section)
     else:
         comp_reg = REG_COMPL.match(complement)
-        if not comp_reg.group(2):
-            md_pre_entry = '### '
-        else:
-            md_pre_entry = '&nbsp;&nbsp;&nbsp;&nbsp; '
-
         if comp_reg.group(1) and comp_reg.group(2):
             idx_entry = '{} {}.{} {}. '.format(
                 comp_reg.group(1), chapter,
