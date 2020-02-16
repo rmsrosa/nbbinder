@@ -115,7 +115,7 @@ Alice's Adventures in Wonderland
 12. Alice's Evidence
 ```
 
-See [00.00-Alice's_Adventures_in_Wonderland.ipynb](tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the actual bound version of the first notebook. Notice the **header** in the begining of the notebook and the **navigator** cells after the header and at the end of the notebook. Experiment with the navigator links to move to the other notebooks.
+See [00.00-Alice's_Adventures_in_Wonderland.ipynb](https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the actual bound version of the first notebook. Notice the **header** in the begining of the notebook and the **navigator** cells after the header and at the end of the notebook. Experiment with the navigator links to move to the other notebooks.
 
 ## Other examples
 
@@ -178,7 +178,7 @@ Bibliography
 Index
 ```
 
-See [00.00-Front-Page.ipynb](tests/nb_builds/nb_grammar_bound/00.00-Front_Page.ipynb) for the actual bound version of the first notebook.
+See [00.00-Front-Page.ipynb](https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_grammar_bound/00.00-Front_Page.ipynb) for the actual bound version of the first notebook.
 
 ### Notebooks for lecture notes
 
@@ -225,7 +225,7 @@ Lecture 4. Trajectory Optimization
 References
 ```
 
-See [00.00-Introduction.ipynb](tests/nb_builds/nb_complement/00.00-Introduction.ipynb) for the actual bound version of the first notebook.
+See [00.00-Introduction.ipynb](https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice/00.00-Alice's_Adventures_in_Wonderland.ipynb) for the actual bound version of the first notebook.
 
 Notice, above, different forms of displaying the parts of the same lecture note.
 
