@@ -21,7 +21,6 @@ import itertools
 import logging
 
 from typing import Iterable
-from urllib.parse import quote
 
 from packaging import version
 
@@ -70,11 +69,12 @@ CENTER_TEMPLATE = "| [{title}]({url}) "
 NEXT_TEMPLATE = "| [{title} ->]({url})"
 
 # Link templates for the badges
-BADGE_SHIELD_SRC = \
-    "https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}"
-
-BADGE_LINK = "[![{badge_title}]({badge_src})]({badge_url}/{badge_filename})"
-
+BADGE_LINK = \
+    """<a href="{badge_url}/{badge_filename}"><img align="left" \
+src="{badge_src}" alt="{badge_title}" title="{badge_title}"></a>
+"""
+BADGE_SHIELD_SRC = "https://img.shields.io/badge/\
+{badge_label}-{badge_message}-{badge_color}"
 
 # Metadata to flag cells for the slides
 SLIDE_SHOW = {
@@ -825,9 +825,9 @@ def get_badge_entries(path_to_notes: str = None,
                         + badge['extension'],
                         badge_src=badge['src'] if 'src' in badge
                         else BADGE_SHIELD_SRC.format(
-                            badge_label=quote(badge['label']),
-                            badge_message=quote(badge['message']),
-                            badge_color=quote(badge['color']))))
+                            badge_label=badge['label'],
+                            badge_message=badge['message'],
+                            badge_color=badge['color'])))
 
         yield os.path.join(path_to_notes, this_nb), \
             this_nb_badge_links
@@ -852,7 +852,7 @@ def add_badges(path_to_notes: str = None,
         to add the badges.
 
         Each item in the list is a dictionary which should have
-        the keys `alt` (str), `title` (str), `url` (str), an optional
+        the keys `title` (str), `url` (str), an optional
         `extension` (str), and either `src` or the three keys
         `label` (str), `message` (str), and `color` (str).
 
@@ -864,7 +864,7 @@ def add_badges(path_to_notes: str = None,
         the badge image via the `shields.io` constructor, which will then
         become the argument `src` of the badge image. Alternatively,
         one can provide a direct `src` link to the badge image.
-        The keys `alt` and `title` complement the information of the image.
+        The key `title` complements the information of the image.
 
         The key `extension` is used in case there is a need to replace
         the `.ipynb` extension of each notebook to the appropriate
@@ -881,7 +881,7 @@ def add_badges(path_to_notes: str = None,
         badges_top = BADGES_MARKER + "\n"
 
         for badge_link in this_nb_badge_links:
-            badges_top += badge_link + " "
+            badges_top += badge_link + "&nbsp;"
 
         if not nb.cells or not nb.cells[0].source.startswith(HEADER_MARKER):
             LOGGER.info("- inserting badges for %s", nb_name)

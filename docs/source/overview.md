@@ -47,7 +47,7 @@ For instance, consider the following `config_nb_alice.yml`, which is included in
 ```yaml
 # Configuration file for the python module NBBinder
 
-version: 0.12a
+version: 0.13a
 
 path_to_notes: nb_builds/nb_alice
 
@@ -119,7 +119,7 @@ See [00.00-Alice's_Adventures_in_Wonderland.ipynb](https://github.com/rmsrosa/nb
 
 ## Other examples
 
-By appropriately naming the files, we can have different formattings for the *Table of Contents*. 
+By appropriately naming the files, we can have different formattings for the *Table of Contents*.
 
 ### Notebooks with subsections
 
@@ -150,7 +150,7 @@ BC.02-Bibliography.ipynb
 BC.04-Index.ipynb
 ```
 
-we get the *Table of Contents*
+we get, with a suitable configuration, the *Table of Contents*
 
 ```text
 Table of Contents
@@ -203,7 +203,7 @@ If your list of files is
 AA.00-References.ipynb
 ```
 
-we get the *Table of Contents*
+we get, with a suitable configuration, the *Table of Contents*
 
 ```text
 Contents

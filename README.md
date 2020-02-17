@@ -43,7 +43,7 @@ For instance, consider the following `config_nb_alice.yml`, which is included in
 ```yaml
 # Configuration file for the python module NBBinder
 
-version: 0.12a
+version: 0.13a
 
 path_to_notes: nb_builds/nb_alice
 
@@ -154,7 +154,7 @@ BC.02-Bibliography.ipynb
 BC.04-Index.ipynb
 ```
 
-we get the *Table of Contents*
+we get, with a suitable configuration, the *Table of Contents*
 
 ```text
 Table of Contents
@@ -207,7 +207,7 @@ If your list of files is
 AA.00-References.ipynb
 ```
 
-we get the *Table of Contents*
+we get, with a suitable configuration, the *Table of Contents*
 
 ```text
 Contents
