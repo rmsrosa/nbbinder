@@ -21,6 +21,7 @@ import itertools
 import logging
 
 from typing import Iterable
+from urllib.parse import quote
 
 from packaging import version
 
@@ -825,9 +826,9 @@ def get_badge_entries(path_to_notes: str = None,
                         + badge['extension'],
                         badge_src=badge['src'] if 'src' in badge
                         else BADGE_SHIELD_SRC.format(
-                            badge_label=badge['label'],
-                            badge_message=badge['message'],
-                            badge_color=badge['color'])))
+                            badge_label=quote(badge['label']),
+                            badge_message=quote(badge['message']),
+                            badge_color=quote(badge['color']))))
 
         yield os.path.join(path_to_notes, this_nb), \
             this_nb_badge_links
