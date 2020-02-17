@@ -42,21 +42,21 @@ LOGGER.setLevel(logging.WARNING)
 # in https://pythex.org/ (python flavor regex)
 
 IDX_GRP = r'([0-9]{2}|[A-Z][0-9A-Z])'
-COMPL_GRP = r'(\.?[^-]*)'
-COMPL_SUBGRPS = r'\.([^\.]*)\.?([^\.]*)$'
+PREHEADER_GRP = r'(\.?[^-]*)'
+PREHEADER_SUBGRPS = r'\.([^\.]*)\.?([^\.]*)$'
 MAIN_GRP = r'([^\)]*|[^\)]*\([^\)]*\)[^\)]*)'  # no open right parentheses
 INS_GRP = r'(\&[a-z]?|)'
 
 REG_IDX = re.compile('^' + IDX_GRP + '$')
-REG = re.compile('^' + IDX_GRP + r'\.' + IDX_GRP + COMPL_GRP
+REG = re.compile('^' + IDX_GRP + r'\.' + IDX_GRP + PREHEADER_GRP
                  + '-' + MAIN_GRP + r'(\.ipynb)$')
 REG_INS = re.compile('^' + IDX_GRP + INS_GRP + r'\.'
-                     + IDX_GRP + INS_GRP + COMPL_GRP
+                     + IDX_GRP + INS_GRP + PREHEADER_GRP
                      + '-' + MAIN_GRP + r'(\.ipynb)$')
 REG_LINK = re.compile(r'(\]\()' + IDX_GRP + r'\.'
-                      + IDX_GRP + COMPL_GRP
+                      + IDX_GRP + PREHEADER_GRP
                       + '-' + MAIN_GRP + r'(\.ipynb)\)')
-REG_COMPL = re.compile(COMPL_SUBGRPS)
+REG_PREHEADER = re.compile(PREHEADER_SUBGRPS)
 
 # Markers for the affected notebook cells
 TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"
@@ -267,7 +267,7 @@ def get_nb_full_entry(path_to_notes: str = None,
     title : str
         The title of the notebook, as obtained from `get_nb_title()`.
     """
-    chapter, section, complement = REG.match(nb_name).group(1, 2, 3)
+    chapter, section, preheader = REG.match(nb_name).group(1, 2, 3)
 
     chapter = chapter.lstrip('0') if chapter.isdecimal() \
         else '' if chapter.isalpha() else chapter.rstrip('0')
@@ -279,26 +279,26 @@ def get_nb_full_entry(path_to_notes: str = None,
 
     md_pre_entry = '&nbsp;&nbsp;&nbsp;&nbsp; ' if section else '### '
 
-    if not complement or set(complement) in ({'.'}, {'..'}):
-        if not chapter or set(complement) == {'..'}:
+    if not preheader or set(preheader) in ({'.'}, {'..'}):
+        if not chapter or set(preheader) == {'..'}:
             idx_entry = ''
-        elif not section or complement == '.':
+        elif not section or preheader == '.':
             idx_entry = '{}. '.format(chapter)
         else:
             idx_entry = '{}.{}. '.format(chapter, section)
     else:
-        comp_reg = REG_COMPL.match(complement)
-        if comp_reg.group(1) and comp_reg.group(2):
+        preheader_reg = REG_PREHEADER.match(preheader)
+        if preheader_reg.group(1) and preheader_reg.group(2):
             idx_entry = '{} {}. {} {}. '.format(
-                comp_reg.group(1), chapter,
-                comp_reg.group(2), section)
-        elif comp_reg.group(1) and not section:
-            idx_entry = '{} {}. '.format(comp_reg.group(1), chapter)
-        elif comp_reg.group(1) and section:
-            idx_entry = '{} {}.{}. '.format(comp_reg.group(1),
+                preheader_reg.group(1), chapter,
+                preheader_reg.group(2), section)
+        elif preheader_reg.group(1) and not section:
+            idx_entry = '{} {}. '.format(preheader_reg.group(1), chapter)
+        elif preheader_reg.group(1) and section:
+            idx_entry = '{} {}.{}. '.format(preheader_reg.group(1),
                                             chapter, section)
         else:
-            idx_entry = '{} {}. '.format(comp_reg.group(2), section)
+            idx_entry = '{} {}. '.format(preheader_reg.group(2), section)
 
         idx_entry = idx_entry.lstrip()
 
