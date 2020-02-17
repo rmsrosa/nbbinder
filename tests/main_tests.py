@@ -14,8 +14,8 @@ from context import nbbinder as nbb
 # Logging level
 logging.basicConfig(level=logging.WARNING)
 
-#bt.logger.setLevel(logging.INFO)
-#nbb.logger.setLevel(logging.INFO)
+# bt.logger.setLevel(logging.INFO)
+# nbb.logger.setLevel(logging.INFO)
 
 # Directories
 BUILD_DIR = 'nb_builds'
@@ -57,7 +57,6 @@ if __name__ == '__main__':
 
     logging.info("\n# Binding 'nb_alice' notebooks with parameters")
 
-
     nbb.bind(
         path_to_notes=os.path.join(BUILD_DIR, 'nb_alice'),
         contents={
@@ -67,8 +66,7 @@ if __name__ == '__main__':
         header="NBBinder test with 'Alice's Adventures in Wonderland'",
         navigators={
             'core_navigators':
-                ["00.00-Alice's_Adventures_in_Wonderland.ipynb"
-                ],
+                ["00.00-Alice's_Adventures_in_Wonderland.ipynb"],
             'show_index_in_nav': False
             }
         )
@@ -137,36 +135,38 @@ if __name__ == '__main__':
         reindexing={
             'insert': True,
             'tighten': True
-            },
+        },
         contents={
             'toc_nb_name': '00.00-Front_Page.ipynb',
             'toc_title': 'Table of Contents',
             'show_index_in_toc': True
-            },
+        },
         header="NB Grammar Test for the NBBinder module",
         navigators={
-            'core_navigators':
-                ['00.00-Front_Page.ipynb',
-                 'BB.00-Bibliography.ipynb'
-                ],
+            'core_navigators': [
+                '00.00-Front_Page.ipynb',
+                'BB.00-Bibliography.ipynb'
+            ],
             'show_index_in_nav': False
-            },
+        },
         badges=[
-                {
-                    'title': 'View in NBViewer',
-                    'url': 'https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice',
-                    'label': 'view in',
-                    'message': 'nbviewer',
-                    'color': 'orange'},
-                {
-                    'title': 'View Markdown',
-                    'url': 'https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_grammar_md',
-                    'extension': '.md',
-                    'label': 'view',
-                    'message': 'markdown',
-                    'color': 'blueviolet'
-                }
-            ]
+            {
+                'title': 'View in NBViewer',
+                'url': 'https://nbviewer.jupyter.org/github/rmsrosa/\
+nbbinder/blob/master/tests/nb_builds/nb_alice',
+                'label': 'view in',
+                'message': 'nbviewer',
+                'color': 'orange'},
+            {
+                'title': 'View Markdown',
+                'url': 'https://github.com/rmsrosa/nbbinder/blob/master/\
+tests/nb_builds/nb_grammar_md',
+                'extension': '.md',
+                'label': 'view',
+                'message': 'markdown',
+                'color': 'blueviolet'
+            }
+        ]
         )
 
     # Tests with nb_grammar_insert
@@ -270,7 +270,7 @@ if __name__ == '__main__':
     bt.bind_test(os.path.join(BUILD_DIR, 'nb_complement'),
                  os.path.join(BUILD_DIR, 'nb_complement'),
                  os.path.join(SOURCE_DIR, 'config_nb_complement.yml'))
-    
+
     # Tests with nb_water
 
     bt.bind_test(os.path.join(SOURCE_DIR, 'nb_water'),
