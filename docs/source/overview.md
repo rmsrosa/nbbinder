@@ -180,9 +180,9 @@ Index
 
 See [00.00-Front-Page.ipynb](https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_grammar_bound/00.00-Front_Page.ipynb) for the actual bound version of the first notebook.
 
-### Notebooks for lecture notes
+### Notebooks with preheaders
 
-If your list of files is
+This is particularly useful for lectures notes. For instance, by naming your collection of notebooks as
 
 ```text
 00.00-Introduction.ipynb
@@ -229,4 +229,4 @@ See [00.00-Introduction.ipynb](https://github.com/rmsrosa/nbbinder/blob/master/t
 
 Notice, above, different forms of displaying the parts of the same lecture note.
 
-The binder for the notebooks in this collection is configured to include a *badge* to open them in [nbviewer](https://nbviewer.jupyter.org/). The *badge* is located just below the header. Just click the badge with the **mouse right button** for to open it. If clicking it with the right button, from within github, nothing will happen.
+The binder for the notebooks in this collection is configured to include a *badge* to open them in [nbviewer](https://nbviewer.jupyter.org/). The *badge* is located just below the header. Just click the badge with the **mouse right button** to open it. If clicking it with the right button, from within github, nothing will happen.
