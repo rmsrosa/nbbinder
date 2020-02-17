@@ -150,7 +150,23 @@ if __name__ == '__main__':
                  'BB.00-Bibliography.ipynb'
                 ],
             'show_index_in_nav': False
-            }
+            },
+        badges=[
+                {
+                    'title': 'View in NBViewer',
+                    'url': 'https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice',
+                    'label': 'view in',
+                    'message': 'nbviewer',
+                    'color': 'orange'},
+                {
+                    'title': 'View Markdown',
+                    'url': 'https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_grammar_md',
+                    'extension': '.md',
+                    'label': 'view',
+                    'message': 'markdown',
+                    'color': 'blueviolet'
+                }
+            ]
         )
 
     # Tests with nb_grammar_insert
