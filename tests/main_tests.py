@@ -141,7 +141,7 @@ if __name__ == '__main__':
             'toc_title': 'Table of Contents',
             'show_index_in_toc': True
         },
-        header="NB Grammar Test for the NBBinder module",
+        header="Grammar-book test for the NBBinder module",
         navigators={
             'core_navigators': [
                 '00.00-Front_Page.ipynb',
