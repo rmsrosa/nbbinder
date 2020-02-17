@@ -2,9 +2,7 @@
 [*Test Grammar for the NBBinder module*](https://github.com/rmsrosa/nbbinder)
 
 <!--BADGES-->
-<a href="https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice/BB.00-Bibliography.ipynb"><img align="left" src="https://img.shields.io/badge/view in-nbviewer-orange" alt="nbviewer" title="View in NBViewer"></a>
-&nbsp;<a href="https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_grammar_md/BB.00-Bibliography.md"><img align="left" src="https://img.shields.io/badge/view-markdown-blueviolet" alt="markdown" title="View Markdown"></a>
-&nbsp;
+[![View in NBViewer](https://img.shields.io/badge/view%20in-nbviewer-orange)](https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice/BB.00-Bibliography.ipynb) [![View Markdown](https://img.shields.io/badge/view-markdown-blueviolet)](https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_grammar_md/BB.00-Bibliography.md) 
 
 <!--NAVIGATOR-->
 [<- Glossary](BA.00-Glossary.md) | [Front Page](00.00-Front_Page.md) | [Bibliography](BB.00-Bibliography.md) | [Index ->](BC.00-Index.md)

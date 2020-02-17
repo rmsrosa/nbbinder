@@ -11,8 +11,8 @@ __copyright__ = """Modified work Copyright (c) 2019 Ricardo M S Rosa
 Original work Copyright (c) 2016 Jacob VanderPlas
 """
 __license__ = "MIT"
-__version__ = "0.12a3"
-__config_version__ = "0.12a"
+__version__ = "0.13a1"
+__config_version__ = "0.13a"
 
 import os
 import sys
@@ -21,6 +21,7 @@ import itertools
 import logging
 
 from typing import Iterable
+from urllib.parse import quote
 
 from packaging import version
 
@@ -73,8 +74,11 @@ BADGE_LINK = \
     """<a href="{badge_url}/{badge_filename}"><img align="left" \
 src="{badge_src}" alt="{badge_alt}" title="{badge_title}"></a>
 """
-BADGE_SHIELD_SRC = "https://img.shields.io/badge/\
-{badge_label}-{badge_message}-{badge_color}"
+BADGE_SHIELD_SRC = \
+    "https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}"
+
+BADGE_LINK = "[![{badge_title}]({badge_src})]({badge_url}/{badge_filename})"
+
 
 # Metadata to flag cells for the slides
 SLIDE_SHOW = {
@@ -818,7 +822,6 @@ def get_badge_entries(path_to_notes: str = None,
             for badge in badges:
                 this_nb_badge_links.append(
                     BADGE_LINK.format(
-                        badge_alt=badge['alt'],
                         badge_title=badge['title'],
                         badge_url=badge['url'],
                         badge_filename=this_nb if 'extension' not in badge
@@ -826,9 +829,9 @@ def get_badge_entries(path_to_notes: str = None,
                         + badge['extension'],
                         badge_src=badge['src'] if 'src' in badge
                         else BADGE_SHIELD_SRC.format(
-                            badge_label=badge['label'],
-                            badge_message=badge['message'],
-                            badge_color=badge['color'])))
+                            badge_label=quote(badge['label']),
+                            badge_message=quote(badge['message']),
+                            badge_color=quote(badge['color']))))
 
         yield os.path.join(path_to_notes, this_nb), \
             this_nb_badge_links
@@ -882,7 +885,7 @@ def add_badges(path_to_notes: str = None,
         badges_top = BADGES_MARKER + "\n"
 
         for badge_link in this_nb_badge_links:
-            badges_top += badge_link + "&nbsp;"
+            badges_top += badge_link + " "
 
         if not nb.cells or not nb.cells[0].source.startswith(HEADER_MARKER):
             LOGGER.info("- inserting badges for %s", nb_name)

@@ -10,6 +10,7 @@ The `nbbinder` module uses the standard libraries
 - [itertools](https:/docs.python.org/3/library/itertools.html)
 - [logging](https:/docs.python.org/3/library/logging.html)
 - [typing](https:/docs.python.org/3/library/typing.html)
+- [urllib](https://docs.python.org/3/library/urllib.html)
 
 and the nonstandard libraries
 

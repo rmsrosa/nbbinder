@@ -1,6 +1,6 @@
 # Configuration file for the python module NBBinder
 
-version: 0.12a
+version: 0.13a
 
 path_to_notes: nb_export_builds/nb_water_export
 
@@ -19,15 +19,13 @@ navigators:
   show_index_in_nav: False
 
 badges:
-  - alt: mardown
-    title: View Markdown
+  - title: View Markdown
     url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_md
     extension: .md
     label: view
     message: markdown
     color: orange
-  - alt: pdf
-    title: View PDF
+  - title: View PDF
     url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_export_builds/nb_water_pdf
     extension: .pdf
     label: view

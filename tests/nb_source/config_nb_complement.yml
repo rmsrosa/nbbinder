@@ -1,6 +1,6 @@
 # Configuration file for the python module NBBinder
 
-version: 0.12a
+version: 0.13a
 
 path_to_notes: nb_builds/nb_complement
 
@@ -18,8 +18,7 @@ navigators:
   show_index_in_nav: False
 
 badges:
-  - alt: nbviewer
-    title: View in NBViewer
+  - title: View in NBViewer
     url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice
     label: view in
     message: nbviewer

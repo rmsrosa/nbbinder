@@ -1,6 +1,6 @@
 # Configuration file for the python module NBBinder
 
-version: 0.12a
+version: 0.13a
 
 path_to_notes: nb_builds/nb_grammar_bound
 

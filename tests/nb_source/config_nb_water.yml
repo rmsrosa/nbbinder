@@ -1,6 +1,6 @@
 # Configuration file for the python module NBBinder
 
-version: 0.12a
+version: 0.13a
 
 path_to_notes: nb_builds/nb_water
 
@@ -19,22 +19,18 @@ navigators:
   show_index_in_nav: False
 
 badges:
-  - alt: Google Colab
-    title: Open in Google Colab
+  - title: Open in Google Colab
     url: https://colab.research.google.com/github/rmsrosa/nbbinder/blob/master/nb_builds/tests/nb_alice
     src: https://colab.research.google.com/assets/colab-badge.svg
-  - alt: Binder
-    title: Open in binder
+  - title: Open in binder
     url: https://mybinder.org/v2/gh/rmsrosa/nbbinder/master?filepath=nb_builds/tests/nb_alice
     src: https://mybinder.org/badge.svg
-  - alt: nbviewer
-    title: View in NBViewer
+  - title: View in NBViewer
     url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water
     label: view in
     message: nbviewer
     color: orange
-  - alt: slides
-    title: View Slides
+  - title: View Slides
     url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water_slides
     extension: .slides.html
     label: view
