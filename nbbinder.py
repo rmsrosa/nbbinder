@@ -72,10 +72,10 @@ NEXT_TEMPLATE = "| [{title} ->]({url})"
 # Link templates for the badges
 BADGE_LINK = \
     """<a href="{badge_url}/{badge_filename}"><img align="left" \
-src="{badge_src}" alt="{badge_title}" title="{badge_title}"></a>
-"""
-BADGE_SHIELD_SRC = "https://img.shields.io/badge/\
-{badge_label}-{badge_message}-{badge_color}"
+src="{badge_src}" alt="{badge_title}" title="{badge_title}"></a>"""
+
+BADGE_SHIELD_SRC = \
+    "https://img.shields.io/badge/{badge_label}-{badge_message}-{badge_color}"
 
 # Metadata to flag cells for the slides
 SLIDE_SHOW = {
@@ -882,7 +882,8 @@ def add_badges(path_to_notes: str = None,
         badges_top = BADGES_MARKER + "\n"
 
         for badge_link in this_nb_badge_links:
-            badges_top += badge_link + "&nbsp;"
+            badges_top += badge_link
+        badges_top += "&nbsp;"
 
         if not nb.cells or not nb.cells[0].source.startswith(HEADER_MARKER):
             LOGGER.info("- inserting badges for %s", nb_name)
