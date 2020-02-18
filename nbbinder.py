@@ -279,26 +279,45 @@ def get_nb_full_entry(path_to_notes: str = None,
 
     md_pre_entry = '&nbsp;&nbsp;&nbsp;&nbsp; ' if section else '### '
 
-    if not preheader or set(preheader) in ({'.'}, {'..'}):
-        if not chapter or set(preheader) == {'..'}:
-            idx_entry = ''
-        elif not section or preheader == '.':
+    if not preheader:
+        if chapter and section:
+            idx_entry = '{}.{}. '.format(chapter, section)
+        elif chapter:
             idx_entry = '{}. '.format(chapter)
         else:
-            idx_entry = '{}.{}. '.format(chapter, section)
+            idx_entry = ''
     else:
         preheader_reg = REG_PREHEADER.match(preheader)
         if preheader_reg.group(1) and preheader_reg.group(2):
-            idx_entry = '{} {}. {} {}. '.format(
-                preheader_reg.group(1), chapter,
-                preheader_reg.group(2), section)
-        elif preheader_reg.group(1) and not section:
-            idx_entry = '{} {}. '.format(preheader_reg.group(1), chapter)
-        elif preheader_reg.group(1) and section:
-            idx_entry = '{} {}.{}. '.format(preheader_reg.group(1),
-                                            chapter, section)
+            if chapter and section:
+                idx_entry = '{} {}. {} {}. '.format(
+                    preheader_reg.group(1), chapter,
+                    preheader_reg.group(2), section
+                )
+            elif chapter:
+                idx_entry = '{} {}. {}. '.format(
+                    preheader_reg.group(1), chapter, section)
+            else:
+                idx_entry = '{} {}. '.format(
+                    preheader_reg.group(1),
+                    preheader_reg.group(2)
+                )
+        elif preheader_reg.group(1):
+            if chapter and section:
+                idx_entry = '{} {}.{}. '.format(
+                    preheader_reg.group(1), chapter, section
+                )
+            elif chapter:
+                idx_entry = '{} {}. '.format(preheader_reg.group(1), chapter)
+            else:
+                idx_entry = '{}. '.format(preheader_reg.group(1))
+        elif preheader_reg.group(2):
+            if chapter and section:
+                idx_entry = '{} {}. '.format(preheader_reg.group(2), section)
+            else:
+                idx_entry = '{}. '.format(preheader_reg.group(2))
         else:
-            idx_entry = '{} {}. '.format(preheader_reg.group(2), section)
+            idx_entry = ''
 
         idx_entry = idx_entry.lstrip()
 
