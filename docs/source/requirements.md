@@ -1,6 +1,6 @@
 # Requirements
 
-## Main module nbbinder
+## For the main module nbbinder
 
 The `nbbinder` module uses the standard libraries
 
@@ -22,9 +22,9 @@ and the nonstandard libraries
 The `nbformat` library is used to interact with the jupyter notebooks, the `nbconvert` library is used to export the notebooks to other formats (e.g. slides, markdown, pdf), the `yaml` package is used, of course, to read the `*.yml` configuration files, and the `packaging` library is to compare the version of the `nbbinder` module with the version in the configuration file
 and check for compatibility.
 
-## Test module
+## For testing the module
 
-For testing `nbbinder`, the standard module
+For testing `nbbinder`, the scripts in the `tests` subdirectory also use the standard module
 
 - [shutil](https:/docs.python.org/3/library/shutil.html)
 
@@ -32,9 +32,7 @@ and the nonstandard module
 
 - [faker](https://pypi.org/project/faker/)
 
-are also used.
-
-## Packaging
+## For packaging the module
 
 Exclusively for packaging `nbbinder` for [PyPI](https://pypi.org) and [TestPyPI](https://test.pypi.org/), the following nonstandard package is used:
 
