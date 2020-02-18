@@ -1,40 +1,97 @@
-# Usage
+# Basic Usage
 
-**THIS DOCUMENTATION FILE IS OUTDATED**
+## Numbering the collection of notebooks
 
-## Indexing the collection of notebooks
+NBBinder binds a collection of notebooks belonging to a specified directory.
 
-In order to be processed, each notebook in the collection should start with an *index*, which is to be identified by a certain regular expression ending with a dash:
+In order to be processed, each notebook in the collection should start with a pair of *file numberings*, separated by a dot and followed by a dash.
 
-> `index-notebookname.ipynb`.
+Each file numbering is composed of two characters. We refer to each of the file numberings as `N1` and `N2`. Thus, a notebook should have the form
 
-The main types of indices are the following:
+> `N1.N2-notebookfilename.ipynb`.
 
-- `'dd-notebookname.ipynb'`, where `'d'` is any decimal from 0 to 9;
-- `'dd.dd-notebookname.ipynb'`, where `'d'` is as above;
-- `'AX.-notebookname.ipynb'`, where `'A'` is the uppercase letter `'A'` and `'X'` is any uppercase letter, from `A` to `Z`;
-- `'AX.dd-notebookname.ipynb'`, where the keys are as above;
-- `'BX.-notebookname.ipynb'`, where `'B'` is the upper case letter `'B'` and `'X'` is as above; or
-- `'BX.dd-notebookname.ipynb'`, where the symbols are as above.
+Each file numbering should be of one of the following forms:
 
-The filenames go through a regular expressions matching operator and specific groups are extracted from them, as separated by the first dot.
+- Two digits, from `00` to `99`;
 
-- When the first group is `'00'`, the notebook appears in the beginning and is not numbered. It is for the **Front Matter**, e.g *Cover page*, *Copyright page*, *Dedication page*, *Epigraph*, *Table of Contents*, *Foreword*, *Preface*, *Acknowlegdments*, and so on.
-- When the first group is from `'01'` to `'99'`, it is for the **Body** of the book, with the first group representing the chapter number and the second group, the section number. Except when the second group is either the empty string '' or `'00'`, in which cases there is no section number. These are useful for defining a *Part* of the book and an *Introduction to the Chapter*, respectively. Notice that the empty string '' comes before `'00'`.
-- When the first group starts with `'A'`, it is assumed to be for an **Appendix**, in which the second letter `'X'` is the letter of the Appendix. The second group functions as the section of the Appendix, with the same exceptions as above in the cases in which the second group is either `''` or `'00'`.
-- When the first group starts with `'B'`, the notebook appears at the end and is not numbered. It is for the non-numbered part of the **Back Matter**, such as  *Endnotes*, *Copyright permissions*, *Glossary*, *Bibliography*, *Index*, and so on.
+- An uppercase letter followed by a digit, from `A0` to `Z9`;
 
-The Table of Contents and the navigators follow the lexicographical order, so `''` < `'dd'` < `'AX'` < `'BX'`, for instance.
+- Two uppercase letters, from `AA` to `ZZ`.
 
-For more information about the different parts of a book, see [Parts of a Book Explained: Front Matter, Body, and Back Matter](https://blog.reedsy.com/front-matter-back-matter-book/).
+Each file numbering is translated into a *head numbering*, for display in the table of contents and in the navigators.
 
-Two further types of indices are used when it is desired to insert a notebook in between other notebooks. In this case, there are two more groups read by the regular expression, one before the first dot and the second before the dash. For instance,
+The file numberings `N1` and `N2` are two hierarchical levels for the headings, such as "Chapter" and "Section", or "Section" and "Subsection".
 
-- `'dd.dda-notebookname.ipynb'`, where `'a'` is one or more lower case characters. They indicate that this notebook should be renamed as `'dd.dd-notebookname.ipynb'`, and, if there is already a notebook with this index, its section number, along with the section number of subsequent notebooks, should be increased by one.
-- `'dda.dd-notebookname.ipynb'`, where `'a'` is as above, and has a similar effect, but this time for the chapter number.
-- Similarly for `'AXa...'` and `'BXa...'`.
+The translation from file to heading numbering can be summarized in the following table:
 
-These types of indices are only used by the `structure()` function. If the `structure()` is not called, or if the `bind()` function is called without the argument to structure the notebooks, then the notebooks with the above indices are **ignored**.
+| file numbering | heading numbering |
+| --- | --- |
+| `00` | |
+| `01` to `09` | `1` to `9` |
+| `10` to `99` | `10` to `99` |
+| `A0` to `Z0` | `A` to `Z` |
+| `A1` to `Z9` | `A1` to `Z9` |
+| `AA` to `ZZ` | |
+
+Notice that the file numbering `00` and the pure alphanumeric numberings `AA` to `ZZ` lead to an empty string, which means no heading numbering is shown in the table of contents. This is intended to allow `00` to be used for the *Front Matter* and `AA` to `ZZ` to be used for the *Back Matter*.
+
+When used as the second level file numbering `N2`, the indices `AA` to `ZZ` can be used for non-numbering sections within chapters.
+
+The file numberings `A0` to `Z0` are mainly intended to be used for the Appendices. The file numberings `A1` to `Z9` can also be used as such. They can appear either in the first level file numbering `N1` or in the second level `N2`.
+
+There is an **exception** to the above translation rule, which is when first level `N1` is either `00` or any indice between `AA` and `ZZ`. In those cases, not only the first level heading number is an empty string, but the second as well, regardless of the value of `N2`. This is useful when the *Front Matter* is broken down into different notebooks. For example, instead of a single notebook
+
+```text
+00.00-Front_Matter.ipynb
+```
+
+with all the information for the *Front Matter*, we may have
+
+```text
+00.00-Title_Page.ipynb
+00.01-Preface.ipynb
+00.02-Foreword.ipynb
+00.03-Table_of_Contents.ipynb
+00.04-List_of_Abbreviations.ipynb
+```
+
+They will appear in the table of contents without any heading numbering. Just with the markdown title of each notebook (defined by the contents of the first heading `# ` in the notebook).
+
+We end this section with a translation table combining both levels `N1` and `N2`:
+
+| file numberings N1.N2 | heading numbering |
+| --- | --- |
+| `00.00` to `00.ZZ` | Chapters with no heading number |
+| `00.01` to `00.ZZ` | Sections with no heading number |
+| `01.00` to `09.00` | Chapters `1` to `9` |
+| `01.01` to `99.99` | Sections `1.1` to `99.99` |
+| `01.A0` to `99.Z0` | Sections `1.A` to `99.A` |
+| `01.AA` to `99.ZZ` | Sections `1` to `9` |
+| `A0.00` to `Z0.00` | Chapters `A` to `Z` |
+| `A0.01` to `Z0.99` | Sections `A.1` to `Z.99` |
+| `A0.A0` to `Z0.Z0` | Sections `A.A` to `Z.Z` |
+| `A0.AA` to `Z0.ZZ` | Sections `A` to `Z` |
+| `A1.00` to `Z9.00` | Chapters `A1` to `Z9` |
+| `A1.01` to `Z9.99` | Sections `A1.1` to `Z9.99` |
+| `A1.A0` to `Z9.Z0` | Sections `A1.A` to `Z9.Z` |
+| `A1.AA` to `Z9.ZZ` | Sections `A1` to `Z9` |
+| `AA.01` to `ZZ.ZZ` | Sections with no heading number |
+
+Some chapters and sections above have the same numbering. The difference between them is how they are indented in the table of contents.
+
+## Numbering with preheaders
+
+An extension to the previous numbering system is to allow for a preheader, so that we can write `Part 1`, `Chapter 1`, `Appendix A.1`, `Lecture 1`, and so on.
+
+Preheaders are to be included by adding a dot between the file numbering `N2` and the dash. We can have one or two levels of preheaders. If there are two preheaders, another dot separates them. So we have the following options
+
+> `N1.N2.Preheader-notebookfilename.ipynb`
+
+and
+
+> `N1.N2.Preheader1.Preheader2-notebookfilename.ipynb`
+
+
 
 ## Cell markers
 
