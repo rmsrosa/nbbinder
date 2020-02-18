@@ -55,7 +55,7 @@ with all the information for the *Front Matter*, we may have
 00.04-List_of_Abbreviations.ipynb
 ```
 
-They will appear in the table of contents without any heading numbering. Just with the markdown title of each notebook (defined by the contents of the first heading `# ` in the notebook).
+They will appear in the table of contents without any heading numbering. Just with the markdown title of each notebook (defined by the contents of the first heading `#` in the notebook).
 
 We end this section with a translation table combining both levels `N1` and `N2`:
 
@@ -90,8 +90,6 @@ Preheaders are to be included by adding a dot between the file numbering `N2` an
 and
 
 > `N1.N2.Preheader1.Preheader2-notebookfilename.ipynb`
-
-
 
 ## Cell markers
 
