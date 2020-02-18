@@ -1,13 +1,5 @@
 # Usage
 
-|  Just | a Test |
-| --- | --- |
-| of a | table |
-
-Another | Test 
---- | ---
-Of | Table
-
 ## Numbering the collection of notebooks
 
 **NBBinder** binds a collection of notebooks belonging to a specified directory.
@@ -102,6 +94,61 @@ We end this section with a translation table combining both levels `N1` and `N2`
 
 Some chapters and sections above have the same numbering. The difference between them is how they are indented in the table of contents.
 
+As an example, consider the following collection mentioned in the Section [Overview](overview.md):
+
+```text
+00.00-Front_Page.ipynb
+02.00-Introduction.ipynb
+04.00-Project_Requirements.ipynb
+05.00-The_History_of_Grammar.ipynb
+06.00-Parts_of_Speech.ipynb
+06.02-Nouns.ipynb
+06.03-Verbs.ipynb
+06.05-Adjectives.ipynb
+06.08-Adverbs.ipynb
+08.00-Sentences.ipynb
+08.01-Complex_Sentences.ipynb
+08.03-Compound_Sentences.ipynb
+09.00-Paragraphs.ipynb
+09.01-Descriptive.ipynb
+09.02-Expository.ipynb
+09.03-Narrative.ipynb
+09.04-Persuasive.ipynb
+11.00-Conclusion.ipynb
+AB.00-Appendix.ipynb
+BA.00-Glossary.ipynb
+BC.02-Bibliography.ipynb
+BC.04-Index.ipynb
+```
+
+With the proper configuration, we obtain the *Table of Contents*
+
+```text
+Table of Contents
+Front Page
+1. Introduction
+2. Project Requirements
+3. The History of Grammar
+4. Parts of Speech
+  4.1. Nouns
+  4.2. Verbs
+  4.3. Adjectives
+  4.4. Adverbs
+5. Sentences
+  5.1. Complex Sentences
+  5.2. Compound Sentences
+6. Paragraphs
+  6.1. Descriptive
+  6.2. Expository
+  6.3. Narrative
+  6.4. Persuasive
+7. Conclusion
+A. Appendix
+Glossary
+Bibliography
+Index
+```
+
 ## Numbering with preheaders
 
 An extension to the previous numbering system is to allow for a preheader, so that we can write `Part 1`, `Chapter 1`, `Appendix A.1`, `Lecture 1`, and so on.
@@ -116,11 +163,11 @@ and
 
 They essentially work according to the following table
 
-> `N1.N2.Preheader1` => `Preheader1 N1.N2. `
+> `N1.N2.Preheader1` => `Preheader1 N1.N2.`
 >
-> `N1.N2.Preheader1.Preheader2. ` => `Preheader N1. Preheader N2.`
+> `N1.N2.Preheader1.Preheader2.` => `Preheader N1. Preheader N2.`
 >
-> `N1.N2..Preheader2 => Preheader N2. `
+> `N1.N2..Preheader2 => Preheader N2.`
 
 Notice the first case, in which `Preheader2` is empty, and compare it with the last case, in which `Preheader1` is empty. The first case includes both chapter and section numbers `N1` and `N2` in the heading numbers, which the last one only includes the section number.
 
@@ -171,25 +218,121 @@ References
 
 Notice the different forms of subsectioning.
 
-THE DOCUMENTATION IS OUTDATED FROM HERE ON
+## Binding the collection of notebooks
+
+Binding is achieved with the function `bind()`. Depending on the arguments given, this function calls the following functions, which take care of each of the main features of the notebook binder:
+
+- `reindex()`: reorder the notebooks when a new notebook is to be inserted between others or whether there are gaps in the indices;
+- `add_contents()`: adds the Table of Contents to a selected "Contents" file;
+- `add_headers()`: adds a header to each notebook with a given custom information;
+- `add_badges()`: adds a badge cell to each notebook with one or more badges to open up the document in different platforms or formats;
+- `add_navigators()`: adds navigation bars to the top and bottom of each notebook.
+- `export_notebooks()`: exports the notebooks to any of the different formats as provided by [nbconvert](https://pypi.org/project/nbconvert/): HTML, LaTeX, PDF, Reveal JS, Markdown (md), ReStructured Text (rst), executable script. Notice that `add_badges()` can be used to link to the exported notebooks, useful, for instance, to access slides of the notebooks for presentation in class.
+
+The arguments to the function `bind()` can be given directly or via a configuration file.
+
+A common argument to all these functions is `path_to_notes`, which is a string denoting the folder in which the notes are located. It is either an absolute path or a relative path from the script that calls `nbbinder.bind()`.
+
+### Details of the arguments
+
+We copy below the beginning of the definition of each of these functions to show the arguments for each of them, so we can properly access the arguments for `bind`.
+
+```python
+def reindex(path_to_notes: str = None,
+            insert: bool = True,
+            tighten: bool = False) -> None:
+```
+
+```python
+def add_contents(path_to_notes: str = None,
+                 toc_nb_name: str = None,
+                 toc_title: str = '',
+                 show_index_in_toc: bool = True) -> None:
+```
+
+```python
+def add_headers(path_to_notes: str = None, header: str = None) -> None:
+```
+
+```python
+def add_badges(path_to_notes: str = None badges: list = None) -> None:
+```
+
+```python
+def add_navigators(path_to_notes: str = None,
+                   core_navigators: list = None,
+                   show_nb_title_in_nav: bool = True,
+                   show_index_in_nav: bool = True) -> None:
+```
+
+When passing all these arguments to `bind()`, they should be passed as a list of dictionaries, which each dicionary containing the arguments for each function (except `path_to_note`, which is common to all of them).
+
+### Reindexing the notebooks
+
+The function `reindex()` is useful when you want to include one (or more) notebooks in between two others. Say we have the notebooks
+
+```text
+00.00-Front_Page.ipynb
+01.00-Introduction.ipynb
+02.00-Parts_of_Speech.ipynb
+02.01-Nouns.ipynb
+02.02-Adjectives.ipynb
+02.03-Adverbs.ipynb
+03.00-Sentences.ipynb
+AA.00-Bibliography.ipynb
+```
+
+Suppose we want to add a new notebook `The_History_of_Grammar.ipynb` as Chapter 2 and a new notebook `Verbs.ipynb` as Section 2.2, moving up the other Chapters and Sections. For that, we write the notebook and name it with added character `&` in the proper place, depending whether it is to be a new chapter or a new section:
+
+```text
+00.00-Front_Page.ipynb
+01.00-Introduction.ipynb
+02&.00-The_History_of_Grammar.ipynb
+02.00-Parts_of_Speech.ipynb
+02.01-Nouns.ipynb
+02.02&-Verbs.ipynb
+02.02-Adjectives.ipynb
+02.03-Adverbs.ipynb
+03.00-Sentences.ipynb
+AA.00-Bibliography.ipynb
+```
+
+After reindexing them, the collection looks like
+
+```text
+00.00-Front_Page.ipynb
+01.00-Introduction.ipynb
+02.00-The_History_of_Grammar.ipynb
+03.00-Parts_of_Speech.ipynb
+03.01-Nouns.ipynb
+03.02-Verbs.ipynb
+03.03-Adjectives.ipynb
+03.04-Adverbs.ipynb
+04.00-Sentences.ipynb
+AA.00-Bibliography.ipynb
+```
+
+If one wants to include two (or more) consecutive notebooks at a time, just add a lower case letter after `&`, say `&a`, `&b`, and so on.
 
 ## Cell markers
 
-The **Table of Contents**, the **headers**, and the **navigators** appear in selected cells in the jupyter notebooks. These cells have **markers**, according to their type.
+The cells for the **Table of Contents**, the **headers**, the **badges**, and the **navigators** are marked with specific *html comments*, so they do not show up when the cells are rendered, except when editing the cell. The **markers** are automatically included by the module.
 
-The markers are **html** comments, so they do not show up in the notebook, except when editing the cell, although the point is precisely to avoid editing them and create and update them automatically through **NBBinder**.
+Except for the **Table of Contents**, **NBBinder** automatically removes any previous marked cell for cleaning up purposes. In particular, the location of these other marked cells are always the same. As for the **Table of Contents**, however, only its contents is deleted. If you desire to add the **Table of Contents** in a particular place inside a notebook, just add the marker to that place, or move a previously generated **Table of Contents** to the desired position.
 
-The markers are
+The markers are python constants and are given as
 
-```text
-<!--TABLE_OF_CONTENTS--\>
+```python
+TOC_MARKER = "<!--TABLE_OF_CONTENTS-->"
 
-<!--HEADER-->
+HEADER_MARKER = "<!--HEADER-->"
 
-<!--NAVIGATOR-->
+BADGES_MARKER = "<!--BADGES-->"
+
+NAVIGATOR_MARKER = "<!--NAVIGATOR-->"
 ```
 
-and their names speak for themselves.
+Their names speak for themselves.
 
 The cell has to start with one of theses markers to be understood as the appropriate cell.
 
@@ -197,115 +340,11 @@ The **header** cell is always the first one in the notebook, when present.
 
 The **navigator** cells appear in two places in each notebook: as the last cell, for the bottom navigators, and as either the first or the second cell, depending on whether there is a **header** cell or not.
 
-The **Table of Contents** cell can vary in position. It can be given a priori at some place in the *Table of Contents* notebook file, or it can be inserted automatically by **NBBinder**. In the former case, the author of the notebook is responsible for opening up a cell and typing up the marker in the beginning of the cell. In the later case, **NBBinder** will create the table of contents in either the second to last cell, if there is a bottom **navigator**, or as the very last cell, otherwise. It must be stressed that the module will first look for the marker somewhere in the notebook and use the corresponding cell if it finds it. Only if it doesn't find it is that it will add a cell as the last or second to last cell.
+The **Table of Contents** cell can vary in position. It can be given a priori at some place in the notebook file, or it can be inserted automatically by **NBBinder**. In the former case, the author of the notebook is responsible for opening up a cell and typing up the marker in the beginning of the cell, or just wait for the first run of nbbinder to place it in the standart position and them move it somewhere else. The standart position set up by **NBBinder** is either the second to last cell, if there is a bottom **navigator** cell, or as the very last cell, otherwise. It must be stressed that the module will first look for the marker somewhere in the notebook and use the corresponding cell if it finds it. Only if it doesn't find it is that it will add a cell as the last or second to last cell.
 
-If **NBBinder** is ran again, it will look for the marker cells and rewrite them with the updated information, removing any previous data.
+## Binding from a configuration file
 
-**One *should not* add nor edit the markers for the *header* and the *navigators*, the code does that automatically.**
-
-**One *can* add or edit the marker for the *table of contents* to place it in a specific positions, but this is *not necessary* since the code will insert one if it doesn't find it.**
-
-## Restructuring the collection of notebooks
-
-The function to insert a notebook in between other index notebooks is called `restructure()` and its definition starts with
-
-```python
-def restructure(path_to_notes='.'):
-    ...
-```
-
-The `path_to_notes` is a non-required argument with the name of the folder in which the collection of notebooks is expected to be. It should be either an absolute path or a path relative to the current path in the script calling the function. If `path_to_notes` is not given, it is assumed to be the current directory.
-
-This function reads all the Jupyter notebooks in the directory `path_to_notes` and look for those matching a regular expression indicating that the notebook is to be inserted in the collection. After that, it processes those notebooks accordingly.
-
-## Creating the Table of Contents
-
-The function to create, or update, the table of contents is called `add_contents()` and its definition starts with
-
-```python
-def add_contents(toc_nb_name, path_to_notes='.',
-                 show_full_entry_in_toc=True):
-    ...
-```
-
-The argument `toc_nb_name` is required and is the name of the jupyter notebook file in which the table of contents will be written.
-
-The `path_to_notes` is as described above.
-
-The last argument, `show_full_entry_in_toc`, determines whether the entries in the *Table of Contents* should start with the chapter and section numbers or not. The default is `True`, but in some cases, such as when one wants to have **Lecture 1** displayed instead of **1. Lecture**, it is useful to have this option and set it to `False`.
-
-## Creating the headers
-
-The function to create, or update, the headers is called `add_headers()` and its definition starts with
-
-```python
-def add_headers(header, path_to_notes='.'):
-    ...
-```
-
-The argument `add_headers` is required and is a string with the header you want to see displayed on top of each notebook.
-
-The `path_to_notes` is as described above.
-
-## Creating the navigators
-
-The function to create, or update, the navigator cells is called `add_navigators()` and its definition starts with
-
-```python
-def add_navigators(core_navigators=[], path_to_notes='.',
-                   user = '', repository = '', branch = '',
-                   github_nb_dir = '',
-                   github_io_slides_dir = '',
-                   show_colab=False, show_binder=False,
-                   show_slides=False,
-                   show_full_entry_in_nav=True):
-    ...
-```
-
-There is no required argument.
-
-Here is an explanation of the non-required arguments:
-
-- `core_navigators` is a list of strings, where each element is the filename of a Jupyter notebook that you want to appear in the navigator bar, in between the links to the *previous* and the *next* notebooks. This is useful for direct links to the *Table of Contents* and the *Bibliography*, for instance. If it is not provided, it is assumed to be an empty list, and nothing is showed in between the links for the *previous* and *next* notebooks.
-
-- `path_to_notes` is a non-required argument, as described above.
-
-- `user` is the username of the owner of the github repository which the notebooks belong to, if they do belong to one. It defaults to a blank string.
-
-- `repository` is the name of the github repository which the notebooks belong to, if they do belong to one. It defaults to a blank string.
-
-- `branch` is the name of the associated branch in the github repository. It defaults to a blank string.
-
-- `github_nb_dir` is the path to the notebooks from the root directory of the github repository.
-
-- `github_io_slides_dir` is the directory in the `user.github.io` where the slides associated to the notebooks reside, if they exist. It defaults to a blank string.
-
-- `show_colab` is a `boolean` argument informing the function whether to display the badge with the link to open up the notebook in [Google Colab](https://colab.research.google.com/notebooks/welcome.ipynb) environment in the "cloud". This works if the notebooks are in a github repository. It defaults to `False`.
-
-- `show_binder` is a `boolean` argument informing the function whether to display the badge with the link to open up the notebook in the [binder](https://mybinder.org/) environment in the "cloud". This works if the notebooks are in a github repository. It defaults to `False`.
-
-- `show_slides` is a `boolean` argument informing the function whether to display the badge with the link to open up the slides associated with each notebook, if they exist. This works if the slides are `user.github.io`, and the relative path to the root directory of `user.github.io` is to be provided by the argument `github_io_slides_dir` described above. It defaults to `False`.
-
-- `show_full_entry_in_nav` indicates whether to display the chapter and section numbers in the navigation links along with the titles or just the titles. It defaults to `True`.
-
-The colab, binder and slides links, when displayed, appear *above* the navigation bar in the top navigator cell and *below* the navigation bar in the bottom navigator cell, which I found to be more aesthetically pleasing.
-
-**In the future, it is planned to allow the slides to reside in different sites. More customized badges might also be added.**
-
-## Creating the book-like structure with all three elements
-
-The function to **restructure** the notebooks and to create, or update, all the three elements (**table of contents**, **headers**, and **navigators**) at the same time is called `bind()`. This function simply calls the previous four functions, in the following order:
-
-- `restructure(...)`
-- `add_contents(...)`
-- `add_headers(...)`
-- `add_navigators(...)`
-
-The function `bind()` can be called directly with the arguments for the other functions or with a single argument pointing to a configuration file, as described below.
-
-## Creating the book-like structure from a configuration file
-
-The easiest way to create/update the book-like structure of a collection of notebooks is by using a configuration file containing all the desired arguments.
+The easiest way to create/update the structure of a collection of notebooks is by using a configuration file containing all the desired arguments.
 
 The configuration file is expected to be in the [YAML](https://en.wikipedia.org/wiki/YAML) format, which is a human-readable, text file, which easily stores strings, integers, floating point numbers, booleans, lists, and dictionaries (and more). It is parsed to python via the [PyYAML](https://pyyaml.org/) module.
 
@@ -340,22 +379,24 @@ See the next section for an example of configuration file.
 Here is the configuration file `config_nb_alice.yml` used for testing the package. It is  available in the subdirectory `tests` of the root directory of the repository.
 
 ```yaml
-directory:
-  path_to_notes: nb_alice
+# Configuration file for the python module NBBinder
 
-book:
+version: 0.13a
+
+path_to_notes: nb_builds/nb_alice
+
+contents:
   toc_nb_name: 00.00-Alice's_Adventures_in_Wonderland.ipynb
-  show_full_entry_in_toc: True
-  header: "[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)*"
+  toc_title: Table of Contents
+  show_index_in_toc: True
+
+header: "NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'"
+
+navigators:
   core_navigators:
     - 00.00-Alice's_Adventures_in_Wonderland.ipynb
-  user: rmsrosa
-  repository: nbbinder
-  branch: master
-  github_nb_dir: tests/nb_alice
-  show_colab: True
-  show_binder: True
-  show_full_entry_in_nav: False
+  show_nb_title_in_nav: False
+  show_index_in_nav: False
 ```
 
 ## Binding the notebooks via the configuration file
@@ -398,81 +439,5 @@ We may visualize the result looking at a printscreen of the updated `00.00-Alice
 ## Binding the notebooks with arguments
 
 Instead of using a configuration file, we may call `bind()` directly with the desired arguments:
-
-```python
-import nbbinder as nbb
-nbb.bind(path_to_notes="nb_alice",
-    toc_nb_name="00.00-Alice's_Adventures_in_Wonderland.ipynb",
-    show_full_entry_in_toc=True,
-    header="[*NBBinder test on a collection of notebooks named after the chapters of 'Alice's Adventures in Wonderland'*](https://github.com/rmsrosa/nbbinder)",
-    core_navigators=[
-        "00.00-Alice's_Adventures_in_Wonderland.ipynb"
-        ],
-    user='rmsrosa',
-    repository='nbbinder',
-    branch='master',
-    github_nb_dir='tests/nb_alice',
-    show_colab=True,
-    show_binder=True,
-    show_full_entry_in_nav=False)
-```
-
-## Binding the notebooks from a non-indexed notebook
-
-We may also run **NBBinder** directly from a Jupyter notebook. It is preferred to run it from a non-indexed notebook, to avoid having it be altered by both the package and the jupyter kernel at the same time.
-
-If the **NBBinder** package is installed in the environment, just import it as usual, otherwise, it can be imported with a relative path. This is achived by a code cell with the following code
-
-```python
-try:
-    import nbbinder as nbb
-
-except:
-    import os
-    import sys
-
-    sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), 'path', 'to', 'module')))
-
-    import nbbinder as nbb
-```
-
-Then, in the same or in a different cell, we create the book-like structure with the following code:
-
-```python
-nbb.bind('config_nb_alice.yml')
-```
-
-This generates the following output cell:
-
-```text
-    * No markdown cell starting with <!--TABLE_OF_CONTENTS--> found in 00.00-Alice's_Adventures_in_Wonderland.ipynb
-    - inserting table of contents in 00.00-Alice's_Adventures_in_Wonderland.ipynb
-    - inserting header for 00.00-Alice's_Adventures_in_Wonderland.ipynb
-    - inserting header for 01.00-Down_the_Rabbit-Hole.ipynb
-    - inserting header for 02.00-The_Pool_of_Tears.ipynb
-    - inserting header for 03.00-A_Caucus-Race_and_a_Long_Tale.ipynb
-    - inserting header for 04.00-The_Rabbit_Sends_in_a_Little_Bill.ipynb
-    - inserting header for 05.00-Advice_from_a_Caterpillar.ipynb
-    - inserting header for 06.00-Pig_and_Pepper.ipynb
-    - inserting header for 07.00-A_Mad_Tea-Party.ipynb
-    - inserting header for 08.00-The_Queen's_Croquet-Ground.ipynb
-    - inserting header for 09.00-The_Mock_Turtle's_Story.ipynb
-    - inserting header for 10.00-The_Lobster_Quadrille.ipynb
-    - inserting header for 11.00-Who_Stole_the_Tarts?.ipynb
-    - inserting header for 12.00-Alice's_Evidence.ipynb
-    - inserting navbar for 00.00-Alice's_Adventures_in_Wonderland.ipynb
-    - inserting navbar for 01.00-Down_the_Rabbit-Hole.ipynb
-    - inserting navbar for 02.00-The_Pool_of_Tears.ipynb
-    - inserting navbar for 03.00-A_Caucus-Race_and_a_Long_Tale.ipynb
-    - inserting navbar for 04.00-The_Rabbit_Sends_in_a_Little_Bill.ipynb
-    - inserting navbar for 05.00-Advice_from_a_Caterpillar.ipynb
-    - inserting navbar for 06.00-Pig_and_Pepper.ipynb
-    - inserting navbar for 07.00-A_Mad_Tea-Party.ipynb
-    - inserting navbar for 08.00-The_Queen's_Croquet-Ground.ipynb
-    - inserting navbar for 09.00-The_Mock_Turtle's_Story.ipynb
-    - inserting navbar for 10.00-The_Lobster_Quadrille.ipynb
-    - inserting navbar for 11.00-Who_Stole_the_Tarts?.ipynb
-    - inserting navbar for 12.00-Alice's_Evidence.ipynb
-```
 
 and *voilà*, the notebooks are bound.
