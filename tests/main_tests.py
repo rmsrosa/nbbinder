@@ -243,9 +243,9 @@ tests/nb_builds/nb_grammar_md',
                               BUILD_DIR, 'nb_grammar_tighten'))
     nbb.reindex(os.path.join(BUILD_DIR, 'nb_grammar_tighten'), tighten=True)
 
-    # Test with complement
+    # Test with preheaders
 
-    NB_COMPLEMENT = [
+    NB_PREHEADER = [
         '00.00-Introduction.ipynb',
         '01.00.Lecture-Math_Background.ipynb',
         '01.01-Vector_Calculus.ipynb',
@@ -264,12 +264,12 @@ tests/nb_builds/nb_grammar_md',
         'AA.00-References.ipynb'
     ]
 
-    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_complement'),
-                        NB_COMPLEMENT)
+    bt.create_notebooks(os.path.join(BUILD_DIR, 'nb_preheader'),
+                        NB_PREHEADER)
 
-    bt.bind_test(os.path.join(BUILD_DIR, 'nb_complement'),
-                 os.path.join(BUILD_DIR, 'nb_complement'),
-                 os.path.join(SOURCE_DIR, 'config_nb_complement.yml'))
+    bt.bind_test(os.path.join(BUILD_DIR, 'nb_preheader'),
+                 os.path.join(BUILD_DIR, 'nb_preheader'),
+                 os.path.join(SOURCE_DIR, 'config_nb_preheader.yml'))
 
     # Tests with nb_water
 

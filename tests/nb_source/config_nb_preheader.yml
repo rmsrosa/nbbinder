@@ -2,7 +2,7 @@
 
 version: 0.13a
 
-path_to_notes: nb_builds/nb_complement
+path_to_notes: nb_builds/nb_preheader
 
 contents:
   toc_nb_name: 00.00-Introduction.ipynb
@@ -19,7 +19,7 @@ navigators:
 
 badges:
   - title: View in NBViewer
-    url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_alice
+    url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_preheader
     label: view in
     message: nbviewer
     color: orange
