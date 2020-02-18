@@ -1,8 +1,16 @@
-# Basic Usage
+# Usage
+
+|  Just | a Test |
+| --- | --- |
+| of a | table |
+
+Another | Test 
+--- | ---
+Of | Table
 
 ## Numbering the collection of notebooks
 
-NBBinder binds a collection of notebooks belonging to a specified directory.
+**NBBinder** binds a collection of notebooks belonging to a specified directory.
 
 In order to be processed, each notebook in the collection should start with a pair of *file numberings*, separated by a dot and followed by a dash.
 
@@ -24,14 +32,17 @@ The file numberings `N1` and `N2` are two hierarchical levels for the headings, 
 
 The translation from file to heading numbering can be summarized in the following table:
 
-| file numbering | heading numbering |
-| --- | --- |
-| `00` | |
-| `01` to `09` | `1` to `9` |
-| `10` to `99` | `10` to `99` |
-| `A0` to `Z0` | `A` to `Z` |
-| `A1` to `Z9` | `A1` to `Z9` |
-| `AA` to `ZZ` | |
+> `00` => empty string
+>
+> `01` to `09` => `1` to `9`
+>
+> `10` to `99` => `10` to `99`
+>
+> `A0` to `Z0` => `A` to `Z`
+>
+> `A1` to `Z9` => `A1` to `Z9`
+>
+> `AA` to `ZZ` => empty string
 
 Notice that the file numbering `00` and the pure alphanumeric numberings `AA` to `ZZ` lead to an empty string, which means no heading numbering is shown in the table of contents. This is intended to allow `00` to be used for the *Front Matter* and `AA` to `ZZ` to be used for the *Back Matter*.
 
@@ -59,23 +70,35 @@ They will appear in the table of contents without any heading numbering. Just wi
 
 We end this section with a translation table combining both levels `N1` and `N2`:
 
-| file numberings N1.N2 | heading numbering |
-| --- | --- |
-| `00.00` to `00.ZZ` | Chapters with no heading number |
-| `00.01` to `00.ZZ` | Sections with no heading number |
-| `01.00` to `09.00` | Chapters `1` to `9` |
-| `01.01` to `99.99` | Sections `1.1` to `99.99` |
-| `01.A0` to `99.Z0` | Sections `1.A` to `99.A` |
-| `01.AA` to `99.ZZ` | Sections `1` to `9` |
-| `A0.00` to `Z0.00` | Chapters `A` to `Z` |
-| `A0.01` to `Z0.99` | Sections `A.1` to `Z.99` |
-| `A0.A0` to `Z0.Z0` | Sections `A.A` to `Z.Z` |
-| `A0.AA` to `Z0.ZZ` | Sections `A` to `Z` |
-| `A1.00` to `Z9.00` | Chapters `A1` to `Z9` |
-| `A1.01` to `Z9.99` | Sections `A1.1` to `Z9.99` |
-| `A1.A0` to `Z9.Z0` | Sections `A1.A` to `Z9.Z` |
-| `A1.AA` to `Z9.ZZ` | Sections `A1` to `Z9` |
-| `AA.01` to `ZZ.ZZ` | Sections with no heading number |
+> `00.00` to `00.ZZ` => Chapters with no heading number
+>
+> `00.01` to `00.ZZ` => Sections with no heading number
+>
+> `01.00` to `09.00` => Chapters `1` to `9`
+>
+> `01.01` to `99.99` => Sections `1.1` to `99.99`
+>
+> `01.A0` to `99.Z0` => Sections `1.A` to `99.A`
+>
+> `01.AA` to `99.ZZ` => Sections `1` to `9`
+>
+> `A0.00` to `Z0.00` => Chapters `A` to `Z`
+>
+> `A0.01` to `Z0.99` => Sections `A.1` to `Z.99`
+>
+> `A0.A0` to `Z0.Z0` => Sections `A.A` to `Z.Z`
+>
+> `A0.AA` to `Z0.ZZ` => Sections `A` to `Z`
+>
+> `A1.00` to `Z9.00` => Chapters `A1` to `Z9`
+>
+> `A1.01` to `Z9.99` => Sections `A1.1` to `Z9.99`
+>
+> `A1.A0` to `Z9.Z0` => Sections `A1.A` to `Z9.Z`
+>
+> `A1.AA` to `Z9.ZZ` => Sections `A1` to `Z9`
+>
+> `AA.01` to `ZZ.ZZ` => Sections with no heading number
 
 Some chapters and sections above have the same numbering. The difference between them is how they are indented in the table of contents.
 
@@ -93,15 +116,15 @@ and
 
 They essentially work according to the following table
 
-| file numbering | heading numbering |
-| --- | --- |
-| N1.N2.Preheader1 | Preheader1 N1.N2 |
-| N1.N2.Preheader1.Preheader2 | Preheader N1. Preheader N2 |
-| N1.N2..Preheader2 | Preheader N2 |
+> `N1.N2.Preheader1` => `Preheader1 N1.N2. `
+>
+> `N1.N2.Preheader1.Preheader2. ` => `Preheader N1. Preheader N2.`
+>
+> `N1.N2..Preheader2 => Preheader N2. `
 
 Notice the first case, in which `Preheader2` is empty, and compare it with the last case, in which `Preheader1` is empty. The first case includes both chapter and section numbers `N1` and `N2` in the heading numbers, which the last one only includes the section number.
 
-In accordance with the rule when there is no preheader, no numbering is included when `N1` is an empty string, which no section numbering is included when only `N2` is empty.
+In accordance with the rule when there is no preheader, no numbering is included when `N1` is translated into an empty string, and no section numbering is included when `N2` is translated into an empty string.
 
 Recalling the example in the [Overview](overview.md) section, suppose collection of notebooks is
 
