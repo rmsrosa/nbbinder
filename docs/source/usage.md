@@ -85,11 +85,70 @@ An extension to the previous numbering system is to allow for a preheader, so th
 
 Preheaders are to be included by adding a dot between the file numbering `N2` and the dash. We can have one or two levels of preheaders. If there are two preheaders, another dot separates them. So we have the following options
 
-> `N1.N2.Preheader-notebookfilename.ipynb`
+> `N1.N2.Preheader1-notebookfilename.ipynb`
 
 and
 
 > `N1.N2.Preheader1.Preheader2-notebookfilename.ipynb`
+
+They essentially work according to the following table
+
+| file numbering | heading numbering |
+| --- | --- |
+| N1.N2.Preheader1 | Preheader1 N1.N2 |
+| N1.N2.Preheader1.Preheader2 | Preheader N1. Preheader N2 |
+| N1.N2..Preheader2 | Preheader N2 |
+
+Notice the first case, in which `Preheader2` is empty, and compare it with the last case, in which `Preheader1` is empty. The first case includes both chapter and section numbers `N1` and `N2` in the heading numbers, which the last one only includes the section number.
+
+In accordance with the rule when there is no preheader, no numbering is included when `N1` is an empty string, which no section numbering is included when only `N2` is empty.
+
+Recalling the example in the [Overview](overview.md) section, suppose collection of notebooks is
+
+```text
+00.00-Introduction.ipynb
+01.00.Lecture-Math_Background.ipynb
+01.01-Vector_Calculus.ipynb
+01.02-Rigid_Motions.ipynb
+02.00.Lecture-Kinematics.ipynb
+02.01.Lecture-Velocity_and_Acceleration.ipynb
+02.02.Lecture-Different_Types_of_Motions_and_Their_Components.ipynb
+03.00.Lecture-Dynamics.ipynb
+03.01..Part-Force_and_Momentum.ipynb
+03.02..Part-Orbits_of_Planets_and_Satellites.ipynb
+03.03..Part-Interception_and_Rendezvous.ipynb
+04.00.Lecture-Trajectory_Optimization.ipynb
+04.01.Lecture.Part-Performance.ipynb
+04.02.Lecture.Part-Gravity_Turn.ipynb
+04.03.Lecture.Part-Optimization.ipynb
+AA.00-References.ipynb
+```
+
+Then, the *Table of Contents* becomes
+
+```text
+Contents
+Introduction
+Lecture 1. Math Background
+  1.1. Vector Calculus
+  1.2. Rigid Motions
+Lecture 2. Kinematics
+  Lecture 2.1. Velocity and Acceleration
+  Lecture 2.2. Different Types of Motions and Their Components
+Lecture 3. Dynamics
+  Part 1. Force and Momentum
+  Part 2. Orbits of Planets and Satellites
+  Part 3. Interception and Rendezvous
+Lecture 4. Trajectory Optimization
+  Lecture 4. Part 1. Performance
+  Lecture 4. Part 2. Gravity Turn
+  Lecture 4. Part 3. Optimization
+References
+```
+
+Notice the different forms of subsectioning.
+
+THE DOCUMENTATION IS OUTDATED FROM HERE ON
 
 ## Cell markers
 
