@@ -126,28 +126,28 @@ By appropriately naming the files, we can have different formattings for the *Ta
 For instance, if your list of files is
 
 ```text
-00.00-Front_Page.ipynb
-02.00-Introduction.ipynb
-04.00-Project_Requirements.ipynb
-05.00-The_History_of_Grammar.ipynb
-06.00-Parts_of_Speech.ipynb
-06.02-Nouns.ipynb
-06.03-Verbs.ipynb
-06.05-Adjectives.ipynb
-06.08-Adverbs.ipynb
-08.00-Sentences.ipynb
-08.01-Complex_Sentences.ipynb
-08.03-Compound_Sentences.ipynb
-09.00-Paragraphs.ipynb
-09.01-Descriptive.ipynb
-09.02-Expository.ipynb
-09.03-Narrative.ipynb
-09.04-Persuasive.ipynb
-11.00-Conclusion.ipynb
-AB.00-Appendix.ipynb
-BA.00-Glossary.ipynb
-BC.02-Bibliography.ipynb
-BC.04-Index.ipynb
+00.00-Front_Page.ipynb,
+01.00-Introduction.ipynb,
+02.00-Project_Requirements.ipynb,
+03.00-The_History_of_Grammar.ipynb,
+04.00-Parts_of_Speech.ipynb,
+04.01-Nouns.ipynb,
+04.02-Verbs.ipynb,
+04.03-Adjectives.ipynb,
+04.04-Adverbs.ipynb,
+05.00-Sentences.ipynb,
+05.01-Complex_Sentences.ipynb,
+05.02-Compound_Sentences.ipynb,
+06.00-Paragraphs.ipynb,
+06.01-Descriptive.ipynb,
+06.02-Expository.ipynb,
+06.03-Narrative.ipynb,
+06.04-Persuasive.ipynb,
+07.00-Conclusion.ipynb,
+A0.00-Appendix.ipynb,
+BA.00-Glossary.ipynb,
+BB.00-Bibliography.ipynb,
+BC.00-Index.ipynb
 ```
 
 we get, with a suitable configuration, the *Table of Contents*
