@@ -838,8 +838,7 @@ def get_badge_entries(path_to_notes: str = None,
             this_nb_badge_links
 
 
-def add_badges(path_to_notes: str = None,
-               badges: list = None) -> None:
+def add_badges(path_to_notes: str = None badges: list = None) -> None:
     """Adds badges to each notebook in the collection.
 
     Adds a badge cell with one or more badges to each notebook in the
