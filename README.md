@@ -34,6 +34,8 @@ The main function in this module is called `bind()`. It reads a collection of Ju
 
 ## Examples
 
+### A little taste
+
 For instance, upon proper configuration (see section [Notebooks with slides and cloud computing badges](#notebooks-with-slides-and-cloud-computing-badges) below), the collection of bare notebooks in  the folder [Water bare collection](tests/nb_source/nb_water) is bound to the folder
 [Water bound collection](tests/nb_builds/nb_water), and, in particular, the file [00.00-Water_Contents.ipynb](tests/nb_builds/nb_water/00.00-Water_Contents.ipynb) receives a table of contents, a header, navigator cells and the badges
 
