@@ -20,10 +20,10 @@ navigators:
 
 badges:
   - title: Open in Google Colab
-    url: https://colab.research.google.com/github/rmsrosa/nbbinder/blob/master/nb_builds/tests/nb_alice
+    url: https://colab.research.google.com/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water
     src: https://colab.research.google.com/assets/colab-badge.svg
   - title: Open in binder
-    url: https://mybinder.org/v2/gh/rmsrosa/nbbinder/master?filepath=nb_builds/tests/nb_alice
+    url: https://mybinder.org/v2/gh/rmsrosa/nbbinder/master?filepath=tests/nb_builds/nb_water
     src: https://mybinder.org/badge.svg
   - title: View in NBViewer
     url: https://nbviewer.jupyter.org/github/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_water
