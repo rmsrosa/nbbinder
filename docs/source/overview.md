@@ -180,6 +180,8 @@ Index
 
 See [00.00-Front-Page.ipynb](https://github.com/rmsrosa/nbbinder/blob/master/tests/nb_builds/nb_grammar_bound/00.00-Front_Page.ipynb) for the actual bound version of the first notebook.
 
+The binder for the notebooks in this collection is configured to include *badges* to render, in [nbviewer](https://nbviewer.jupyter.org/), either the Jupyter notebook itself or the exported version to markdown. The *badge* cell is located just below the header. Just click the badge with the **mouse right button** to open it. If clicking it with the right button, from within github, nothing will happen.
+
 ### Notebooks with preheaders
 
 This is particularly useful for lectures notes. For instance, by naming your collection of notebooks as
