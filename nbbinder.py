@@ -770,7 +770,7 @@ def add_headers(path_to_notes: str = None, header: str = None) -> None:
         absolute or relative to the script that calls `nbbinder.bind()`.
 
     header : str
-        The string with the contents to be included in the header cell.
+        The string with the text to be shown in the header cell.
     """
     cleanup_marker_cells(path_to_notes, HEADER_MARKER, 'remove')
 
@@ -1059,10 +1059,10 @@ def add_navigators(path_to_notes: str = None,
 
 def bind(aux: str = None,
          path_to_notes: str = None,
-         reindexing: list = None,
-         contents: list = None,
+         reindexing: dict = None,
+         contents: dict = None,
          header: str = '',
-         navigators: list = None,
+         navigators: dict = None,
          badges: list = None,
          exports: list = None,
          config_filename: str = None) -> None:
@@ -1084,20 +1084,29 @@ def bind(aux: str = None,
         The path to the directory that contains the notebooks, either
         absolute or relative to the script that calls `nbbinder.bind()`.
 
-    reindexing: list of bool
-        A list with the arguments `insert` and `tighten` for the function
+    reindexing: dict
+        A dict with the keys `insert` and `tighten` for the function
         `reindex()`.
 
-    contents: list
-        A list with the arguments `toc_nb_name`, `toc_title`, and
+    contents: dict
+        A dict with the keys `toc_nb_name`, `toc_title`, and
         `show_index_in_toc` for the function `add_contents()`.
 
     header : str
-        The string to be included as the contents of the header cell.
+        The string with the text to be shown in the header cell.
 
-    navigators: list
-        A list with the arguments `core_navigators`, `show_nb_title_in_nav`,
+    navigators: dict
+        A dict with the keys `core_navigators`, `show_nb_title_in_nav`,
         and `show_index_in_nav` for the function `add_navigators()`
+
+    badges: list
+        A list of dictionaries with keys to composing each badge 
+        in the cell. See the function `add_badge()` for details.
+
+    exports: list
+        A list of dictionaries with each dictionary containing the keys
+        `export_path`, `exporter_name`, and `exporter_args` used by
+        the function `export_notebooks()`.
 
     config_filename : str
         The filename of the configuration file.
