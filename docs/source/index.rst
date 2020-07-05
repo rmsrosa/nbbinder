@@ -8,7 +8,7 @@ Welcome to NBBinder's documentation!
 
 **THIS PACKAGE HAS BEEN ARCHIVED DUE TO NAMING COLLISION**
 
-It is survived by the package `Link NBJoint https://github.com/rmsrosa/nbjoint`.
+It is survived by the package `NBJoint <https://github.com/rmsrosa/nbjoint>`_.
 
 **NBBinder** generates a navigable book-like structure to a collection of
 Jupyter notebooks.
