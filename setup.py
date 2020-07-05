@@ -31,7 +31,7 @@ setuptools.setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 7 - Inactive',
         'Framework :: Jupyter',
         'Operating System :: MacOS',
         'Operating System :: POSIX :: Linux',

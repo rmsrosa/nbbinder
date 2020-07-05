@@ -1,4 +1,8 @@
-# NBBinder - Jupyter Notebook Binder
+# Archived
+
+Due to naming collision with [Binder](https://mybinder.org), this packaged has been archived and is survided by the renamed version [NBJoint](https://github.com/rmsrosa/nbjoint).
+
+## NBBinder - Jupyter Notebook Binder
 
 ![Main Tests Workflow Status](https://github.com/rmsrosa/nbbinder/workflows/Main%20Tests/badge.svg) ![Flake8 Lint Test Workflow Status](https://github.com/rmsrosa/nbbinder/workflows/Flake8%20Lint%20Test/badge.svg) ![PDF Export Test Workflow Status](https://github.com/rmsrosa/nbbinder/workflows/PDF%20Export%20Test/badge.svg) ![readthedocs badge](https://readthedocs.org/projects/nbbinder/badge/)
 
