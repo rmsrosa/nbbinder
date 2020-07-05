@@ -1,6 +1,6 @@
 # Archived
 
-Due to naming collision with [Binder](https://mybinder.org), this packaged has been archived and is survided by the renamed version [NBJoint](https://github.com/rmsrosa/nbjoint).
+Due to naming collision with [Binder](https://mybinder.org), this packaged has been archived and is survived by the renamed version [NBJoint](https://github.com/rmsrosa/nbjoint).
 
 ## NBBinder - Jupyter Notebook Binder
 
