@@ -1,6 +1,6 @@
 # Overview
 
-**NBBinder** generates a navigable book-like structure to a collection of Jupyter notebooks.
+**NBBinder** generates a navigable book-like structure for a collection of Jupyter notebooks.
 
 ## Description
 
